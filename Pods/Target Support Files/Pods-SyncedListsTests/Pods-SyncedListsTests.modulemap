@@ -1,0 +1,6 @@
+framework module Pods_SyncedListsTests {
+  umbrella header "Pods-SyncedListsTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
