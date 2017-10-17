@@ -17,13 +17,13 @@
         <!--Items-->
         <scene sceneID="Pp7-jl-oqT">
             <objects>
-                <tableViewController id="rsl-lx-Egc" sceneMemberID="viewController">
+                <tableViewController id="rsl-lx-Egc" customClass="ListTableViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="ruQ-d8-s1f">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="zST-xi-KDY">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ItemCell" id="zST-xi-KDY">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zST-xi-KDY" id="tUS-0L-SFo">
@@ -37,7 +37,14 @@
                             <outlet property="delegate" destination="rsl-lx-Egc" id="izh-gw-eyo"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Items" id="hfe-uX-N7F"/>
+                    <navigationItem key="navigationItem" title="Items" id="hfe-uX-N7F">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Kn9-Eq-jhz">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addItem:" destination="rsl-lx-Egc" id="i0a-gS-tAw"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="B5J-MI-IcA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -95,6 +102,9 @@
                                         <state key="normal" title="LOGIN">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <segue destination="0qw-mt-u1e" kind="show" id="FH5-7y-iDN"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CS9-Iv-jLI">
                                         <rect key="frame" x="0.0" y="140.5" width="240" height="39.5"/>
