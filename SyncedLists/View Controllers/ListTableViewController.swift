@@ -1,0 +1,89 @@
+//
+//  ListTableViewController.swift
+//  SyncedLists
+//
+//  Created by Kevin Largo on 10/16/17.
+//  Copyright © 2017 Kevin Largo. All rights reserved.
+//
+
+import FirebaseDatabase
+import Foundation
+import UIKit
+
+class ListTableViewController: UITableViewController {
+
+    // MARK: - Variables
+    let ref = Database.database().reference(withPath: "list-items");
+    var items: [Item] = [];
+    //var user: User!
+    var user = User(uid: "Kevin", email: "www@gmail.com");
+    
+    // MARK: - IBActions
+    @IBAction func addItem(_ sender: Any) {
+        let alert = UIAlertController(title: "Item", message: "Add Item", preferredStyle: .alert);
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
+            
+            guard let textField = alert.textFields?.first,
+                let text = textField.text else { return; }
+            
+            let item = Item(name: text, addedByUser: self.user.email);
+            let itemRef = self.ref.child(text.lowercased());
+            itemRef.setValue(item.toAnyObject());
+            
+            self.tableView.reloadData();
+        });
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default);
+
+        alert.addTextField();
+        alert.addAction(saveAction);
+        alert.addAction(cancelAction);
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: Overridden Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        ref.observe(.value, with: { snapshot in
+            var newItems: [Item] = [];
+            
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let item = Item(snapshot: snapshot);
+                newItems.append(item);
+            }
+            
+            self.items = newItems;
+            self.tableView.reloadData();
+        })
+    }
+
+    // MARK: - TableView Delegate Methods
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1;
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return items.count;
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell");
+        
+        cell?.textLabel?.text = items[indexPath.row].name;
+        
+        return cell!;
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        switch(editingStyle) {
+        case .delete:
+            let item = items[indexPath.row];
+            item.ref?.removeValue();
+        default:
+            return;
+        }
+    }
+}
