@@ -70,11 +70,30 @@ class ListTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell");
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell") as! ItemCell;
+        let item = items[indexPath.row];
         
-        cell?.textLabel?.text = items[indexPath.row].name;
+        cell.itemNameLabel.text = item.name;
+        cell.addedByLabel.text = "Added: \(user.uid)";
+    
+        //cell.completedByLabel.text = "\(item.isCompleted ? "Completed: \(item.completedBy)" : "")"
+        cell.completedByLabel.text = ""; ///TEMP
+
+        cell.accessoryType = (item.isCompleted ? .checkmark : .none);
         
-        return cell!;
+        return cell;
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        var item = items[indexPath.row];
+        
+        item.isCompleted = !item.isCompleted; // Toggle checkmark
+        item.completedBy = (item.isCompleted ? user.uid : nil);
+
+        item.ref?.updateChildValues(["isCompleted": item.isCompleted]);
+        item.ref?.updateChildValues(["completedBy": item.completedBy]);
+        
+        tableView.reloadData();
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -85,5 +104,19 @@ class ListTableViewController: UITableViewController {
         default:
             return;
         }
+    }
+}
+
+class ItemCell: UITableViewCell {
+    @IBOutlet weak var itemNameLabel: UILabel!
+    @IBOutlet weak var addedByLabel: UILabel!
+    @IBOutlet weak var completedByLabel: UILabel!
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String!) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier);
+    }
+    
+    required init?(coder decoder: NSCoder) {
+        super.init(coder: decoder)
     }
 }
