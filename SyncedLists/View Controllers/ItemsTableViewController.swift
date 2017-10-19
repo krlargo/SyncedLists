@@ -1,5 +1,5 @@
 //
-//  ListTableViewController.swift
+//  ItemsTableViewController.swift
 //  SyncedLists
 //
 //  Created by Kevin Largo on 10/16/17.
@@ -10,13 +10,13 @@ import FirebaseDatabase
 import Foundation
 import UIKit
 
-class ListTableViewController: UITableViewController {
+class ItemsTableViewController: UITableViewController {
 
     // MARK: - Variables
-    let ref = Database.database().reference(withPath: "list-items");
+    var itemsRef: DatabaseReference!
     var items: [Item] = [];
     //var user: User!
-    var user = User(uid: "Kevin", email: "www@gmail.com");
+    var user = User(uid: "Kevin", email: "krlargo@ucdavis.edu");
     
     // MARK: - IBActions
     @IBAction func addItem(_ sender: Any) {
@@ -28,7 +28,7 @@ class ListTableViewController: UITableViewController {
                 let text = textField.text else { return; }
             
             let item = Item(name: text, addedByUser: self.user.email);
-            let itemRef = self.ref.child(text.lowercased());
+            let itemRef = self.itemsRef.child(text.lowercased());
             itemRef.setValue(item.toAnyObject());
             
             self.tableView.reloadData();
@@ -47,7 +47,7 @@ class ListTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        ref.observe(.value, with: { snapshot in
+        itemsRef.observe(.value, with: { snapshot in
             var newItems: [Item] = [];
             
             for case let snapshot as DataSnapshot in snapshot.children {
