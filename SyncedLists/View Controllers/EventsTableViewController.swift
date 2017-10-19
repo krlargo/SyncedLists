@@ -6,90 +6,100 @@
 //  Copyright © 2017 Kevin Largo. All rights reserved.
 //
 
+import FirebaseDatabase
+import Foundation
 import UIKit
 
 class EventsTableViewController: UITableViewController {
-
+    // MARK: - Variables
+    let ref = Database.database().reference(withPath: "events");
+    var events: [Event] = [];
+    //var user: User!
+    var user = User(uid: "Kevin", email: "krlargo@ucdavis.edu");
+    
+    // MARK: - IBActions
+    @IBAction func addEvent(_ sender: Any) {
+        let alert = UIAlertController(title: "Event", message: "Add Event", preferredStyle: .alert);
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
+            
+            guard let textField = alert.textFields?.first,
+                let text = textField.text else { return; }
+            
+            let event = Event(name: text, owner: self.user.email);
+            let eventRef = self.ref.child(text.lowercased());
+            eventRef.setValue(event.toAnyObject());
+            
+            self.tableView.reloadData();
+        });
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default);
+        
+        alert.addTextField();
+        alert.addAction(saveAction);
+        alert.addAction(cancelAction);
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: Overridden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        ref.observe(.value, with: { snapshot in
+            var loadedEvents: [Event] = [];
+            
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let event = Event(snapshot: snapshot);
+                loadedEvents.append(event);
+            }
+            
+            self.events = loadedEvents;
+            self.tableView.reloadData();
+        })
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    // MARK: - Table view data source
-
+    
+    // MARK: - TableView Delegate Methods
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1;
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return events.count;
     }
-
-    /*
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell");
+        let event = events[indexPath.row];
+        
+        cell?.textLabel?.text? = event.name;
+        
+        /*let totalCountQueryRef = event.ref?.queryOrdered(byChild: "items");
+        let completedCountQueryRef = totalCountQueryRef.
+        let completedCount = totalCountQueryRef.observe
+        let totalItems = event.ref?.child("items")*/
+        
+        cell?.detailTextLabel?.text? = event.owner;
+        
+        return cell!;
     }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        switch(editingStyle) {
+        case .delete:
+            let event = events[indexPath.row];
+        default:
+            return;
+        }
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
+        if(segue.identifier == "toItems") {
+            if let indexPath = tableView.indexPathForSelectedRow {
+                let itemsTVC = segue.destination as! ItemsTableViewController;
+                itemsTVC.itemsRef = events[indexPath.row].ref?.child("items");
+            }
+        }
+    }
 }
