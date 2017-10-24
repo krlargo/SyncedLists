@@ -109,16 +109,16 @@ class EventsTableViewController: UITableViewController {
         var itemCount = 0;
         var completedItemCount = 0;
         
-        itemsRef?.observe(.value, with: { snapshot in
-            
+        itemsRef?.observe(.value, with: { (snapshot: DataSnapshot!) in
+            itemCount = Int(snapshot.childrenCount)
+            print("itemCount: \(itemCount)");
             for case let snapshot as DataSnapshot in snapshot.children {
                 let item = Item(snapshot: snapshot);
+                print(item.toAnyObject());
                 if(item.isCompleted) {
                     completedItemCount += 1;
                 }
             }
-      
-            itemCount = Int(snapshot.childrenCount)
         })
         
         return "\(completedItemCount)/\(itemCount)";
