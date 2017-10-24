@@ -155,6 +155,9 @@
                     <navigationItem key="navigationItem" title="Items" id="gTZ-93-Ejy">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="JZO-sF-F8w">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="addItem:" destination="OQ9-GM-N7N" id="xCA-kE-2wd"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                 </tableViewController>

@@ -79,7 +79,8 @@ class EventsTableViewController: UITableViewController {
         let completedCount = totalCountQueryRef.observe
         let totalItems = event.ref?.child("items")*/
         
-        cell?.detailTextLabel?.text? = event.owner;
+        //cell?.detailTextLabel?.text? = event.owner;
+        cell?.detailTextLabel?.text? = getCompletedFraction(indexPath);
         
         return cell!;
     }
@@ -101,5 +102,25 @@ class EventsTableViewController: UITableViewController {
                 itemsTVC.itemsRef = events[indexPath.row].ref?.child("items");
             }
         }
+    }
+    
+    func getCompletedFraction(_ indexPath: IndexPath) -> String {
+        let itemsRef = events[indexPath.row].ref?.child("items");
+        var itemCount = 0;
+        var completedItemCount = 0;
+        
+        itemsRef?.observe(.value, with: { snapshot in
+            
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let item = Item(snapshot: snapshot);
+                if(item.isCompleted) {
+                    completedItemCount += 1;
+                }
+            }
+      
+            itemCount = Int(snapshot.childrenCount)
+        })
+        
+        return "\(completedItemCount)/\(itemCount)";
     }
 }
