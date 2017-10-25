@@ -79,8 +79,8 @@ class EventsTableViewController: UITableViewController {
         let completedCount = totalCountQueryRef.observe
         let totalItems = event.ref?.child("items")*/
         
-        //cell?.detailTextLabel?.text? = event.owner;
-        cell?.detailTextLabel?.text? = getCompletedFraction(indexPath);
+        cell?.detailTextLabel?.text? = "\(event.completedCount)/\(event.itemCount)";
+        //cell?.detailTextLabel?.text? = getCompletedFraction(indexPath);
         
         return cell!;
     }
