@@ -9,7 +9,7 @@
 import FirebaseDatabase
 import Foundation
 
-struct Event {
+class Event {
     var name: String;
     var owner: String;
     var ref: DatabaseReference? // Needed for deletion
@@ -23,23 +23,6 @@ struct Event {
         self.name = snapshotValue["name"] as! String;
         self.owner = snapshotValue["owner"] as! String;
         self.ref = snapshot.ref;
-        
-        let itemsRef = snapshot.ref.child("items");
-        
-        var completedItemCount = 0;
-        var childrenCount = 0;
-        itemsRef.observe(.value, with: { (snapshot: DataSnapshot!) in
-            childrenCount = Int(snapshot.childrenCount);
-            for case let snapshot as DataSnapshot in snapshot.children {
-                let item = Item(snapshot: snapshot);
-                if(item.isCompleted) {
-                    completedItemCount += 1;
-                }
-            }
-        });
-        
-        self.itemCount = childrenCount;
-        self.completedCount = completedItemCount;
     }
     
     // Constructor for locally created Item
@@ -47,6 +30,25 @@ struct Event {
         self.name = name;
         self.owner = owner;
         self.ref = nil;
+    }
+    
+    func loadItems(completionHandler handler: () -> Void) {
+        // Get itemCount and completedItemsCount
+        ref?.child("items").observeSingleEvent(of: .value, with: {
+            snapshot in
+            
+            self.itemCount = Int(snapshot.childrenCount);
+            
+            var completedCount = 0;
+            for item in snapshot.children.allObjects as! [DataSnapshot] {
+                if((item.childSnapshot(forPath: "isCompleted").value as! Bool) == true) {
+                    completedCount += 1;
+                }
+            }
+            self.completedCount = completedCount;
+        });
+        
+        handler();
     }
     
     func toAnyObject() -> Any {

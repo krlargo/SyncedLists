@@ -51,6 +51,7 @@ class EventsTableViewController: UITableViewController {
             
             for case let snapshot as DataSnapshot in snapshot.children {
                 let event = Event(snapshot: snapshot);
+                event.loadItems(completionHandler: self.tableView.reloadData);
                 loadedEvents.append(event);
             }
             
@@ -73,14 +74,7 @@ class EventsTableViewController: UITableViewController {
         let event = events[indexPath.row];
         
         cell?.textLabel?.text? = event.name;
-        
-        /*let totalCountQueryRef = event.ref?.queryOrdered(byChild: "items");
-        let completedCountQueryRef = totalCountQueryRef.
-        let completedCount = totalCountQueryRef.observe
-        let totalItems = event.ref?.child("items")*/
-        
         cell?.detailTextLabel?.text? = "\(event.completedCount)/\(event.itemCount)";
-        //cell?.detailTextLabel?.text? = getCompletedFraction(indexPath);
         
         return cell!;
     }
@@ -91,6 +85,12 @@ class EventsTableViewController: UITableViewController {
             let event = events[indexPath.row];
         default:
             return;
+        }
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if(keyPath == "itemsLoaded") {
+            self.tableView.reloadData();
         }
     }
     
