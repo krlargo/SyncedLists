@@ -50,14 +50,18 @@ class EventsTableViewController: UITableViewController {
             var loadedEvents: [Event] = [];
             
             for case let snapshot as DataSnapshot in snapshot.children {
-                let event = Event(snapshot: snapshot);
-                event.loadItems(completionHandler: self.tableView.reloadData);
+                let event = Event(snapshot: snapshot, completionHandler: self.reloadTableData);
                 loadedEvents.append(event);
             }
             
             self.events = loadedEvents;
             self.tableView.reloadData();
         })
+    }
+    
+    func reloadTableData() {
+        self.tableView.reloadData();
+        print("Reloaded data.");
     }
     
     // MARK: - TableView Delegate Methods

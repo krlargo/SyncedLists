@@ -56,10 +56,13 @@ class ItemsTableViewController: UITableViewController {
             }
             
             self.items = newItems;
-            self.tableView.reloadData();
         })
     }
 
+    func reloadItemData() {
+        
+    }
+    
     // MARK: - TableView Delegate Methods
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1;

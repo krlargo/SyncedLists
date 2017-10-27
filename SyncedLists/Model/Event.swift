@@ -18,21 +18,12 @@ class Event {
     var itemCount: Int = 0;
     
     // Constructor for Firebase-loaded Item
-    init(snapshot: DataSnapshot) {
+    init(snapshot: DataSnapshot, completionHandler handler: @escaping () -> Void) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.name = snapshotValue["name"] as! String;
         self.owner = snapshotValue["owner"] as! String;
         self.ref = snapshot.ref;
-    }
-    
-    // Constructor for locally created Item
-    init(name: String, owner: String) {
-        self.name = name;
-        self.owner = owner;
-        self.ref = nil;
-    }
-    
-    func loadItems(completionHandler handler: () -> Void) {
+        
         // Get itemCount and completedItemsCount
         ref?.child("items").observeSingleEvent(of: .value, with: {
             snapshot in
@@ -46,9 +37,18 @@ class Event {
                 }
             }
             self.completedCount = completedCount;
+            
+            defer {
+                handler();
+            }
         });
-        
-        handler();
+    }
+    
+    // Constructor for locally created Item
+    init(name: String, owner: String) {
+        self.name = name;
+        self.owner = owner;
+        self.ref = nil;
     }
     
     func toAnyObject() -> Any {
