@@ -50,18 +50,13 @@ class EventsTableViewController: UITableViewController {
             var loadedEvents: [Event] = [];
             
             for case let snapshot as DataSnapshot in snapshot.children {
-                let event = Event(snapshot: snapshot, completionHandler: self.reloadTableData);
+                let event = Event(snapshot: snapshot, completionHandler: self.tableView.reloadData);
                 loadedEvents.append(event);
             }
             
             self.events = loadedEvents;
             self.tableView.reloadData();
         })
-    }
-    
-    func reloadTableData() {
-        self.tableView.reloadData();
-        print("Reloaded data.");
     }
     
     // MARK: - TableView Delegate Methods
@@ -86,45 +81,17 @@ class EventsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         switch(editingStyle) {
         case .delete:
-            let event = events[indexPath.row];
         default:
             return;
         }
     }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if(keyPath == "itemsLoaded") {
-            self.tableView.reloadData();
-        }
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "toItems") {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let itemsTVC = segue.destination as! ItemsTableViewController;
                 itemsTVC.itemsRef = events[indexPath.row].ref?.child("items");
             }
         }
-    }
-    
-    func getCompletedFraction(_ indexPath: IndexPath) -> String {
-        let itemsRef = events[indexPath.row].ref?.child("items");
-        var itemCount = 0;
-        var completedItemCount = 0;
-        
-        itemsRef?.observe(.value, with: { (snapshot: DataSnapshot!) in
-            itemCount = Int(snapshot.childrenCount)
-            print("itemCount: \(itemCount)");
-            for case let snapshot as DataSnapshot in snapshot.children {
-                let item = Item(snapshot: snapshot);
-                print(item.toAnyObject());
-                if(item.isCompleted) {
-                    completedItemCount += 1;
-                }
-            }
-        })
-        
-        return "\(completedItemCount)/\(itemCount)";
     }
 }

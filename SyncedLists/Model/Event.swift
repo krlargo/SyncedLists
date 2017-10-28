@@ -38,9 +38,7 @@ class Event {
             }
             self.completedCount = completedCount;
             
-            defer {
-                handler();
-            }
+            defer { handler(); } // Reload tableview data when this is finished
         });
     }
     
