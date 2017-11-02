@@ -81,6 +81,7 @@ class EventsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         switch(editingStyle) {
         case .delete:
+            return; ///
         default:
             return;
         }

@@ -13,6 +13,7 @@ import UIKit
 class ItemsTableViewController: UITableViewController {
 
     // MARK: - Variables
+    //let ref = Database.database().reference(withPath: "events");
     var itemsRef: DatabaseReference!
     var items: [Item] = [];
     //var user: User!
@@ -49,20 +50,19 @@ class ItemsTableViewController: UITableViewController {
 
         itemsRef.observe(.value, with: { snapshot in
             var newItems: [Item] = [];
-            
+
             for case let snapshot as DataSnapshot in snapshot.children {
                 let item = Item(snapshot: snapshot);
                 newItems.append(item);
             }
             
             self.items = newItems;
+            defer { // Reload tableData when observe is completed
+                self.tableView.reloadData();
+            }
         })
     }
 
-    func reloadItemData() {
-        
-    }
-    
     // MARK: - TableView Delegate Methods
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1;
