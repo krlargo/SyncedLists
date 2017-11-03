@@ -29,7 +29,6 @@ class ItemsTableViewController: UITableViewController {
                 let text = textField.text else { return; }
             
             let item = Item(name: text, addedByUser: self.user.email);
-            //let itemRef = self.itemsRef.child(text.lowercased());
             let itemRef = self.itemsRef.childByAutoId();
             itemRef.setValue(item.toAnyObject());
             

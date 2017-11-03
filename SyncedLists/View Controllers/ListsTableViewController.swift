@@ -27,7 +27,6 @@ class ListsTableViewController: UITableViewController {
                 let text = textField.text else { return; }
             
             let list = List(name: text, owner: self.user.email);
-            //let listRef = self.ref.child(text.lowercased());
             let listRef = self.ref.childByAutoId();
             listRef.setValue(list.toAnyObject());
             
