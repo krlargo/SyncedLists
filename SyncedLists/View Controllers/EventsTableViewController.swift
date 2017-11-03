@@ -91,6 +91,7 @@ class EventsTableViewController: UITableViewController {
         if(segue.identifier == "toItems") {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let itemsTVC = segue.destination as! ItemsTableViewController;
+                itemsTVC.title = events[indexPath.row].name;
                 itemsTVC.itemsRef = events[indexPath.row].ref?.child("items");
             }
         }
