@@ -12,10 +12,13 @@ import UIKit
 
 class ListsTableViewController: UITableViewController {
     // MARK: - Variables
-    let ref = Database.database().reference(withPath: "lists");
+    let usersRef = Database.database().reference(withPath: "users");
+    let listsRef = Database.database().reference(withPath: "lists");
+    var currentUserRef: DatabaseReference!
+    
     var lists: [List] = [];
     //var user: User!
-    var user = User(uid: "Kevin", email: "krlargo@ucdavis.edu");
+    var user = User(name: "Kevin", email: "krlargo@ucdavis.edu");
     
     // MARK: - IBActions
     @IBAction func addList(_ sender: Any) {
@@ -26,9 +29,16 @@ class ListsTableViewController: UITableViewController {
             guard let textField = alert.textFields?.first,
                 let text = textField.text else { return; }
             
+            // Add list to LISTS in database
             let list = List(name: text, owner: self.user.email);
-            let listRef = self.ref.childByAutoId();
-            listRef.setValue(list.toAnyObject());
+            
+            let newListRef = self.listsRef.childByAutoId();
+            newListRef.setValue(list.toAnyObject());
+            
+            // Add list to USERS in database
+            let currentUserListsRef = self.currentUserRef.child("listIDs");
+            print(newListRef.key);
+            currentUserListsRef.child(newListRef.key).setValue(true);
             
             self.tableView.reloadData();
         });
@@ -45,18 +55,36 @@ class ListsTableViewController: UITableViewController {
     // MARK: Overridden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        ref.observe(.value, with: { snapshot in
-            var loadedLists: [List] = [];
+
+        currentUserRef = usersRef.child(user.id);
+        var currentUserListsRef = currentUserRef.child("listIDs");
+
+        currentUserListsRef.observe(.value, with: { snapshot in
+            // Collect all the current user's list IDs
+            var listIDs: [String] = [];
             
             for case let snapshot as DataSnapshot in snapshot.children {
-                let list = List(snapshot: snapshot, completionHandler: self.tableView.reloadData);
-                loadedLists.append(list);
+                let listID = snapshot.key;
+                listIDs.append(listID);
             }
+
+            // Based on user's list IDs, load lists
+            var loadedLists: [List] = [];
             
-            self.lists = loadedLists;
-            self.tableView.reloadData();
-        })
+            for listID in listIDs {
+                let listRef = self.listsRef.child(listID);
+
+                listRef.observeSingleEvent(of: .value, with: { snapshot in
+                    let list = List(snapshot: snapshot, completionHandler: self.tableView.reloadData);
+                    loadedLists.append(list);
+                    
+                    defer {
+                        self.lists = loadedLists;
+                        self.tableView.reloadData();
+                    }
+                });
+            }
+        });
     }
     
     // MARK: - TableView Delegate Methods
@@ -73,7 +101,7 @@ class ListsTableViewController: UITableViewController {
         let list = lists[indexPath.row];
         
         cell?.textLabel?.text? = list.name;
-        cell?.detailTextLabel?.text? = "\(list.completedCount)/\(list.itemCount)";
+        //cell?.detailTextLabel?.text? = "\(list.completedCount)/\(list.itemCount)";
         
         return cell!;
     }
@@ -81,7 +109,10 @@ class ListsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         switch(editingStyle) {
         case .delete:
-            return; ///
+            let list = lists[indexPath.row];
+            let userListRef = currentUserRef.child("listIDs").child(list.id!);
+            userListRef.removeValue(); // Remove list from USERS
+            list.ref?.removeValue(); // Remove list from LISTS
         default:
             return;
         }
@@ -92,7 +123,7 @@ class ListsTableViewController: UITableViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let itemsTVC = segue.destination as! ItemsTableViewController;
                 itemsTVC.title = lists[indexPath.row].name;
-                itemsTVC.itemsRef = lists[indexPath.row].ref?.child("items");
+                itemsTVC.listID = lists[indexPath.row].id;
             }
         }
     }

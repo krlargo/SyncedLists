@@ -10,18 +10,23 @@ import Firebase
 import Foundation
 
 struct User {
-    var uid: String;
+    var name: String;
     var email: String;
+    
+    // Firebase userID uses "," instead of "."
+    var id: String {
+        return self.email.replacingOccurrences(of: ".", with: ",");
+    }
     
     // Constructor for Firebase-loaded User
     init(authData: User) {
-        self.uid = authData.uid;
+        self.name = authData.name;
         self.email = authData.email;
     }
     
     // Constructor for locally created User
-    init(uid: String, email: String) {
-        self.uid = uid;
+    init(name: String, email: String) {
+        self.name = name;
         self.email = email;
     }
 }

@@ -13,11 +13,11 @@ import UIKit
 class ItemsTableViewController: UITableViewController {
 
     // MARK: - Variables
-    //let ref = Database.database().reference(withPath: "events");
-    var itemsRef: DatabaseReference!
+    var listID: String!
+    let itemsRef = Database.database().reference(withPath: "items");
     var items: [Item] = [];
     //var user: User!
-    var user = User(uid: "Kevin", email: "krlargo@ucdavis.edu");
+    var user = User(name: "Kevin", email: "krlargo@ucdavis.edu");
     
     // MARK: - IBActions
     @IBAction func addItem(_ sender: Any) {
@@ -48,7 +48,23 @@ class ItemsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        itemsRef.observe(.value, with: { snapshot in
+        var currentListItemsRef = itemsRef.child(listID);
+        currentListItemsRef.observe(.value, with: { snapshot in
+            var loadedItems: [Item] = [];
+            
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let item = Item(snapshot: snapshot);
+                loadedItems.append(item);
+            }
+            
+            self.items = loadedItems;
+            
+            defer {
+                self.tableView.reloadData();
+            }
+        })
+        
+        /*itemsRef.observe(.value, with: { snapshot in
             var newItems: [Item] = [];
 
             for case let snapshot as DataSnapshot in snapshot.children {
@@ -60,7 +76,7 @@ class ItemsTableViewController: UITableViewController {
             defer { // Reload tableData when observe is completed
                 self.tableView.reloadData();
             }
-        })
+        })*/
     }
 
     // MARK: - TableView Delegate Methods
@@ -77,12 +93,12 @@ class ItemsTableViewController: UITableViewController {
         let item = items[indexPath.row];
         
         cell.itemNameLabel.text = item.name;
-        cell.addedByLabel.text = "Added: \(user.uid)";
+        cell.addedByLabel.text = "Added: \(user.name)";
     
         //cell.completedByLabel.text = "\(item.isCompleted ? "Completed: \(item.completedBy)" : "")"
         cell.completedByLabel.text = ""; ///TEMP
 
-        cell.accessoryType = (item.isCompleted ? .checkmark : .none);
+        cell.accessoryType = (item.completedBy != nil ? .checkmark : .none);
         
         return cell;
     }
@@ -90,10 +106,8 @@ class ItemsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var item = items[indexPath.row];
         
-        item.isCompleted = !item.isCompleted; // Toggle checkmark
-        item.completedBy = (item.isCompleted ? user.uid : nil);
+        item.completedBy = (item.completedBy != nil ? user.name : nil);
 
-        item.ref?.updateChildValues(["isCompleted": item.isCompleted]);
         item.ref?.updateChildValues(["completedBy": item.completedBy]);
         
         tableView.reloadData();

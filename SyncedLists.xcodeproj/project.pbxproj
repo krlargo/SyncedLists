@@ -211,8 +211,8 @@
 			children = (
 				3889E7581F957A9C00FB0BE7 /* SyncedLists.xcdatamodeld */,
 				3889E78F1F95EA1400FB0BE7 /* User.swift */,
-				3889E7911F95EB3D00FB0BE7 /* Item.swift */,
 				3889E7951F988BD900FB0BE7 /* List.swift */,
+				3889E7911F95EB3D00FB0BE7 /* Item.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

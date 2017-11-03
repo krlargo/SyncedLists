@@ -12,7 +12,9 @@ import Foundation
 class List {
     var name: String;
     var owner: String;
+    
     var ref: DatabaseReference? // Needed for deletion
+    var id: String?
     
     var completedCount: Int = 0;
     var itemCount: Int = 0;
@@ -23,9 +25,10 @@ class List {
         self.name = snapshotValue["name"] as! String;
         self.owner = snapshotValue["owner"] as! String;
         self.ref = snapshot.ref;
+        self.id = snapshot.key;
         
         // Get itemCount and completedItemsCount
-        ref?.child("items").observeSingleEvent(of: .value, with: {
+        /*ref?.child("items").observeSingleEvent(of: .value, with: {
             snapshot in
             
             self.itemCount = Int(snapshot.childrenCount);
@@ -39,7 +42,7 @@ class List {
             self.completedCount = completedCount;
             
             defer { handler(); } // Reload tableview data when this is finished
-        });
+        });*/
     }
     
     // Constructor for locally created Item
@@ -47,6 +50,7 @@ class List {
         self.name = name;
         self.owner = owner;
         self.ref = nil;
+        self.id = nil;
     }
     
     func toAnyObject() -> Any {

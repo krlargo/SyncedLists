@@ -12,7 +12,6 @@ import Foundation
 struct Item {
     var name: String;
     var addedByUser: String;
-    var isCompleted: Bool;
     var completedBy: String?;
     var ref: DatabaseReference? // Needed for deletion
     
@@ -21,7 +20,6 @@ struct Item {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         name = snapshotValue["name"] as! String;
         addedByUser = snapshotValue["addedByUser"] as! String;
-        isCompleted = snapshotValue["isCompleted"] as! Bool;
         completedBy = snapshotValue["completedBy"] as? String
         self.ref = snapshot.ref;
     }
@@ -30,7 +28,6 @@ struct Item {
     init(name: String, addedByUser: String) {
         self.name = name;
         self.addedByUser = addedByUser;
-        self.isCompleted = false;
         self.completedBy = nil;
         self.ref = nil;
     }
@@ -39,7 +36,6 @@ struct Item {
         return [
             "name": self.name,
             "addedByUser": self.addedByUser,
-            "isCompleted": self.isCompleted,
             "completedBy": self.completedBy
         ];
     }
