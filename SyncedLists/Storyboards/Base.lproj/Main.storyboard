@@ -37,16 +37,16 @@
             </objects>
             <point key="canvasLocation" x="-566" y="-138"/>
         </scene>
-        <!--Events-->
+        <!--Lists-->
         <scene sceneID="i6N-mp-2K7">
             <objects>
-                <tableViewController id="lVE-zg-4g5" customClass="EventsTableViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="lVE-zg-4g5" customClass="ListsTableViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="t2t-59-aJJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="EventCell" textLabel="SJg-l8-HjN" detailTextLabel="4EJ-ab-EWi" style="IBUITableViewCellStyleValue1" id="sSa-mZ-xWV">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ListCell" textLabel="SJg-l8-HjN" detailTextLabel="4EJ-ab-EWi" style="IBUITableViewCellStyleValue1" id="sSa-mZ-xWV">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sSa-mZ-xWV" id="usq-kQ-ORu">
@@ -79,10 +79,10 @@
                             <outlet property="delegate" destination="lVE-zg-4g5" id="kBO-R3-VHp"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Events" id="6cb-sA-9m1">
+                    <navigationItem key="navigationItem" title="Lists" id="6cb-sA-9m1">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FC3-Ie-uyV">
                             <connections>
-                                <action selector="addEvent:" destination="lVE-zg-4g5" id="Paf-VF-B2W"/>
+                                <action selector="addList:" destination="lVE-zg-4g5" id="lwc-BM-uCM"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

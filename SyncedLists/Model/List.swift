@@ -1,5 +1,5 @@
 //
-//  Event.swift
+//  List.swift
 //  SyncedLists
 //
 //  Created by Kevin Largo on 10/18/17.
@@ -9,7 +9,7 @@
 import FirebaseDatabase
 import Foundation
 
-class Event {
+class List {
     var name: String;
     var owner: String;
     var ref: DatabaseReference? // Needed for deletion
