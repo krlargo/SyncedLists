@@ -28,21 +28,20 @@ class List {
         self.id = snapshot.key;
         
         // Get itemCount and completedItemsCount
-        /*ref?.child("items").observeSingleEvent(of: .value, with: {
-            snapshot in
-            
+        let listItemsRef = Database.database().reference(withPath: "items");
+        listItemsRef.child(id!).observeSingleEvent(of: .value, with: { snapshot in
             self.itemCount = Int(snapshot.childrenCount);
             
             var completedCount = 0;
             for item in snapshot.children.allObjects as! [DataSnapshot] {
-                if((item.childSnapshot(forPath: "isCompleted").value as! Bool) == true) {
+                if(item.hasChild("completedBy")) {
                     completedCount += 1;
                 }
             }
             self.completedCount = completedCount;
             
             defer { handler(); } // Reload tableview data when this is finished
-        });*/
+        });
     }
     
     // Constructor for locally created Item

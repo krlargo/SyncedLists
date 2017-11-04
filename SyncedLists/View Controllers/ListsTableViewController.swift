@@ -101,7 +101,7 @@ class ListsTableViewController: UITableViewController {
         let list = lists[indexPath.row];
         
         cell?.textLabel?.text? = list.name;
-        //cell?.detailTextLabel?.text? = "\(list.completedCount)/\(list.itemCount)";
+        cell?.detailTextLabel?.text? = "\(list.completedCount)/\(list.itemCount)";
         
         return cell!;
     }

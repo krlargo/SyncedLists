@@ -15,6 +15,17 @@ struct Item {
     var completedBy: String?;
     var ref: DatabaseReference? // Needed for deletion
     
+    /*var addedByUserName: String {
+        return Database.database().reference(withPath: "users/\(addedByUser)").value(forKey: "name") as! String;
+    }
+    var completedByUserName: String? {
+        return Database.database().reference(withPath: "users/\(completedBy)").value(forKey: "name") as? String;
+    }
+    
+    func getUserName(from email: String) -> String {
+        return
+    }*/
+    
     // Constructor for Firebase-loaded Item
     init(snapshot: DataSnapshot) {
         let snapshotValue = snapshot.value as! [String: AnyObject];

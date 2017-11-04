@@ -14,10 +14,9 @@ class ItemsTableViewController: UITableViewController {
 
     // MARK: - Variables
     var listID: String!
-    let itemsRef = Database.database().reference(withPath: "items");
+    var itemsRef = Database.database().reference(withPath: "items");
     var items: [Item] = [];
-    //var user: User!
-    var user = User(name: "Kevin", email: "krlargo@ucdavis.edu");
+    var user = User(name: "Kevin", email: "krlargo@ucdavis.edu"); ///
     
     // MARK: - IBActions
     @IBAction func addItem(_ sender: Any) {
@@ -48,8 +47,9 @@ class ItemsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var currentListItemsRef = itemsRef.child(listID);
-        currentListItemsRef.observe(.value, with: { snapshot in
+        itemsRef = Database.database().reference(withPath: "items").child(listID);
+
+        itemsRef.observe(.value, with: { snapshot in
             var loadedItems: [Item] = [];
             
             for case let snapshot as DataSnapshot in snapshot.children {
@@ -63,20 +63,6 @@ class ItemsTableViewController: UITableViewController {
                 self.tableView.reloadData();
             }
         })
-        
-        /*itemsRef.observe(.value, with: { snapshot in
-            var newItems: [Item] = [];
-
-            for case let snapshot as DataSnapshot in snapshot.children {
-                let item = Item(snapshot: snapshot);
-                newItems.append(item);
-            }
-            
-            self.items = newItems;
-            defer { // Reload tableData when observe is completed
-                self.tableView.reloadData();
-            }
-        })*/
     }
 
     // MARK: - TableView Delegate Methods
@@ -93,7 +79,7 @@ class ItemsTableViewController: UITableViewController {
         let item = items[indexPath.row];
         
         cell.itemNameLabel.text = item.name;
-        cell.addedByLabel.text = "Added: \(user.name)";
+        cell.addedByLabel.text = "Added: \(item.addedByUser)";
     
         //cell.completedByLabel.text = "\(item.isCompleted ? "Completed: \(item.completedBy)" : "")"
         cell.completedByLabel.text = ""; ///TEMP
