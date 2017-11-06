@@ -108,7 +108,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="checkmark" indentationWidth="10" reuseIdentifier="ItemCell" id="noU-i5-gBA" customClass="ItemCell" customModule="SyncedLists" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="checkmark" indentationWidth="10" reuseIdentifier="ItemCell" id="noU-i5-gBA" customClass="ItemCell" customModule="SyncedLists" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="noU-i5-gBA" id="faD-jt-4Pi">
@@ -135,13 +135,14 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="a1U-eA-LfK" firstAttribute="width" secondItem="9R1-Xr-Jju" secondAttribute="width" id="2LR-A0-Sxx"/>
+                                        <constraint firstItem="a1U-eA-LfK" firstAttribute="width" relation="greaterThanOrEqual" secondItem="9R1-Xr-Jju" secondAttribute="width" id="2LR-A0-Sxx"/>
                                         <constraint firstItem="a1U-eA-LfK" firstAttribute="top" secondItem="5P6-ud-dvK" secondAttribute="bottom" id="2R7-es-0b7"/>
                                         <constraint firstItem="9R1-Xr-Jju" firstAttribute="centerY" secondItem="a1U-eA-LfK" secondAttribute="centerY" id="I2a-wP-mE5"/>
                                         <constraint firstItem="9R1-Xr-Jju" firstAttribute="trailing" secondItem="5P6-ud-dvK" secondAttribute="trailing" id="YHY-Fu-xSp"/>
                                         <constraint firstItem="5P6-ud-dvK" firstAttribute="leading" secondItem="faD-jt-4Pi" secondAttribute="leading" constant="16" id="cIh-qw-IYi"/>
                                         <constraint firstItem="5P6-ud-dvK" firstAttribute="centerY" secondItem="faD-jt-4Pi" secondAttribute="centerY" constant="-5" id="e7b-cj-lGF"/>
                                         <constraint firstItem="a1U-eA-LfK" firstAttribute="leading" secondItem="5P6-ud-dvK" secondAttribute="leading" id="r6x-uH-4W6"/>
+                                        <constraint firstItem="9R1-Xr-Jju" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="a1U-eA-LfK" secondAttribute="trailing" constant="10" id="wUs-0i-Vwd"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="tintColor" red="0.25952532890000002" green="0.69917218550000004" blue="0.35500759549999999" alpha="1" colorSpace="calibratedRGB"/>
