@@ -21,6 +21,9 @@ class ListsTableViewController: UITableViewController {
     var user = User(name: "Kevin", email: "krlargo@ucdavis.edu");
     
     // MARK: - IBActions
+    
+    @IBAction func logout(_ sender: Any) {}
+    
     @IBAction func addList(_ sender: Any) {
         let alert = UIAlertController(title: "List", message: "Add List", preferredStyle: .alert);
         
@@ -55,9 +58,14 @@ class ListsTableViewController: UITableViewController {
     // MARK: Overridden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        currentUserRef = usersRef.child(user.id);
         
+        currentUserRef = usersRef.child(user.id);
+
+        // Set backButton
+        let backButton = UIBarButtonItem();
+        backButton.title = "Lists";
+        navigationItem.backBarButtonItem = backButton;
+
         self.reloadData();
     }
     
