@@ -57,8 +57,12 @@ class ListsTableViewController: UITableViewController {
         super.viewDidLoad()
 
         currentUserRef = usersRef.child(user.id);
+        
+        self.reloadData();
+    }
+    
+    func reloadData() {
         var currentUserListsRef = currentUserRef.child("listIDs");
-
         currentUserListsRef.observe(.value, with: { snapshot in
             // Collect all the current user's list IDs
             var listIDs: [String] = [];
@@ -67,13 +71,13 @@ class ListsTableViewController: UITableViewController {
                 let listID = snapshot.key;
                 listIDs.append(listID);
             }
-
+            
             // Based on user's list IDs, load lists
             var loadedLists: [List] = [];
             
             for listID in listIDs {
                 let listRef = self.listsRef.child(listID);
-
+                
                 listRef.observeSingleEvent(of: .value, with: { snapshot in
                     let list = List(snapshot: snapshot, completionHandler: self.tableView.reloadData);
                     loadedLists.append(list);
@@ -85,6 +89,8 @@ class ListsTableViewController: UITableViewController {
                 });
             }
         });
+
+        self.tableView.reloadData();
     }
     
     // MARK: - TableView Delegate Methods
@@ -124,6 +130,7 @@ class ListsTableViewController: UITableViewController {
                 let itemsTVC = segue.destination as! ItemsTableViewController;
                 itemsTVC.title = lists[indexPath.row].name;
                 itemsTVC.listID = lists[indexPath.row].id;
+                itemsTVC.unwindHandler = self.reloadData;
             }
         }
     }
