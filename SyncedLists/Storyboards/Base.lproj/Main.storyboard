@@ -84,6 +84,7 @@
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="W32-Yx-GT3">
                             <connections>
                                 <action selector="logout:" destination="lVE-zg-4g5" id="a3z-Cp-74T"/>
+                                <segue destination="Uqc-gz-CEf" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="jns-dz-6bE"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FC3-Ie-uyV">
@@ -94,6 +95,7 @@
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jx6-5x-zMp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Uqc-gz-CEf" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="247" y="-138"/>
         </scene>
@@ -171,10 +173,10 @@
             </objects>
             <point key="canvasLocation" x="1057" y="-138"/>
         </scene>
-        <!--View Controller-->
+        <!--Login View Controller-->
         <scene sceneID="4df-ix-6BA">
             <objects>
-                <viewController id="Vp5-g2-ucS" sceneMemberID="viewController">
+                <viewController id="Vp5-g2-ucS" customClass="LoginViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="DtF-O0-3DR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -255,8 +257,12 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="9S9-wg-eqy"/>
                     </view>
+                    <connections>
+                        <segue destination="89z-0C-FU7" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="xDb-h1-LGq"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="evM-zn-M2E" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="89z-0C-FU7" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-1375" y="-138"/>
         </scene>
