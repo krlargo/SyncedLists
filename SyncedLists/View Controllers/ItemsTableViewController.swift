@@ -99,7 +99,7 @@ class ItemsTableViewController: UITableViewController {
         var item = items[indexPath.row];
         
         item.completedByUserID = (item.completedByUserID == nil ? user.id : nil);
-        item.ref?.updateChildValues(["completedByUserID": item.completedByUserID]);
+        item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
         
         tableView.reloadData();
     }

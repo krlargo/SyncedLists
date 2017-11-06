@@ -39,8 +39,7 @@ class User {
         var name: String = "";
         let userID = User.emailToID(emailStr);
         
-        let userRef = Database.database()
-            .reference(withPath: "users")
+        Database.database().reference(withPath: "users")
             .child(userID).child("name")
             .observe(.value, with: { snapshot in
                 if let observedName = snapshot.value as? String {

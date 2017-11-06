@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3889E7521F957A9C00FB0BE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3889E7511F957A9C00FB0BE7 /* AppDelegate.swift */; };
 		3889E7571F957A9C00FB0BE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3889E7551F957A9C00FB0BE7 /* Main.storyboard */; };
-		3889E75A1F957A9C00FB0BE7 /* SyncedLists.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3889E7581F957A9C00FB0BE7 /* SyncedLists.xcdatamodeld */; };
 		3889E75C1F957A9C00FB0BE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3889E75B1F957A9C00FB0BE7 /* Assets.xcassets */; };
 		3889E75F1F957A9C00FB0BE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3889E75D1F957A9C00FB0BE7 /* LaunchScreen.storyboard */; };
 		3889E76A1F957A9C00FB0BE7 /* SyncedListsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3889E7691F957A9C00FB0BE7 /* SyncedListsTests.swift */; };
@@ -50,7 +49,6 @@
 		3889E74E1F957A9C00FB0BE7 /* SyncedLists.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SyncedLists.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3889E7511F957A9C00FB0BE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3889E7561F957A9C00FB0BE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		3889E7591F957A9C00FB0BE7 /* SyncedLists.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SyncedLists.xcdatamodel; sourceTree = "<group>"; };
 		3889E75B1F957A9C00FB0BE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3889E75E1F957A9C00FB0BE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3889E7601F957A9C00FB0BE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -209,7 +207,6 @@
 		3889E7871F957F5C00FB0BE7 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				3889E7581F957A9C00FB0BE7 /* SyncedLists.xcdatamodeld */,
 				3889E78F1F95EA1400FB0BE7 /* User.swift */,
 				3889E7951F988BD900FB0BE7 /* List.swift */,
 				3889E7911F95EB3D00FB0BE7 /* Item.swift */,
@@ -533,7 +530,6 @@
 				3889E7901F95EA1400FB0BE7 /* User.swift in Sources */,
 				3889E7941F988A5700FB0BE7 /* ListsTableViewController.swift in Sources */,
 				3889E7891F95876F00FB0BE7 /* ItemsTableViewController.swift in Sources */,
-				3889E75A1F957A9C00FB0BE7 /* SyncedLists.xcdatamodeld in Sources */,
 				3889E7961F988BD900FB0BE7 /* List.swift in Sources */,
 				3889E7521F957A9C00FB0BE7 /* AppDelegate.swift in Sources */,
 			);
@@ -841,19 +837,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		3889E7581F957A9C00FB0BE7 /* SyncedLists.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				3889E7591F957A9C00FB0BE7 /* SyncedLists.xcdatamodel */,
-			);
-			currentVersion = 3889E7591F957A9C00FB0BE7 /* SyncedLists.xcdatamodel */;
-			path = SyncedLists.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 3889E7461F957A9C00FB0BE7 /* Project object */;
 }
