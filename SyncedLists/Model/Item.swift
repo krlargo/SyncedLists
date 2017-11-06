@@ -9,10 +9,10 @@
 import FirebaseDatabase
 import Foundation
 
-struct Item {
+class Item {
     var name: String;
     var addedByUserID: String;
-    var addedByUserName: String;
+    var addedByUserName: String!;
     var completedByUserID: String?
     var completedByUserName: String?
     var ref: DatabaseReference? // Needed for deletion
@@ -25,29 +25,20 @@ struct Item {
         self.completedByUserID = snapshotValue["completedByUserID"] as? String
         self.ref = snapshot.ref;
 
-        var addedByUserName: String = "";
-        var completedByUserName: String?;
         Database.database().reference(withPath: "users")
             .child(User.emailToID(addedByUserID)).child("name")
             .observeSingleEvent(of: .value, with: { snapshot in
-                addedByUserName = snapshot.value as! String;
-                defer {
-                    completionHandler();
-                }
+                self.addedByUserName = snapshot.value as! String;
+                defer { completionHandler(); }
             });
-        self.addedByUserName = addedByUserName;
         
         if let completedByUserID = completedByUserID {
-            completedByUserName = "";
             Database.database().reference(withPath: "users")
                 .child(User.emailToID(completedByUserID)).child("name")
                 .observeSingleEvent(of: .value, with: { snapshot in
-                    completedByUserName = snapshot.value as? String;
-                    defer {
-                        completionHandler();
-                    }
-                })
-            self.completedByUserName = completedByUserName;
+                    self.completedByUserName = snapshot.value as? String;
+                    defer { completionHandler(); }
+                });
         }
     }
     
