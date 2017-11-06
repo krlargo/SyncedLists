@@ -90,15 +90,10 @@ class ListsTableViewController: UITableViewController {
                     let list = List(snapshot: snapshot, completionHandler: self.tableView.reloadData);
                     loadedLists.append(list);
                     
-                    defer {
-                        self.lists = loadedLists;
-                        self.tableView.reloadData();
-                    }
+                    defer { self.lists = loadedLists; }
                 });
             }
         });
-
-        self.tableView.reloadData();
     }
     
     // MARK: - TableView Delegate Methods
