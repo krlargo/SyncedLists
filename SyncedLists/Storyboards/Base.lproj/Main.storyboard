@@ -80,6 +80,12 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Lists" id="6cb-sA-9m1">
+                        <barButtonItem key="backBarButtonItem" title="Logout" id="Zdx-aD-wlA"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="W32-Yx-GT3">
+                            <connections>
+                                <action selector="logout:" destination="lVE-zg-4g5" id="a3z-Cp-74T"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FC3-Ie-uyV">
                             <connections>
                                 <action selector="addList:" destination="lVE-zg-4g5" id="lwc-BM-uCM"/>
