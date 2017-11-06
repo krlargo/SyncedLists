@@ -20,7 +20,7 @@ class List {
     var itemCount: Int = 0;
     
     // Constructor for Firebase-loaded Item
-    init(snapshot: DataSnapshot, completionHandler handler: @escaping () -> Void) {
+    init(snapshot: DataSnapshot, completionHandler: @escaping () -> Void) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.name = snapshotValue["name"] as! String;
         self.owner = snapshotValue["owner"] as! String;
@@ -34,13 +34,13 @@ class List {
             
             var completedCount = 0;
             for item in snapshot.children.allObjects as! [DataSnapshot] {
-                if(item.hasChild("completedBy")) {
+                if(item.hasChild("completedByUserID")) {
                     completedCount += 1;
                 }
             }
             self.completedCount = completedCount;
             
-            defer { handler(); } // Reload tableview data when this is finished
+            defer { completionHandler(); } // Reload tableview data when this is finished
         });
     }
     
