@@ -50,6 +50,10 @@ class ItemsTableViewController: UITableViewController {
         
         itemsRef = Database.database().reference(withPath: "items").child(listID);
 
+        self.reloadData();
+    }
+
+    func reloadData() {
         itemsRef.observe(.value, with: { snapshot in
             var loadedItems: [Item] = [];
             
@@ -58,11 +62,7 @@ class ItemsTableViewController: UITableViewController {
                 loadedItems.append(item);
             }
             
-            self.items = loadedItems;
-            
-            defer {
-                self.tableView.reloadData();
-            }
+            defer {self.items = loadedItems; }
         });
     }
     
@@ -85,18 +85,24 @@ class ItemsTableViewController: UITableViewController {
         let item = items[indexPath.row];
         
         cell.itemNameLabel.text = item.name;
-        cell.addedByLabel.text = "Added by: \(item.addedByUserName)";
+        cell.addedByLabel.text = "Added: \(item.addedByUserName!)";
         
         //cell.completedByLabel.text = "\(item.isCompleted ? "Completed: \(item.completedBy)" : "")"
-        cell.completedByLabel.text = ""; ///TEMP
-
-        cell.accessoryType = (item.completedByUserID != nil ? .checkmark : .none);
+        //cell.accessoryType = (item.completedByUserID != nil ? .checkmark : .none);
+        
+        if(item.completedByUserID == nil || item.completedByUserName == nil) {
+            cell.completedByLabel.text = "";
+            cell.accessoryType = .none;
+        } else {
+            cell.completedByLabel.text = "Completed: \(item.completedByUserName!)"
+            cell.accessoryType = .checkmark;
+        }
         
         return cell;
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var item = items[indexPath.row];
+        let item = items[indexPath.row];
         
         item.completedByUserID = (item.completedByUserID == nil ? user.id : nil);
         item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
