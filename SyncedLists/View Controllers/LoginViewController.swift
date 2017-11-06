@@ -12,6 +12,8 @@ class LoginViewController: UIViewController {
 
     @IBAction func unwindToLogin(segue:UIStoryboardSegue) { }
     
+    @IBOutlet var buttons: [UIButton]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

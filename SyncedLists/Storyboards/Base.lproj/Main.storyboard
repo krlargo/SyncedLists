@@ -258,6 +258,8 @@
                         <viewLayoutGuide key="safeArea" id="9S9-wg-eqy"/>
                     </view>
                     <connections>
+                        <outletCollection property="buttons" destination="SjN-XA-sIR" collectionClass="NSMutableArray" id="Mm7-O0-CV4"/>
+                        <outletCollection property="buttons" destination="CS9-Iv-jLI" collectionClass="NSMutableArray" id="0ek-ig-aQq"/>
                         <segue destination="89z-0C-FU7" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="xDb-h1-LGq"/>
                     </connections>
                 </viewController>
