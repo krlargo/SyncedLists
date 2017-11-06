@@ -11,43 +11,60 @@ import Foundation
 
 struct Item {
     var name: String;
-    var addedByUser: String;
-    var completedBy: String?;
+    var addedByUserID: String;
+    var addedByUserName: String;
+    var completedByUserID: String?
+    var completedByUserName: String?
     var ref: DatabaseReference? // Needed for deletion
     
-    /*var addedByUserName: String {
-        return Database.database().reference(withPath: "users/\(addedByUser)").value(forKey: "name") as! String;
-    }
-    var completedByUserName: String? {
-        return Database.database().reference(withPath: "users/\(completedBy)").value(forKey: "name") as? String;
-    }
-    
-    func getUserName(from email: String) -> String {
-        return
-    }*/
-    
     // Constructor for Firebase-loaded Item
-    init(snapshot: DataSnapshot) {
+    init(snapshot: DataSnapshot, completionHandler: @escaping () -> Void) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
-        name = snapshotValue["name"] as! String;
-        addedByUser = snapshotValue["addedByUser"] as! String;
-        completedBy = snapshotValue["completedBy"] as? String
+        self.name = snapshotValue["name"] as! String;
+        self.addedByUserID = snapshotValue["addedByUserID"] as! String;
+        self.completedByUserID = snapshotValue["completedByUserID"] as? String
         self.ref = snapshot.ref;
+
+        var addedByUserName: String = "";
+        var completedByUserName: String?;
+        Database.database().reference(withPath: "users")
+            .child(User.emailToID(addedByUserID)).child("name")
+            .observeSingleEvent(of: .value, with: { snapshot in
+                addedByUserName = snapshot.value as! String;
+                defer {
+                    completionHandler();
+                }
+            });
+        self.addedByUserName = addedByUserName;
+        
+        if let completedByUserID = completedByUserID {
+            completedByUserName = "";
+            Database.database().reference(withPath: "users")
+                .child(User.emailToID(completedByUserID)).child("name")
+                .observeSingleEvent(of: .value, with: { snapshot in
+                    completedByUserName = snapshot.value as? String;
+                    defer {
+                        completionHandler();
+                    }
+                })
+            self.completedByUserName = completedByUserName;
+        }
     }
     
     // Constructor for locally created Item
-    init(name: String, addedByUser: String) {
+    init(name: String, addedBy user: User) {
         self.name = name;
-        self.addedByUser = addedByUser;
-        self.completedBy = nil;
+        self.addedByUserID = user.id;
+        self.addedByUserName = user.name;
+        self.completedByUserID = nil;
         self.ref = nil;
     }
     
     func toAnyObject() -> Any {
         return [
             "name": self.name,
-            "addedByUser": self.addedByUser,
-            "completedBy": self.completedBy
+            "addedByUserID": self.addedByUserID,
+            "completedByUserID": self.completedByUserID
         ];
     }
 }
