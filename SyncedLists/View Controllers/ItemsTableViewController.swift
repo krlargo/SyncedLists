@@ -85,10 +85,9 @@ class ItemsTableViewController: UITableViewController {
         let item = items[indexPath.row];
         
         cell.itemNameLabel.text = item.name;
-        cell.addedByLabel.text = "Added: \(item.addedByUserName!)";
-        
-        //cell.completedByLabel.text = "\(item.isCompleted ? "Completed: \(item.completedBy)" : "")"
-        //cell.accessoryType = (item.completedByUserID != nil ? .checkmark : .none);
+        cell.addedByLabel.text =
+            (item.addedByUserName == nil) ?
+            "" : "Added: \(item.addedByUserName!)";
         
         if(item.completedByUserID == nil || item.completedByUserName == nil) {
             cell.completedByLabel.text = "";
@@ -106,8 +105,6 @@ class ItemsTableViewController: UITableViewController {
         
         item.completedByUserID = (item.completedByUserID == nil ? user.id : nil);
         item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
-        
-        tableView.reloadData();
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
