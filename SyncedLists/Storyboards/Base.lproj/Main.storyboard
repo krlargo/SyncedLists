@@ -205,7 +205,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="0qw-mt-u1e" kind="show" id="FH5-7y-iDN"/>
+                                            <action selector="login:" destination="Vp5-g2-ucS" eventType="touchUpInside" id="fWj-fh-U5G"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CS9-Iv-jLI">
@@ -215,6 +215,9 @@
                                         <state key="normal" title="SIGN UP">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="signUp:" destination="Vp5-g2-ucS" eventType="touchUpInside" id="UDC-Sd-JAL"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -259,9 +262,12 @@
                         <viewLayoutGuide key="safeArea" id="9S9-wg-eqy"/>
                     </view>
                     <connections>
+                        <outlet property="emailTextField" destination="Khy-xb-JnC" id="iaO-gt-5Hk"/>
+                        <outlet property="passwordTextField" destination="fhk-tg-JWZ" id="caq-FO-XN3"/>
                         <outletCollection property="buttons" destination="SjN-XA-sIR" collectionClass="NSMutableArray" id="Mm7-O0-CV4"/>
                         <outletCollection property="buttons" destination="CS9-Iv-jLI" collectionClass="NSMutableArray" id="0ek-ig-aQq"/>
                         <segue destination="89z-0C-FU7" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="xDb-h1-LGq"/>
+                        <segue destination="0qw-mt-u1e" kind="presentation" identifier="loginSegue" id="hXG-TK-I6v"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="evM-zn-M2E" userLabel="First Responder" sceneMemberID="firstResponder"/>
