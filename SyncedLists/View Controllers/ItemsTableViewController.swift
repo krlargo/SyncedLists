@@ -17,9 +17,12 @@ class ItemsTableViewController: UITableViewController {
     var itemsRef = Database.database().reference(withPath: "items");
     var items: [Item] = [];
     var user = User(name: "Kevin", email: "krlargo@ucdavis.edu"); ///
-    var unwindHandler: (() -> Void)!
     
     // MARK: - IBActions
+    @IBAction func reload(_ sender: Any) {
+        self.tableView.reloadData();
+    }
+    
     @IBAction func addItem(_ sender: Any) {
         let alert = UIAlertController(title: "Item", message: "Add Item", preferredStyle: .alert);
         
@@ -49,11 +52,6 @@ class ItemsTableViewController: UITableViewController {
         super.viewDidLoad()
         
         itemsRef = Database.database().reference(withPath: "items").child(listID);
-
-        self.reloadData();
-    }
-
-    func reloadData() {
         itemsRef.observe(.value, with: { snapshot in
             var loadedItems: [Item] = [];
             
@@ -62,13 +60,9 @@ class ItemsTableViewController: UITableViewController {
                 loadedItems.append(item);
             }
             
-            defer {self.items = loadedItems; }
+            self.items = loadedItems;
+            self.tableView.reloadData();
         });
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated);
-        self.unwindHandler();
     }
 
     // MARK: - TableView Delegate Methods
@@ -85,15 +79,15 @@ class ItemsTableViewController: UITableViewController {
         let item = items[indexPath.row];
         
         cell.itemNameLabel.text = item.name;
-        cell.addedByLabel.text =
-            (item.addedByUserName == nil) ?
-            "" : "Added: \(item.addedByUserName!)";
+        cell.addedByLabel.text = ""
+            //(item.addedByUserName == nil) ?
+            //"" : "Added: \(item.addedByUserName!)";
         
-        if(item.completedByUserID == nil || item.completedByUserName == nil) {
+        if(item.completedByUserID == nil /*|| item.completedByUserName == nil*/) {
             cell.completedByLabel.text = "";
             cell.accessoryType = .none;
         } else {
-            cell.completedByLabel.text = "Completed: \(item.completedByUserName!)"
+            cell.completedByLabel.text = ""//"Completed: \(item.completedByUserName!)"
             cell.accessoryType = .checkmark;
         }
         
@@ -103,7 +97,13 @@ class ItemsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row];
         
-        item.completedByUserID = (item.completedByUserID == nil ? user.id : nil);
+        if(item.completedByUserID == nil) {
+            item.completedByUserID = user.id;
+            //item.completedByUserName = user.name; // Update locally for faster reload
+        } else {
+            item.completedByUserID = nil;
+            //item.completedByUserName = nil;
+        }
         item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
     }
     

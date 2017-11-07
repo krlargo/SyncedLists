@@ -25,28 +25,30 @@ class Item {
         self.completedByUserID = snapshotValue["completedByUserID"] as? String
         self.ref = snapshot.ref;
 
-        Database.database().reference(withPath: "users")
+        // Nest observers so completionHandler only needs to be called once
+        // Observe addedByUserName
+        /*Database.database().reference(withPath: "users")
             .child(User.emailToID(addedByUserID)).child("name")
             .observeSingleEvent(of: .value, with: { snapshot in
                 self.addedByUserName = snapshot.value as! String;
-                defer { completionHandler(); }
-            });
-        
-        if let completedByUserID = completedByUserID {
-            Database.database().reference(withPath: "users")
-                .child(User.emailToID(completedByUserID)).child("name")
-                .observeSingleEvent(of: .value, with: { snapshot in
-                    self.completedByUserName = snapshot.value as? String;
-                    defer { completionHandler(); }
-                });
-        }
+                // If available, observe completedByUserName
+                if let completedByUserID = self.completedByUserID {
+                    Database.database().reference(withPath: "users")
+                        .child(User.emailToID(completedByUserID)).child("name")
+                        .observeSingleEvent(of: .value, with: { snapshot in
+                            self.completedByUserName = snapshot.value as? String;
+                            completionHandler();
+                        });
+                }
+                completionHandler();
+            });*/
     }
     
     // Constructor for locally created Item
     init(name: String, addedBy user: User) {
         self.name = name;
         self.addedByUserID = user.id;
-        self.addedByUserName = user.name;
+        //self.addedByUserName = user.name;
         self.completedByUserID = nil;
         self.ref = nil;
     }

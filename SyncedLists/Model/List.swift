@@ -28,8 +28,8 @@ class List {
         self.id = snapshot.key;
         
         // Get itemCount and completedItemsCount
-        let listItemsRef = Database.database().reference(withPath: "items");
-        listItemsRef.child(id!).observeSingleEvent(of: .value, with: { snapshot in
+        /*let listItemsRef = Database.database().reference(withPath: "items");
+        listItemsRef.child(id!).observe(.value, with: { snapshot in
             self.itemCount = Int(snapshot.childrenCount);
             
             var completedCount = 0;
@@ -41,7 +41,7 @@ class List {
             self.completedCount = completedCount;
             
             defer { completionHandler(); } // Reload tableview data when this is finished
-        });
+        });*/
     }
     
     // Constructor for locally created Item

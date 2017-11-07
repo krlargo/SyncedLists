@@ -40,7 +40,6 @@ class ListsTableViewController: UITableViewController {
             
             // Add list to USERS in database
             let currentUserListsRef = self.currentUserRef.child("listIDs");
-            print(newListRef.key);
             currentUserListsRef.child(newListRef.key).setValue(true);
             
             self.tableView.reloadData();
@@ -66,31 +65,21 @@ class ListsTableViewController: UITableViewController {
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
 
-        self.reloadData();
-    }
-    
-    func reloadData() {
-        var currentUserListsRef = currentUserRef.child("listIDs");
-        currentUserListsRef.observe(.value, with: { snapshot in
+        var listIDs: [String] = [];
+        
+        currentUserRef.child("listIDs").observe(.value, with: { snapshot in
+            
             // Collect all the current user's list IDs
-            var listIDs: [String] = [];
-            
-            for case let snapshot as DataSnapshot in snapshot.children {
-                let listID = snapshot.key;
-                listIDs.append(listID);
-            }
-            
-            // Based on user's list IDs, load lists
-            var loadedLists: [List] = [];
-            
-            for listID in listIDs {
+            self.lists.removeAll();
+            for case let snap as DataSnapshot in snapshot.children {
+                let listID = snap.key;
                 let listRef = self.listsRef.child(listID);
                 
-                listRef.observeSingleEvent(of: .value, with: { snapshot in
-                    let list = List(snapshot: snapshot, completionHandler: self.tableView.reloadData);
-                    loadedLists.append(list);
+                listRef.observeSingleEvent(of: .value, with: { listSnap in
+                    let list = List(snapshot: listSnap, completionHandler: { return; });
+                    self.lists.append(list);
                     
-                    defer { self.lists = loadedLists; }
+                    self.tableView.reloadData();
                 });
             }
         });
@@ -119,6 +108,7 @@ class ListsTableViewController: UITableViewController {
         switch(editingStyle) {
         case .delete:
             let list = lists[indexPath.row];
+            
             let userListRef = currentUserRef.child("listIDs").child(list.id!);
             userListRef.removeValue(); // Remove list from USERS
             list.ref?.removeValue(); // Remove list from LISTS
@@ -133,7 +123,6 @@ class ListsTableViewController: UITableViewController {
                 let itemsTVC = segue.destination as! ItemsTableViewController;
                 itemsTVC.title = lists[indexPath.row].name;
                 itemsTVC.listID = lists[indexPath.row].id;
-                itemsTVC.unwindHandler = self.reloadData;
             }
         }
     }
