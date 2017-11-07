@@ -23,41 +23,53 @@ class LoginViewController: UIViewController {
             if(error == nil) { // Attempt login if account already exists
                 Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
                 self.performSegue(withIdentifier: "loginSegue", sender: nil);
+            } else {
+                let failedLoginAlert = UIAlertController(title: "Login Failed", message: "Your email or password is incorrect.", preferredStyle: .alert);
+                let okayAction = UIAlertAction(title: "Okay", style: .cancel);
+                failedLoginAlert.addAction(okayAction);
+                self.present(failedLoginAlert, animated: true, completion: nil);
             }
         });
     }
     
     @IBAction func signUp(_ sender: Any) {
-        let alert = UIAlertController(title: "Register",
-                                      message: "",
-                                      preferredStyle: .alert)
-        
-        let saveAction = UIAlertAction(title: "Sign Up", style: .default) { action in
-            let emailField = alert.textFields![0];
-            let passwordField = alert.textFields![1];
-
-            Auth.auth().createUser(withEmail: emailField.text!, password: passwordField.text!) { user, error in
+        func registerUser(email: String, password: String) {
+            Auth.auth().createUser(withEmail: email, password: password) { user, error in
                 if(error == nil) { // Attempt login if account already exists
-                    Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
+                    Auth.auth().signIn(withEmail: email, password: password);
+                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
                 }
-             }
+            }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default);
-        
-        alert.addTextField { textEmail in
-            textEmail.placeholder = "Email";
+        if(emailTextField.text ?? "" != "" &&
+            passwordTextField.text ?? "" != "") {
+            registerUser(email: emailTextField.text!, password: passwordTextField.text!)
+        } else {
+            let registerAlert = UIAlertController(title: "Register", message: "", preferredStyle: .alert);
+            
+            let saveAction = UIAlertAction(title: "Sign Up", style: .default) { action in
+                let emailField = registerAlert.textFields![0];
+                let passwordField = registerAlert.textFields![1];
+                registerUser(email: emailField.text!, password: passwordField.text!);
+            }
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default);
+            
+            registerAlert.addTextField { textEmail in
+                textEmail.placeholder = "Email";
+            }
+            
+            registerAlert.addTextField { textPassword in
+                textPassword.isSecureTextEntry = true;
+                textPassword.placeholder = "Password";
+            }
+            
+            registerAlert.addAction(saveAction);
+            registerAlert.addAction(cancelAction);
+            
+            present(registerAlert, animated: true, completion: nil);
         }
-        
-        alert.addTextField { textPassword in
-            textPassword.isSecureTextEntry = true;
-            textPassword.placeholder = "Password";
-        }
-        
-        alert.addAction(saveAction);
-        alert.addAction(cancelAction);
-        
-        present(alert, animated: true, completion: nil);
     }
     
     // MARK: - Overridden Methods
@@ -68,9 +80,25 @@ class LoginViewController: UIViewController {
             button.layer.cornerRadius = 5;
         }
         
-        // Setup keyboard dismissal
+        // Setup textfields
+        emailTextField.delegate = self;
+        passwordTextField.delegate = self;
         let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));
         self.view.addGestureRecognizer(dismissKeyboardGesture);
+    }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch (textField) {
+        case emailTextField:
+            passwordTextField.becomeFirstResponder();
+        case passwordTextField:
+            login(self);
+        default:
+            return true;
+        }
+        return true;
     }
     
     @objc func dismissKeyboard() {
