@@ -19,10 +19,6 @@ class ItemsTableViewController: UITableViewController {
     var user = User(name: "Kevin", email: "krlargo@ucdavis.edu"); ///
     
     // MARK: - IBActions
-    @IBAction func reload(_ sender: Any) {
-        self.tableView.reloadData();
-    }
-    
     @IBAction func addItem(_ sender: Any) {
         let alert = UIAlertController(title: "Item", message: "Add Item", preferredStyle: .alert);
         

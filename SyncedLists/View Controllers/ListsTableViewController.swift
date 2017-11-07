@@ -65,8 +65,6 @@ class ListsTableViewController: UITableViewController {
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
 
-        var listIDs: [String] = [];
-        
         currentUserRef.child("listIDs").observe(.value, with: { snapshot in
             
             // Collect all the current user's list IDs
