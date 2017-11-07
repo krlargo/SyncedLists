@@ -19,7 +19,9 @@ class LoginViewController: UIViewController {
     @IBAction func unwindToLogin(segue:UIStoryboardSegue) { }
     
     @IBAction func login(_ sender: Any) {
-        self.performSegue(withIdentifier: "loginSegue", sender: nil);
+        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
+            self.performSegue(withIdentifier: "loginSegue", sender: nil);
+        });
     }
     
     @IBAction func signUp(_ sender: Any) {
@@ -62,5 +64,13 @@ class LoginViewController: UIViewController {
         for button in buttons {
             button.layer.cornerRadius = 5;
         }
+        
+        // Setup keyboard dismissal
+        let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));
+        self.view.addGestureRecognizer(dismissKeyboardGesture);
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true);
     }
 }
