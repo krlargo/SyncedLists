@@ -27,7 +27,7 @@ class Item {
 
         // Nest observers so completionHandler only needs to be called once
         // Observe addedByUserName
-        /*Database.database().reference(withPath: "users")
+        Database.database().reference(withPath: "users")
             .child(User.emailToID(addedByUserID)).child("name")
             .observeSingleEvent(of: .value, with: { snapshot in
                 self.addedByUserName = snapshot.value as! String;
@@ -41,7 +41,7 @@ class Item {
                         });
                 }
                 completionHandler();
-            });*/
+            });
     }
     
     // Constructor for locally created Item

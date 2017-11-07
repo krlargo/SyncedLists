@@ -75,15 +75,15 @@ class ItemsTableViewController: UITableViewController {
         let item = items[indexPath.row];
         
         cell.itemNameLabel.text = item.name;
-        cell.addedByLabel.text = item.addedByUserID;
-            //(item.addedByUserName == nil) ?
-            //"" : "Added: \(item.addedByUserName!)";
+        cell.addedByLabel.text =
+            (item.addedByUserName == nil) ?
+            "" : "Added: \(item.addedByUserName!)";
         
-        if(item.completedByUserID == nil /*|| item.completedByUserName == nil*/) {
+        if(item.completedByUserID == nil || item.completedByUserName == nil) {
             cell.completedByLabel.text = "";
             cell.accessoryType = .none;
         } else {
-            cell.completedByLabel.text = ""//"Completed: \(item.completedByUserName!)"
+            cell.completedByLabel.text = "Completed: \(item.completedByUserName!)"
             cell.accessoryType = .checkmark;
         }
         
@@ -95,10 +95,10 @@ class ItemsTableViewController: UITableViewController {
         
         if(item.completedByUserID == nil) {
             item.completedByUserID = user.id;
-            //item.completedByUserName = user.name; // Update locally for faster reload
+            item.completedByUserName = user.name; // Update locally for faster reload
         } else {
             item.completedByUserID = nil;
-            //item.completedByUserName = nil;
+            item.completedByUserName = nil;
         }
         item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
     }
