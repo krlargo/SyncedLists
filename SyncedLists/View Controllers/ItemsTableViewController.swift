@@ -75,7 +75,7 @@ class ItemsTableViewController: UITableViewController {
         let item = items[indexPath.row];
         
         cell.itemNameLabel.text = item.name;
-        cell.addedByLabel.text = ""
+        cell.addedByLabel.text = item.addedByUserID;
             //(item.addedByUserName == nil) ?
             //"" : "Added: \(item.addedByUserName!)";
         

@@ -66,7 +66,6 @@ class ListsTableViewController: UITableViewController {
         navigationItem.backBarButtonItem = backButton;
 
         currentUserRef.child("listIDs").observe(.value, with: { snapshot in
-            
             // Collect all the current user's list IDs
             self.lists.removeAll();
             for case let snap as DataSnapshot in snapshot.children {
