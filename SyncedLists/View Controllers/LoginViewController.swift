@@ -20,7 +20,10 @@ class LoginViewController: UIViewController {
     
     @IBAction func login(_ sender: Any) {
         Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
-            self.performSegue(withIdentifier: "loginSegue", sender: nil);
+            if(error == nil) { // Attempt login if account already exists
+                Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
+                self.performSegue(withIdentifier: "loginSegue", sender: nil);
+            }
         });
     }
     
@@ -35,7 +38,7 @@ class LoginViewController: UIViewController {
 
             Auth.auth().createUser(withEmail: emailField.text!, password: passwordField.text!) { user, error in
                 if(error == nil) { // Attempt login if account already exists
-                    Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!)
+                    Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
                 }
              }
         }
