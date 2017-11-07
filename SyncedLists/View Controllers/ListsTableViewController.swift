@@ -74,10 +74,10 @@ class ListsTableViewController: UITableViewController {
                 let listRef = self.listsRef.child(listID);
                 
                 listRef.observeSingleEvent(of: .value, with: { listSnap in
-                    let list = List(snapshot: listSnap, completionHandler: { return; });
+                    let list = List(snapshot: listSnap, completionHandler: self.tableView.reloadData);
                     self.lists.append(list);
                     
-                    self.tableView.reloadData();
+                    //self.tableView.reloadData();
                 });
             }
         });
