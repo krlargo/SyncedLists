@@ -40,12 +40,12 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func signUp(_ sender: Any) {
-        let registerAlertController = UIAlertController(title: "Register", message: "", preferredStyle: .alert);
+        let alert = UIAlertController(title: "Register", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Sign Up", style: .default) { action in
-            let displayName = registerAlertController.textFields![0].text!;
-            let email = registerAlertController.textFields![1].text!;
-            let password = registerAlertController.textFields![2].text!;
+            let displayName = alert.textFields![0].text!;
+            let email = alert.textFields![1].text!;
+            let password = alert.textFields![2].text!;
             
             // Do nothing if any textfield is empty
             if(displayName == "" || email == "" || password == "") {
@@ -68,36 +68,33 @@ class LoginViewController: UIViewController {
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .default);
         
-        registerAlertController.addTextField { displayNameTextField in
+        alert.addTextField { displayNameTextField in
             displayNameTextField.autocapitalizationType = .words;
             displayNameTextField.delegate = self;
             displayNameTextField.placeholder = "Display Name";
             displayNameTextField.tag = 1;
         }
         
-        registerAlertController.addTextField { emailTextField in
+        alert.addTextField { emailTextField in
             emailTextField.keyboardType = .emailAddress;
             emailTextField.placeholder = "Email";
         }
         
-        registerAlertController.addTextField { passwordTextField in
+        alert.addTextField { passwordTextField in
             passwordTextField.isSecureTextEntry = true;
             passwordTextField.placeholder = "Password";
         }
         
         // Add general properties to each textfield
-        for textField in registerAlertController.textFields! {
-            textField.addTarget(self, action: #selector(self.alertTextFieldChanged), for: .editingChanged);
-            textField.clearButtonMode = .whileEditing;
-        }
+        alert.setupTextFields();
         
-        registerAlertController.addAction(cancelAction);
-        registerAlertController.addAction(saveAction);
+        alert.addAction(cancelAction);
+        alert.addAction(saveAction);
         
         saveAction.isEnabled = false;
         cancelAction.isEnabled = true;
         
-        present(registerAlertController, animated: true, completion: nil);
+        present(alert, animated: true, completion: nil);
     }
     
     // MARK: - Overridden Methods
@@ -135,23 +132,6 @@ extension LoginViewController: UITextFieldDelegate {
             return false;
         }
         return true;
-    }
-    
-    @objc func alertTextFieldChanged(textField: UITextField) {
-        var responder : UIResponder = textField
-        while !(responder is UIAlertController) {
-            responder = responder.next!
-        }
-        let alert = responder as! UIAlertController
-        
-        var count = 0;
-        for textField in alert.textFields! {
-            if(textField.text ?? "" != "") {
-                count += 1;
-            }
-        }
-        
-        (alert.actions[1] as UIAlertAction).isEnabled = (count == 3);
     }
     
     @objc func dismissKeyboard() {

@@ -47,6 +47,8 @@ class ListsTableViewController: UITableViewController {
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .default);
         
+        alert.setupTextFields();
+        
         alert.addTextField();
         alert.addAction(saveAction);
         alert.addAction(cancelAction);
