@@ -30,7 +30,7 @@
                         </textAttributes>
                     </navigationBar>
                     <connections>
-                        <segue destination="lVE-zg-4g5" kind="relationship" relationship="rootViewController" id="hQ3-Ui-6rm"/>
+                        <segue destination="VIJ-OU-c2F" kind="relationship" relationship="rootViewController" id="Vqk-7W-Zuq"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XJr-9Q-Afm" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -80,13 +80,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Lists" id="6cb-sA-9m1">
-                        <barButtonItem key="backBarButtonItem" title="Logout" id="Zdx-aD-wlA"/>
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="W32-Yx-GT3">
-                            <connections>
-                                <action selector="logout:" destination="lVE-zg-4g5" id="a3z-Cp-74T"/>
-                                <segue destination="Uqc-gz-CEf" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="jns-dz-6bE"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FC3-Ie-uyV">
                             <connections>
                                 <action selector="addList:" destination="lVE-zg-4g5" id="lwc-BM-uCM"/>
@@ -95,9 +88,8 @@
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jx6-5x-zMp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="Uqc-gz-CEf" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="247" y="-138"/>
+            <point key="canvasLocation" x="1026" y="-512"/>
         </scene>
         <!--Items-->
         <scene sceneID="VMd-it-2Mu">
@@ -172,7 +164,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4In-2T-sdk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1057" y="-138"/>
+            <point key="canvasLocation" x="1838" y="-512"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="4df-ix-6BA">
@@ -183,22 +175,25 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Qb-so-Yhb">
-                                <rect key="frame" x="67" y="253.5" width="240" height="180"/>
+                                <rect key="frame" x="67" y="253" width="240" height="181"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Khy-xb-JnC">
-                                        <rect key="frame" x="0.5" y="5" width="240" height="40.5"/>
+                                        <rect key="frame" x="0.5" y="5" width="240" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="6EF-nb-pK1"/>
+                                        </constraints>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fhk-tg-JWZ">
-                                        <rect key="frame" x="0.5" y="50.5" width="240" height="40"/>
+                                        <rect key="frame" x="0.5" y="50" width="240" height="40"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SjN-XA-sIR">
-                                        <rect key="frame" x="0.0" y="95.5" width="240" height="40"/>
+                                        <rect key="frame" x="0.0" y="95" width="240" height="40.5"/>
                                         <color key="backgroundColor" red="0.20784313730000001" green="0.5568627451" blue="0.28627450980000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="18"/>
                                         <state key="normal" title="LOGIN">
@@ -209,7 +204,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CS9-Iv-jLI">
-                                        <rect key="frame" x="0.0" y="140.5" width="240" height="39.5"/>
+                                        <rect key="frame" x="0.0" y="140.5" width="240" height="40.5"/>
                                         <color key="backgroundColor" red="0.20784313730000001" green="0.5568627451" blue="0.28627450980000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="18"/>
                                         <state key="normal" title="SIGN UP">
@@ -235,14 +230,13 @@
                                     <constraint firstItem="Khy-xb-JnC" firstAttribute="width" secondItem="2Qb-so-Yhb" secondAttribute="width" id="Yrn-jA-fLG"/>
                                     <constraint firstItem="SjN-XA-sIR" firstAttribute="centerX" secondItem="2Qb-so-Yhb" secondAttribute="centerX" id="dBY-hO-oub"/>
                                     <constraint firstItem="Khy-xb-JnC" firstAttribute="top" secondItem="2Qb-so-Yhb" secondAttribute="top" constant="5" id="dfG-NP-Xq2"/>
-                                    <constraint firstAttribute="height" constant="180" id="e1O-MT-wW2"/>
                                     <constraint firstItem="fhk-tg-JWZ" firstAttribute="top" secondItem="Khy-xb-JnC" secondAttribute="bottom" constant="5" id="nJQ-6O-js2"/>
                                     <constraint firstItem="fhk-tg-JWZ" firstAttribute="centerX" secondItem="2Qb-so-Yhb" secondAttribute="centerX" id="tZC-W9-jtu"/>
                                     <constraint firstItem="Khy-xb-JnC" firstAttribute="centerX" secondItem="2Qb-so-Yhb" secondAttribute="centerX" id="vj6-IF-OeE"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SYNCEDLISTS" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sxv-EW-Pdz">
-                                <rect key="frame" x="67" y="198.5" width="240" height="50"/>
+                                <rect key="frame" x="67" y="198" width="240" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="M0Z-d9-mW3"/>
                                 </constraints>
@@ -274,6 +268,92 @@
                 <exit id="89z-0C-FU7" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-1375" y="-138"/>
+        </scene>
+        <!--SyncedLists-->
+        <scene sceneID="AcQ-mD-UbB">
+            <objects>
+                <viewController id="VIJ-OU-c2F" customClass="HomeViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="HLS-cU-6Oy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fC6-cK-sFp">
+                                <rect key="frame" x="67" y="237" width="240" height="129.5"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Erf-Y0-3sX">
+                                        <rect key="frame" x="0.0" y="0.0" width="240" height="40"/>
+                                        <color key="backgroundColor" red="0.25952532890000002" green="0.69917218550000004" blue="0.35500759549999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="sqw-Rd-zPS"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="18"/>
+                                        <state key="normal" title="SYNCEDLISTS">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <segue destination="lVE-zg-4g5" kind="show" id="D9J-ue-iKO"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lsj-ca-BR3">
+                                        <rect key="frame" x="0.0" y="45" width="240" height="40"/>
+                                        <color key="backgroundColor" red="0.25952532890000002" green="0.69917218550000004" blue="0.35500759549999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="18"/>
+                                        <state key="normal" title="SETTINGS">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g8k-D5-vdG">
+                                        <rect key="frame" x="0.0" y="90" width="240" height="39.5"/>
+                                        <color key="backgroundColor" red="0.25952532890000002" green="0.69917218550000004" blue="0.35500759549999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="18"/>
+                                        <state key="normal" title="LOGOUT">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <segue destination="hiZ-SD-aoR" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="BsP-4M-ifX"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="g8k-D5-vdG" firstAttribute="height" secondItem="lsj-ca-BR3" secondAttribute="height" id="1VE-eg-1Sq"/>
+                                    <constraint firstItem="g8k-D5-vdG" firstAttribute="centerX" secondItem="fC6-cK-sFp" secondAttribute="centerX" id="3Wv-jL-94q"/>
+                                    <constraint firstItem="lsj-ca-BR3" firstAttribute="centerX" secondItem="fC6-cK-sFp" secondAttribute="centerX" id="5QB-Ut-yDP"/>
+                                    <constraint firstItem="lsj-ca-BR3" firstAttribute="width" secondItem="fC6-cK-sFp" secondAttribute="width" id="7m5-np-IJU"/>
+                                    <constraint firstItem="Erf-Y0-3sX" firstAttribute="width" secondItem="fC6-cK-sFp" secondAttribute="width" id="D9U-6R-opc"/>
+                                    <constraint firstAttribute="bottom" secondItem="g8k-D5-vdG" secondAttribute="bottom" id="Eh3-ze-jcU"/>
+                                    <constraint firstItem="g8k-D5-vdG" firstAttribute="top" secondItem="lsj-ca-BR3" secondAttribute="bottom" constant="5" id="QLS-cY-euk"/>
+                                    <constraint firstItem="Erf-Y0-3sX" firstAttribute="height" secondItem="lsj-ca-BR3" secondAttribute="height" id="cG1-gV-v1Q"/>
+                                    <constraint firstItem="Erf-Y0-3sX" firstAttribute="centerX" secondItem="fC6-cK-sFp" secondAttribute="centerX" id="d09-el-Qu5"/>
+                                    <constraint firstAttribute="width" constant="240" id="dKW-c3-2bB"/>
+                                    <constraint firstItem="g8k-D5-vdG" firstAttribute="width" secondItem="fC6-cK-sFp" secondAttribute="width" id="dkm-O8-zIG"/>
+                                    <constraint firstItem="Erf-Y0-3sX" firstAttribute="top" secondItem="fC6-cK-sFp" secondAttribute="top" id="eKM-O3-Gy9"/>
+                                    <constraint firstItem="lsj-ca-BR3" firstAttribute="top" secondItem="Erf-Y0-3sX" secondAttribute="bottom" constant="5" id="xce-r6-voR"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="fC6-cK-sFp" firstAttribute="centerY" secondItem="Vkd-Vh-v6b" secondAttribute="centerY" id="7ds-SL-0C7"/>
+                            <constraint firstItem="fC6-cK-sFp" firstAttribute="centerX" secondItem="Vkd-Vh-v6b" secondAttribute="centerX" id="Mir-29-rgR"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Vkd-Vh-v6b"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="SyncedLists" id="zDM-SU-1Pw">
+                        <barButtonItem key="backBarButtonItem" title="Home" id="8tZ-Ia-KDQ"/>
+                    </navigationItem>
+                    <connections>
+                        <outletCollection property="buttons" destination="lsj-ca-BR3" collectionClass="NSMutableArray" id="Lcj-fR-nap"/>
+                        <outletCollection property="buttons" destination="g8k-D5-vdG" collectionClass="NSMutableArray" id="On3-ic-Ys8"/>
+                        <outletCollection property="buttons" destination="Erf-Y0-3sX" collectionClass="NSMutableArray" id="7l6-m1-U7d"/>
+                        <outletCollection property="buttons" destination="lsj-ca-BR3" collectionClass="NSMutableArray" id="fDU-8t-dcq"/>
+                        <outletCollection property="buttons" destination="g8k-D5-vdG" collectionClass="NSMutableArray" id="eEu-Ev-iMa"/>
+                        <segue destination="hiZ-SD-aoR" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="Q1V-sJ-YDu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fzc-mP-I8G" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="hiZ-SD-aoR" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="242" y="-138"/>
         </scene>
     </scenes>
 </document>
