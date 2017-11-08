@@ -31,10 +31,10 @@ class LoginViewController: UIViewController {
                 Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
                 self.performSegue(withIdentifier: "loginSegue", sender: nil);
             } else {
-                let failedLoginAlert = UIAlertController(title: "Login Failed", message: error?.localizedDescription, preferredStyle: .alert);
+                let alert = UIAlertController(title: "Login Failed", message: error?.localizedDescription, preferredStyle: .alert);
                 let okayAction = UIAlertAction(title: "Okay", style: .cancel);
-                failedLoginAlert.addAction(okayAction);
-                self.present(failedLoginAlert, animated: true, completion: nil);
+                alert.addAction(okayAction);
+                self.present(alert, animated: true, completion: nil);
             }
         });
     }
@@ -62,11 +62,17 @@ class LoginViewController: UIViewController {
                             self.performSegue(withIdentifier: "loginSegue", sender: nil);
                         }
                     });
+                } else {
+                    let alert = UIAlertController(title: "Login Failed", message: error?.localizedDescription, preferredStyle: .alert);
+                    let okayAction = UIAlertAction(title: "Okay", style: .cancel);
+                    alert.addAction(okayAction);
+                    self.present(alert, animated: true, completion: nil);
                 }
             }
         }
+        saveAction.isEnabled = false;
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default);
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel);
         
         alert.addTextField { displayNameTextField in
             displayNameTextField.autocapitalizationType = .words;
@@ -84,15 +90,11 @@ class LoginViewController: UIViewController {
             passwordTextField.isSecureTextEntry = true;
             passwordTextField.placeholder = "Password";
         }
-        
-        // Add general properties to each textfield
+    
         alert.setupTextFields();
         
         alert.addAction(cancelAction);
         alert.addAction(saveAction);
-        
-        saveAction.isEnabled = false;
-        cancelAction.isEnabled = true;
         
         present(alert, animated: true, completion: nil);
     }

@@ -32,6 +32,6 @@ extension UIAlertController {
             }
         }
         
-        (alert.actions[1] as UIAlertAction).isEnabled = (count == alert.textFields.count);
+        alert.actions[1].isEnabled = (count == alert.textFields?.count);
     }
 }

@@ -25,7 +25,7 @@ class ListsTableViewController: UITableViewController {
     @IBAction func logout(_ sender: Any) {}
     
     @IBAction func addList(_ sender: Any) {
-        let alert = UIAlertController(title: "List", message: "Add List", preferredStyle: .alert);
+        let alert = UIAlertController(title: "Add List", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
             
@@ -44,15 +44,20 @@ class ListsTableViewController: UITableViewController {
             
             self.tableView.reloadData();
         });
+        saveAction.isEnabled = false;
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default);
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel);
+        
+        alert.addTextField { listNameTextField in
+            listNameTextField.autocapitalizationType = .words;
+            listNameTextField.placeholder = "List Name";
+        }
         
         alert.setupTextFields();
         
-        alert.addTextField();
-        alert.addAction(saveAction);
         alert.addAction(cancelAction);
-        
+        alert.addAction(saveAction);
+
         present(alert, animated: true, completion: nil)
     }
     

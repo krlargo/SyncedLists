@@ -6,6 +6,7 @@
 //  Copyright © 2017 Kevin Largo. All rights reserved.
 //
 
+import FirebaseAuth
 import FirebaseDatabase
 import Foundation
 import UIKit
@@ -22,10 +23,9 @@ class ItemsTableViewController: UITableViewController {
 
     // MARK: - IBActions
     @IBAction func addItem(_ sender: Any) {
-        let alert = UIAlertController(title: "Item", message: "Add Item", preferredStyle: .alert);
+        let alert = UIAlertController(title: "Add Item", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
-            
             guard let textField = alert.textFields?.first,
                 let text = textField.text else { return; }
             
@@ -35,14 +35,19 @@ class ItemsTableViewController: UITableViewController {
             
             self.tableView.reloadData();
         });
+        saveAction.isEnabled = false;
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default);
-
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel);
+        
+        alert.addTextField { itemNameTextField in
+            itemNameTextField.autocapitalizationType = .words;
+            itemNameTextField.placeholder = "List Name";
+        }
+        
         alert.setupTextFields();
         
-        alert.addTextField();
-        alert.addAction(saveAction);
         alert.addAction(cancelAction);
+        alert.addAction(saveAction);
         
         present(alert, animated: true, completion: nil)
     }
