@@ -103,7 +103,7 @@ class ItemsTableViewController: UITableViewController {
             (item.addedByUserName == nil) ?
             "" : "Added: \(item.addedByUserName!)";
         
-        if(item.completedByUserID == nil || item.completedByUserName == nil) {
+        if(item.completedByUserEmail == nil || item.completedByUserName == nil) {
             cell.completedByLabel.text = "";
             cell.accessoryType = .none;
         } else {
@@ -117,14 +117,14 @@ class ItemsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row];
         
-        if(item.completedByUserID == nil) {
-            item.completedByUserID = user.id;
+        if(item.completedByUserEmail == nil) {
+            item.completedByUserEmail = user.id;
             item.completedByUserName = user.name; // Update locally for faster reload
         } else {
-            item.completedByUserID = nil;
+            item.completedByUserEmail = nil;
             item.completedByUserName = nil;
         }
-        item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
+        item.ref?.updateChildValues(["completedByUserID": item.completedByUserEmail ?? NSNull()]);
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {

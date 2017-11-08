@@ -24,12 +24,6 @@ class User {
         self.name = authData.displayName!;
         self.email = authData.email!;
     }
-    
-    // Constructor for locally created User
-    init(name: String, email: String) {
-        self.name = name;
-        self.email = email;
-    }
 
     func toAnyObject() -> Any {
         return [

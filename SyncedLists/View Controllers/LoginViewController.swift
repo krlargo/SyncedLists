@@ -7,6 +7,7 @@
 //
 
 import FirebaseAuth
+import FirebaseDatabase
 import UIKit
 
 class LoginViewController: UIViewController {
@@ -55,10 +56,15 @@ class LoginViewController: UIViewController {
             Auth.auth().createUser(withEmail: email, password: password) { user, error in
                 if(error == nil) { // Attempt login if account already exists
                     Auth.auth().signIn(withEmail: email, password: password);
-                    let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest();
-                    changeRequest?.displayName = displayName;
-                    changeRequest?.commitChanges(completion: { error in
+                    let currentUser = Auth.auth().currentUser!
+                    let changeRequest = currentUser.createProfileChangeRequest();
+                    changeRequest.displayName = displayName;
+                    changeRequest.commitChanges(completion: { error in
                         if(error == nil) {
+                            let usersRef = Database.database().reference(withPath: "users");
+                            let newUserRef = usersRef.child(User.emailToID(currentUser.email!));
+                            newUserRef.child("name").setValue(currentUser.displayName);
+                            newUserRef.child("email").setValue(currentUser.email);
                             self.performSegue(withIdentifier: "loginSegue", sender: nil);
                         }
                     });
@@ -129,6 +135,11 @@ extension LoginViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Allow deletions
+        if(string == "") {
+            return true;
+        }
+        
         if(textField.tag == 1 &&
             textField.text!.count > 10) {
             return false;

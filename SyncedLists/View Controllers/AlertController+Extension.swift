@@ -13,6 +13,7 @@ extension UIAlertController {
     func setupTextFields() {
         for textField in self.textFields! {
             textField.addTarget(self, action: #selector(self.alertTextFieldChanged), for: .editingChanged);
+            textField.autocapitalizationType = .words;
             textField.clearButtonMode = .whileEditing;
         }
     }
