@@ -15,8 +15,9 @@ class ItemsTableViewController: UITableViewController {
     // MARK: - Variables
     var listID: String!
     var itemsRef = Database.database().reference(withPath: "items");
+    
     var items: [Item] = [];
-    var user = User(name: "Kevin", email: "krlargo@ucdavis.edu"); ///
+    var user: User!
     
     // MARK: - IBActions
     @IBAction func addItem(_ sender: Any) {
@@ -49,6 +50,8 @@ class ItemsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.user = User(authData: Auth.auth().currentUser!);
+
         itemsRef = Database.database().reference(withPath: "items").child(listID);
         itemsRef.observe(.value, with: { snapshot in
             var loadedItems: [Item] = [];

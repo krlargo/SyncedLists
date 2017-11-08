@@ -19,7 +19,6 @@ class ListsTableViewController: UITableViewController {
     
     var lists: [List] = [];
     var user: User!
-    //var user = User(name: "Kevin", email: "krlargo@ucdavis.edu");
     
     // MARK: - IBActions
     @IBAction func logout(_ sender: Any) {}
