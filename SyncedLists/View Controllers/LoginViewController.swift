@@ -119,6 +119,11 @@ class LoginViewController: UIViewController {
         let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));
         self.view.addGestureRecognizer(dismissKeyboardGesture);
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        passwordTextField.text?.removeAll();
+    }
 }
 
 extension LoginViewController: UITextFieldDelegate {
