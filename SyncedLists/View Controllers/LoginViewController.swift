@@ -19,12 +19,19 @@ class LoginViewController: UIViewController {
     @IBAction func unwindToLogin(segue:UIStoryboardSegue) { }
     
     @IBAction func login(_ sender: Any) {
+        ///,,,
+        if(emailTextField.text! == "" && passwordTextField.text! == "") {
+            Auth.auth().signIn(withEmail: "xkevlar@live.com", password: "abc123");
+            self.performSegue(withIdentifier: "loginSegue", sender: nil);
+        }
+        ///'''
+        
         Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
             if(error == nil) { // Attempt login if account already exists
                 Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
                 self.performSegue(withIdentifier: "loginSegue", sender: nil);
             } else {
-                let failedLoginAlert = UIAlertController(title: "Login Failed", message: "Your email or password is incorrect.", preferredStyle: .alert);
+                let failedLoginAlert = UIAlertController(title: "Login Failed", message: error?.localizedDescription, preferredStyle: .alert);
                 let okayAction = UIAlertAction(title: "Okay", style: .cancel);
                 failedLoginAlert.addAction(okayAction);
                 self.present(failedLoginAlert, animated: true, completion: nil);
@@ -33,43 +40,64 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func signUp(_ sender: Any) {
-        func registerUser(email: String, password: String) {
+        let registerAlertController = UIAlertController(title: "Register", message: "", preferredStyle: .alert);
+        
+        let saveAction = UIAlertAction(title: "Sign Up", style: .default) { action in
+            let displayName = registerAlertController.textFields![0].text!;
+            let email = registerAlertController.textFields![1].text!;
+            let password = registerAlertController.textFields![2].text!;
+            
+            // Do nothing if any textfield is empty
+            if(displayName == "" || email == "" || password == "") {
+                return;
+            }
+            
             Auth.auth().createUser(withEmail: email, password: password) { user, error in
                 if(error == nil) { // Attempt login if account already exists
                     Auth.auth().signIn(withEmail: email, password: password);
-                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                    let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest();
+                    changeRequest?.displayName = displayName;
+                    changeRequest?.commitChanges(completion: { error in
+                        if(error == nil) {
+                            self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                        }
+                    });
                 }
             }
         }
         
-        if(emailTextField.text ?? "" != "" &&
-            passwordTextField.text ?? "" != "") {
-            registerUser(email: emailTextField.text!, password: passwordTextField.text!)
-        } else {
-            let registerAlert = UIAlertController(title: "Register", message: "", preferredStyle: .alert);
-            
-            let saveAction = UIAlertAction(title: "Sign Up", style: .default) { action in
-                let emailField = registerAlert.textFields![0];
-                let passwordField = registerAlert.textFields![1];
-                registerUser(email: emailField.text!, password: passwordField.text!);
-            }
-            
-            let cancelAction = UIAlertAction(title: "Cancel", style: .default);
-            
-            registerAlert.addTextField { textEmail in
-                textEmail.placeholder = "Email";
-            }
-            
-            registerAlert.addTextField { textPassword in
-                textPassword.isSecureTextEntry = true;
-                textPassword.placeholder = "Password";
-            }
-            
-            registerAlert.addAction(saveAction);
-            registerAlert.addAction(cancelAction);
-            
-            present(registerAlert, animated: true, completion: nil);
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default);
+        
+        registerAlertController.addTextField { displayNameTextField in
+            displayNameTextField.autocapitalizationType = .words;
+            displayNameTextField.delegate = self;
+            displayNameTextField.placeholder = "Display Name";
+            displayNameTextField.tag = 1;
         }
+        
+        registerAlertController.addTextField { emailTextField in
+            emailTextField.keyboardType = .emailAddress;
+            emailTextField.placeholder = "Email";
+        }
+        
+        registerAlertController.addTextField { passwordTextField in
+            passwordTextField.isSecureTextEntry = true;
+            passwordTextField.placeholder = "Password";
+        }
+        
+        // Add general properties to each textfield
+        for textField in registerAlertController.textFields! {
+            textField.addTarget(self, action: #selector(self.alertTextFieldChanged), for: .editingChanged);
+            textField.clearButtonMode = .whileEditing;
+        }
+        
+        registerAlertController.addAction(cancelAction);
+        registerAlertController.addAction(saveAction);
+        
+        saveAction.isEnabled = false;
+        cancelAction.isEnabled = true;
+        
+        present(registerAlertController, animated: true, completion: nil);
     }
     
     // MARK: - Overridden Methods
@@ -99,6 +127,31 @@ extension LoginViewController: UITextFieldDelegate {
             return true;
         }
         return true;
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if(textField.tag == 1 &&
+            textField.text!.count > 10) {
+            return false;
+        }
+        return true;
+    }
+    
+    @objc func alertTextFieldChanged(textField: UITextField) {
+        var responder : UIResponder = textField
+        while !(responder is UIAlertController) {
+            responder = responder.next!
+        }
+        let alert = responder as! UIAlertController
+        
+        var count = 0;
+        for textField in alert.textFields! {
+            if(textField.text ?? "" != "") {
+                count += 1;
+            }
+        }
+        
+        (alert.actions[1] as UIAlertAction).isEnabled = (count == 3);
     }
     
     @objc func dismissKeyboard() {

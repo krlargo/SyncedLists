@@ -6,6 +6,7 @@
 //  Copyright © 2017 Kevin Largo. All rights reserved.
 //
 
+import FirebaseAuth
 import FirebaseDatabase
 import Foundation
 import UIKit
@@ -17,11 +18,10 @@ class ListsTableViewController: UITableViewController {
     var currentUserRef: DatabaseReference!
     
     var lists: [List] = [];
-    //var user: User!
-    var user = User(name: "Kevin", email: "krlargo@ucdavis.edu");
+    var user: User!
+    //var user = User(name: "Kevin", email: "krlargo@ucdavis.edu");
     
     // MARK: - IBActions
-    
     @IBAction func logout(_ sender: Any) {}
     
     @IBAction func addList(_ sender: Any) {
@@ -55,17 +55,35 @@ class ListsTableViewController: UITableViewController {
     }
     
     // MARK: - Overridden Methods
+    var handle: AuthStateDidChangeListenerHandle?
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            guard let user = user else { return };
+            self.user = User(authData: user);
+        }
+        print("viewWillAppear");
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated);
+        Auth.auth().removeStateDidChangeListener(handle!)
+        print("viewWillDisappear");
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        currentUserRef = usersRef.child(user.id);
-
+        self.user = User(authData: Auth.auth().currentUser!);
+        self.currentUserRef = usersRef.child(user.id); // Set reference
+        
         // Set backButton
         let backButton = UIBarButtonItem();
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
 
-        currentUserRef.child("listIDs").observe(.value, with: { snapshot in
+        self.currentUserRef.child("listIDs").observe(.value, with: { snapshot in
             // Collect all the current user's list IDs
             self.lists.removeAll();
             for case let snap as DataSnapshot in snapshot.children {
@@ -76,7 +94,6 @@ class ListsTableViewController: UITableViewController {
                     let list = List(snapshot: listSnap, completionHandler: self.tableView.reloadData);
                     self.lists.append(list);
                     
-                    //self.tableView.reloadData();
                 });
             }
         });

@@ -6,7 +6,8 @@
 //  Copyright © 2017 Kevin Largo. All rights reserved.
 //
 
-import Firebase
+import FirebaseDatabase
+import FirebaseAuth
 import Foundation
 
 class User {
@@ -19,9 +20,9 @@ class User {
     }
     
     // Constructor for Firebase-loaded User
-    init(authData: User) {
-        self.name = authData.name;
-        self.email = authData.email;
+    init(authData: FirebaseAuth.User) {
+        self.name = authData.displayName!;
+        self.email = authData.email!;
     }
     
     // Constructor for locally created User
@@ -30,6 +31,13 @@ class User {
         self.email = email;
     }
 
+    func toAnyObject() -> Any {
+        return [
+            "name": self.name,
+            "email": self.email,
+        ];
+    }
+    
     // Type methods
     class func emailToID(_ emailStr: String) -> String {
         return emailStr.replacingOccurrences(of: ".", with: ",");
