@@ -19,7 +19,8 @@ class ListsTableViewController: UITableViewController {
     
     var lists: [List] = [];
     var user: User!
-    
+    var handle: AuthStateDidChangeListenerHandle?
+
     // MARK: - IBActions
     @IBAction func logout(_ sender: Any) {}
     
@@ -56,23 +57,6 @@ class ListsTableViewController: UITableViewController {
     }
     
     // MARK: - Overridden Methods
-    var handle: AuthStateDidChangeListenerHandle?
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated);
-        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
-            guard let user = user else { return };
-            self.user = User(authData: user);
-        }
-        print("viewWillAppear");
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated);
-        Auth.auth().removeStateDidChangeListener(handle!)
-        print("viewWillDisappear");
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -98,6 +82,19 @@ class ListsTableViewController: UITableViewController {
                 });
             }
         });
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            guard let user = user else { return };
+            self.user = User(authData: user);
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated);
+        Auth.auth().removeStateDidChangeListener(handle!)
     }
     
     // MARK: - TableView Delegate Methods

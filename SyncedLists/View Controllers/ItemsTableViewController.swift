@@ -18,7 +18,8 @@ class ItemsTableViewController: UITableViewController {
     
     var items: [Item] = [];
     var user: User!
-    
+    var handle: AuthStateDidChangeListenerHandle?
+
     // MARK: - IBActions
     @IBAction func addItem(_ sender: Any) {
         let alert = UIAlertController(title: "Item", message: "Add Item", preferredStyle: .alert);
@@ -65,7 +66,20 @@ class ItemsTableViewController: UITableViewController {
             self.tableView.reloadData();
         });
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            guard let user = user else { return };
+            self.user = User(authData: user);
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated);
+        Auth.auth().removeStateDidChangeListener(handle!)
+    }
+    
     // MARK: - TableView Delegate Methods
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1;
