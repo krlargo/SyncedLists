@@ -180,7 +180,7 @@ class SettingsTableViewController: UITableViewController {
     }
     
     func presentDeleteAccountAlert() {
-        let deleteAccountAlert = UIAlertController(title: "Are you sure you want to delete your account?", message: "This actions is irreversible.", preferredStyle: .alert);
+        let deleteAccountAlert = UIAlertController(title: "Are you sure you want to delete your account?", message: "\nThis action is irreversible.", preferredStyle: .alert);
         
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { alert in
             Utility.showActivityIndicator(in: self.navigationController?.view);
@@ -190,8 +190,8 @@ class SettingsTableViewController: UITableViewController {
                     Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
                     // Delete related queries
-                    self.user.deleteRelatedData();
-                    self.performSegue(withIdentifier: "unwindToLogin", sender: self);
+                    self.user.deleteCascadingData();
+                    self.performSegue(withIdentifier: "settingsToLogin", sender: self);
                 }
                 Utility.hideActivityIndicator();
             });
