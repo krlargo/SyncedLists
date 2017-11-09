@@ -164,22 +164,23 @@ class SettingsTableViewController: UITableViewController {
                 if let error = error {
                     Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                     return;
+                } else {
+                    // Confirm new password match
+                    if(newPassword != confirmNewPassword) {
+                        Utility.presentErrorAlert(message: "Your passwords don't match.", from: self);
+                        return;
+                    }
+                    
+                    // If all checks out, begin update password
+                    Utility.showActivityIndicator(in: self.navigationController?.view);
+                    
+                    self.firebaseUser.updatePassword(to: newPassword, completion: { error in
+                        if let error = error {
+                            Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+                        }
+                        Utility.hideActivityIndicator();
+                    });
                 }
-            });
-            
-            // Confirm new password match
-            if(newPassword == confirmNewPassword) {
-                Utility.presentErrorAlert(message: "Your passwords don't match.", from: self);
-                return;
-            }
-            
-            Utility.showActivityIndicator(in: self.navigationController?.view);
-            
-            self.firebaseUser.updatePassword(to: newPassword, completion: { error in
-                if let error = error {
-                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
-                }
-                Utility.hideActivityIndicator();
             });
         });
         
