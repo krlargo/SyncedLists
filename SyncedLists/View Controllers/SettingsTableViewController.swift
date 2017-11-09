@@ -154,7 +154,25 @@ class SettingsTableViewController: UITableViewController {
         let editPasswordAlert = UIAlertController(title: "Edit Password", message: "", preferredStyle: .alert);
 
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
-            let newPassword = editPasswordAlert.textFields![0].text!;
+            let oldPassword = editPasswordAlert.textFields![0].text!;
+            let newPassword = editPasswordAlert.textFields![1].text!;
+            let confirmNewPassword = editPasswordAlert.textFields![2].text!;
+            
+            // Confirm that old password is known
+            let credential = EmailAuthProvider.credential(withEmail: self.firebaseUser.email!, password: oldPassword);
+            self.firebaseUser.reauthenticate(with: credential, completion: { error in
+                if let error = error {
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+                    return;
+                }
+            });
+            
+            // Confirm new password match
+            if(newPassword == confirmNewPassword) {
+                Utility.presentErrorAlert(message: "Your passwords don't match.", from: self);
+                return;
+            }
+            
             Utility.showActivityIndicator(in: self.navigationController?.view);
             
             self.firebaseUser.updatePassword(to: newPassword, completion: { error in
@@ -168,9 +186,20 @@ class SettingsTableViewController: UITableViewController {
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
         
         editPasswordAlert.addTextField { textField in
-            textField.keyboardType = .emailAddress;
+            textField.isSecureTextEntry = true;
+            textField.placeholder = "Old Password";
         }
-        
+
+        editPasswordAlert.addTextField { textField in
+            textField.isSecureTextEntry = true;
+            textField.placeholder = "New Password";
+        }
+
+        editPasswordAlert.addTextField { textField in
+            textField.isSecureTextEntry = true;
+            textField.placeholder = "Confirm New Password";
+        }
+
         editPasswordAlert.setupTextFields();
         
         editPasswordAlert.addAction(cancelAction);
