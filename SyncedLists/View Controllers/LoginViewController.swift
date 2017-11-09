@@ -34,10 +34,7 @@ class LoginViewController: UIViewController {
                 Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
                 self.performSegue(withIdentifier: "loginSegue", sender: nil);
             } else {
-                let alert = UIAlertController(title: "Login Failed", message: error?.localizedDescription, preferredStyle: .alert);
-                let okayAction = UIAlertAction(title: "Okay", style: .cancel);
-                alert.addAction(okayAction);
-                self.present(alert, animated: true, completion: nil);
+                Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
             }
             Utility.hideActivityIndicator();
         });
@@ -50,9 +47,10 @@ class LoginViewController: UIViewController {
             let displayName = alert.textFields![0].text!;
             let email = alert.textFields![1].text!;
             let password = alert.textFields![2].text!;
+            let confirmPassword = alert.textFields![3].text!;
             
-            // Do nothing if any textfield is empty
-            if(displayName == "" || email == "" || password == "") {
+            if(password != confirmPassword) {
+                Utility.presentErrorAlert(message: "Your passwords don't match.", from: self);
                 return;
             }
             
@@ -67,18 +65,17 @@ class LoginViewController: UIViewController {
                     changeRequest.commitChanges(completion: { error in
                         if(error == nil) {
                             let usersRef = Database.database().reference(withPath: "users");
-                            //let newUserRef = usersRef.child(User.emailToID(currentUser.email!));
+
                             let newUserRef = usersRef.child(currentUser.uid);
                             newUserRef.child("name").setValue(currentUser.displayName);
                             newUserRef.child("email").setValue(currentUser.email);
                             self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                        } else {
+                            Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
                         }
                     });
                 } else {
-                    let alert = UIAlertController(title: "Login Failed", message: error?.localizedDescription, preferredStyle: .alert);
-                    let okayAction = UIAlertAction(title: "Okay", style: .cancel);
-                    alert.addAction(okayAction);
-                    self.present(alert, animated: true, completion: nil);
+                    Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
                 }
             }
             Utility.hideActivityIndicator();
@@ -103,6 +100,11 @@ class LoginViewController: UIViewController {
             passwordTextField.isSecureTextEntry = true;
             passwordTextField.placeholder = "Password";
         }
+        
+        alert.addTextField(configurationHandler: { confirmPasswordTextField in
+            confirmPasswordTextField.isSecureTextEntry = true;
+            confirmPasswordTextField.placeholder = "Confirm Password";
+        })
     
         alert.setupTextFields();
         
