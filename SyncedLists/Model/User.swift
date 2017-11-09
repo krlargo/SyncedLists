@@ -31,6 +31,36 @@ class User {
             "email": self.email,
         ];
     }
+
+    func deleteRelatedData() {
+        let ref = Database.database().reference();
+        let usersRef = ref.child("users");
+        let listsRef = ref.child("lists");
+        let itemsRef = ref.child("items");
+        
+        usersRef.child(self.id).child("listIDs").observeSingleEvent(of: .value, with: { snapshot in
+            var _: [String] = [];
+            
+            // Iterate through each of the user's lists
+            for case let snap as DataSnapshot in snapshot.children {
+                let listID = snap.key;
+                let listRef = listsRef.child(listID);
+                
+                listRef.observeSingleEvent(of: .value, with: { snapshot in
+                    var _: [String] = [];
+                    
+                    // Iterate through each lists' in the items
+                    for case let snap as DataSnapshot in snapshot.children {
+                        let itemID = snap.key;
+                        let itemRef = itemsRef.child(itemID);
+                        itemRef.removeValue(); // Delete item
+                    }
+                   
+                    listRef.removeValue(); // Delete list when finished
+                });
+            }
+        });
+    }
     
     // Type methods
     class func emailToID(_ emailStr: String) -> String {
