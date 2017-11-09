@@ -85,7 +85,11 @@
                         <inset key="imageInsets" minX="110" minY="110" maxX="110" maxY="110"/>
                     </tabBarItem>
                     <navigationItem key="navigationItem" title="Lists" id="6cb-sA-9m1">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="5WH-fP-rgS"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="5WH-fP-rgS">
+                            <connections>
+                                <segue destination="zJW-rZ-Ufx" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="bOg-EK-MiP"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FC3-Ie-uyV">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
@@ -95,6 +99,7 @@
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jx6-5x-zMp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="zJW-rZ-Ufx" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1025" y="-904"/>
         </scene>
@@ -322,10 +327,15 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Invites" id="RpQ-hL-ll4"/>
                     <navigationItem key="navigationItem" title="Invites" id="d7l-Nb-tGf">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="VKw-lx-REl"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="VKw-lx-REl">
+                            <connections>
+                                <segue destination="FiT-3v-lCQ" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="8O0-1g-5sL"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fbD-iH-OiA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="FiT-3v-lCQ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1025" y="-138"/>
         </scene>
@@ -436,7 +446,11 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Settings" id="TkO-qr-QLC"/>
                     <navigationItem key="navigationItem" title="Settings" id="GMt-sU-ZrV">
-                        <barButtonItem key="leftBarButtonItem" title="Item" id="QKO-QS-PAN"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="QKO-QS-PAN">
+                            <connections>
+                                <segue destination="D61-RX-dAp" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="ZwD-yk-tvo"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Debug" id="kof-Jm-2RK">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
@@ -449,7 +463,6 @@
                         <outlet property="emailCell" destination="rVc-bX-mln" id="5Da-bR-NrK"/>
                         <outlet property="nameCell" destination="UKY-8Q-PzA" id="ZSZ-0h-3nH"/>
                         <outlet property="passwordCell" destination="EsJ-uK-jR3" id="qyr-cj-D12"/>
-                        <segue destination="D61-RX-dAp" kind="unwind" identifier="settingsToLogin" unwindAction="unwindToLoginWithSegue:" id="nfW-Vo-osF"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8se-AW-lmv" userLabel="First Responder" sceneMemberID="firstResponder"/>
