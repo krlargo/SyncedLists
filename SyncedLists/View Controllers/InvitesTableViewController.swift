@@ -33,9 +33,16 @@ class InvitesTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "invitesCell");
         
         if(invites.isEmpty) {
-            cell!.textLabel?.text = "No Invites";
-            cell!.textLabel?.textColor = UIColor.lightGray;
+            tableView.allowsSelection = false;
+            
+            cell!.textLabel!.text = "No Invites";
+            cell!.textLabel!.textColor = UIColor.lightGray;
+            
             return cell!;
+        } else {
+            tableView.allowsSelection = true;
+            
+            cell!.textLabel!.text = "";
         }
         
         return cell!;

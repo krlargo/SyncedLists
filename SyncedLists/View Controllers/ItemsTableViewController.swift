@@ -108,9 +108,21 @@ class ItemsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell") as! ItemCell;
         
         if(items.isEmpty) {
-            cell.textLabel?.text = "No Items";
-            cell.textLabel?.textColor = UIColor.lightGray;
+            tableView.allowsSelection = false;
+            
+            cell.textLabel!.text = "No Items";
+            cell.textLabel!.textColor = UIColor.lightGray;
+            
+            cell.itemNameLabel.text = "";
+            cell.addedByLabel.text = "";
+            cell.completedByLabel.text = "";
+            
+            cell.accessoryType = .none;
             return cell;
+        } else {
+            tableView.allowsSelection = true;
+            
+            cell.textLabel!.text = "";
         }
         
         let item = items[indexPath.row];

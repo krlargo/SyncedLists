@@ -120,15 +120,25 @@ class ListsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell");
         
         if(lists.isEmpty) {
+            tableView.allowsSelection = false;
+            
             cell!.textLabel!.text = "No SyncedLists";
             cell!.textLabel!.textColor = UIColor.lightGray;
+            cell!.detailTextLabel?.text = "";
+            cell!.accessoryType = .none;
+            
             return cell!;
+        } else {
+            tableView.allowsSelection = true;
+            
+            cell!.textLabel!.textColor = UIColor.darkText;
+            cell!.accessoryType = .disclosureIndicator;
         }
         
         let list = lists[indexPath.row];
         
-        cell?.textLabel?.text? = list.name;
-        cell?.detailTextLabel?.text? = "\(list.completedCount)/\(list.itemCount)";
+        cell!.textLabel!.text! = list.name;
+        cell!.detailTextLabel!.text! = "\(list.completedCount)/\(list.itemCount)";
         
         return cell!;
     }
