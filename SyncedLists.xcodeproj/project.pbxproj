@@ -26,6 +26,7 @@
 		3889E7961F988BD900FB0BE7 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3889E7951F988BD900FB0BE7 /* List.swift */; };
 		3891288F1FB3E08E00A1F8B0 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3891288E1FB3E08E00A1F8B0 /* Utility.swift */; };
 		38D9A1F91FB44A9D00501321 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38D9A1F81FB44A9D00501321 /* Assets.xcassets */; };
+		38D9A1FE1FB45C0400501321 /* InvitesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D9A1FD1FB45C0400501321 /* InvitesTableViewController.swift */; };
 		698A46BBA7AEF9D1E4C0EACB /* Pods_SyncedListsUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40D072F501D656763AEAEFC /* Pods_SyncedListsUITests.framework */; };
 		A26DB61291A7B82C67EAF87F /* Pods_SyncedListsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BF9DF9EEAE0E7124C3CFDFA /* Pods_SyncedListsTests.framework */; };
 		B887328AF551F7658BB426A1 /* Pods_SyncedLists.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F64E589543DA056D03667A4 /* Pods_SyncedLists.framework */; };
@@ -76,6 +77,7 @@
 		3889E7951F988BD900FB0BE7 /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 		3891288E1FB3E08E00A1F8B0 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		38D9A1F81FB44A9D00501321 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		38D9A1FD1FB45C0400501321 /* InvitesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitesTableViewController.swift; sourceTree = "<group>"; };
 		3B9ED14D569637D68FA7B18A /* Pods-SyncedLists.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SyncedLists.release.xcconfig"; path = "Pods/Target Support Files/Pods-SyncedLists/Pods-SyncedLists.release.xcconfig"; sourceTree = "<group>"; };
 		5597E6A1387356E387124941 /* Pods-SyncedListsUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SyncedListsUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SyncedListsUITests/Pods-SyncedListsUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		5F64E589543DA056D03667A4 /* Pods_SyncedLists.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SyncedLists.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -216,6 +218,7 @@
 				386555531FB39E5B00427C57 /* HomeViewController.swift */,
 				3889E7931F988A4F00FB0BE7 /* ListsTableViewController.swift */,
 				3889E7881F95876F00FB0BE7 /* ItemsTableViewController.swift */,
+				38D9A1FD1FB45C0400501321 /* InvitesTableViewController.swift */,
 				386555551FB3A3FF00427C57 /* SettingsTableViewController.swift */,
 			);
 			path = "View Controllers";
@@ -548,6 +551,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38D9A1FE1FB45C0400501321 /* InvitesTableViewController.swift in Sources */,
 				380676EB1FB04BBE0037E348 /* LoginViewController.swift in Sources */,
 				3889E7921F95EB3D00FB0BE7 /* Item.swift in Sources */,
 				3889E7901F95EA1400FB0BE7 /* User.swift in Sources */,

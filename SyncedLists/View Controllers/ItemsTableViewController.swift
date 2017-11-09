@@ -100,11 +100,19 @@ class ItemsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count;
+        return (items.isEmpty) ? 1 : items.count;
+
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell") as! ItemCell;
+        let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell") as! ItemCell;
+        
+        if(items.isEmpty) {
+            cell.textLabel?.text = "No Items";
+            cell.textLabel?.textColor = UIColor.lightGray;
+            return cell;
+        }
+        
         let item = items[indexPath.row];
         
         cell.itemNameLabel.text = item.name;

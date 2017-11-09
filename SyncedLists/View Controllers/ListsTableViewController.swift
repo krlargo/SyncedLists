@@ -113,11 +113,18 @@ class ListsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return lists.count;
+        return (lists.isEmpty) ? 1 : lists.count;
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell");
+        let cell = tableView.dequeueReusableCell(withIdentifier: "listCell");
+        
+        if(lists.isEmpty) {
+            cell!.textLabel!.text = "No SyncedLists";
+            cell!.textLabel!.textColor = UIColor.lightGray;
+            return cell!;
+        }
+        
         let list = lists[indexPath.row];
         
         cell?.textLabel?.text? = list.name;
