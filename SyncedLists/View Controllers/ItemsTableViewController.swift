@@ -56,20 +56,27 @@ class ItemsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.user = User(authData: Auth.auth().currentUser!);
+        Utility.showActivityIndicator(in: self.navigationController!.view!);
 
-        itemsRef = Database.database().reference(withPath: "items").child(listID);
-        itemsRef.observe(.value, with: { snapshot in
+        self.user = User(authData: Auth.auth().currentUser!);
+        self.itemsRef = Database.database().reference(withPath: "items").child(listID);
+        
+        self.itemsRef.observe(.value, with: { snapshot in
             var loadedItems: [Item] = [];
             
             for case let snapshot as DataSnapshot in snapshot.children {
-                let item = Item(snapshot: snapshot, completionHandler: self.tableView.reloadData);
+                let item = Item(snapshot: snapshot, completionHandler: self.reloadData);
                 loadedItems.append(item);
             }
             
             self.items = loadedItems;
             self.tableView.reloadData();
         });
+    }
+    
+    func reloadData() {
+        self.tableView.reloadData();
+        Utility.hideActivityIndicator();
     }
     
     override func viewWillAppear(_ animated: Bool) {

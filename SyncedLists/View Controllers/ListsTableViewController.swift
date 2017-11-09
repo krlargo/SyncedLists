@@ -15,7 +15,7 @@ class ListsTableViewController: UITableViewController {
     // MARK: - Variables
     let usersRef = Database.database().reference(withPath: "users");
     let listsRef = Database.database().reference(withPath: "lists");
-    var currentUserRef: DatabaseReference!
+    var userRef: DatabaseReference!
     
     var lists: [List] = [];
     var user: User!
@@ -37,7 +37,7 @@ class ListsTableViewController: UITableViewController {
             newListRef.setValue(list.toAnyObject());
             
             // Add list to USERS in database
-            let currentUserListsRef = self.currentUserRef.child("listIDs");
+            let currentUserListsRef = self.userRef.child("listIDs");
             currentUserListsRef.child(newListRef.key).setValue(true);
             
             self.tableView.reloadData();
@@ -63,17 +63,17 @@ class ListsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        Utility.showActivityIndicator(in: self.navigationController!.view!);
+        
         self.user = User(authData: Auth.auth().currentUser!);
-        self.currentUserRef = usersRef.child(user.id); // Set reference
+        self.userRef = usersRef.child(user.id); // Set reference
         
         // Set backButton
         let backButton = UIBarButtonItem();
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
 
-        Utility.showActivityIndicator(in: self.navigationController!.view!);
-        
-        self.currentUserRef.child("listIDs").observe(.value, with: { snapshot in
+        self.userRef.child("listIDs").observe(.value, with: { snapshot in
             // Collect all the current user's list IDs
             self.lists.removeAll();
             for case let snap as DataSnapshot in snapshot.children {
@@ -83,7 +83,6 @@ class ListsTableViewController: UITableViewController {
                 listRef.observeSingleEvent(of: .value, with: { listSnap in
                     let list = List(snapshot: listSnap, completionHandler: self.reloadData);
                     self.lists.append(list);
-                    
                 });
             }
         });
@@ -131,7 +130,7 @@ class ListsTableViewController: UITableViewController {
         case .delete:
             let list = lists[indexPath.row];
             
-            let userListRef = currentUserRef.child("listIDs").child(list.id!);
+            let userListRef = userRef.child("listIDs").child(list.id!);
             userListRef.removeValue(); // Remove list from USERS
             list.ref?.removeValue(); // Remove list from LISTS
         default:
