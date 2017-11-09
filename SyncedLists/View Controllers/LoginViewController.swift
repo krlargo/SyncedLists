@@ -27,6 +27,8 @@ class LoginViewController: UIViewController {
         }
         ///'''
         
+        Utility.showActivityIndicator(in: self.view);
+        
         Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
             if(error == nil) { // Attempt login if account already exists
                 Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
@@ -37,6 +39,9 @@ class LoginViewController: UIViewController {
                 alert.addAction(okayAction);
                 self.present(alert, animated: true, completion: nil);
             }
+            
+            Utility.hideActivityIndicator();
+
         });
     }
     

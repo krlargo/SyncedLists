@@ -7,13 +7,19 @@
 //
 
 import FirebaseAuth
+import FirebaseDatabase
 import UIKit
 
 class SettingsTableViewController: UITableViewController {
     
     // MARK: - Variables
     var user: User!
+    var userRef: DatabaseReference!
     var firebaseUser: FirebaseAuth.User!
+    var handle: AuthStateDidChangeListenerHandle!
+    
+    // Used for keeping track of section & item counts
+    var tableData: [[UITableViewCell]]!;
     
     // MARK: - IBOutlets
     @IBOutlet weak var nameCell: UITableViewCell!
@@ -21,20 +27,39 @@ class SettingsTableViewController: UITableViewController {
     @IBOutlet weak var passwordCell: UITableViewCell!
     @IBOutlet weak var deleteAccountCell: UITableViewCell!
     
-    // Used for keeping track of section & item counts
-    var tableData = [
-        ["Name", "Email", "Password"],
-        ["Delete Account"]
-    ]
+    @IBAction func debug(_ sender: Any) {
+        Utility.hideActivityIndicator();
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         firebaseUser = Auth.auth().currentUser!
         user = User(authData: firebaseUser);
+        userRef = Database.database().reference(withPath: "users").child(user.id);
         
-        changeRequest = firebaseUser.createProfileChangeRequest();
+        tableData = [
+            [nameCell, emailCell, passwordCell],
+            [deleteAccountCell]
+        ]
+        
+        nameCell.detailTextLabel?.text = firebaseUser.displayName;
+        emailCell.detailTextLabel?.text = firebaseUser.email;
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            guard let user = user else { return };
+            self.user = User(authData: user);
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated);
+        Auth.auth().removeStateDidChangeListener(handle!)
+    }
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return tableData.count;
     }
@@ -46,17 +71,14 @@ class SettingsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath);
         
-        switch(cell) {
-        case nameCell:
+        if(cell == nameCell) {
             presentEditNameAlert();
-        case emailCell:
+        } else if(cell == emailCell) {
             presentEditEmailAlert();
-        case passwordCell:
+        } else if(cell == passwordCell) {
             presentEditPasswordAlert();
-        case deleteAccountCell:
+        } else if(cell == deleteAccountCell) {
             presentDeleteAccountAlert();
-        default:
-            break;
         }
     }
     
@@ -64,12 +86,21 @@ class SettingsTableViewController: UITableViewController {
         let editNameAlert = UIAlertController(title: "Edit Name", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
-            let changeRequest = firebaseUser.createProfileChangeRequest();
-            changeRequest.displayName = editNameAlert.textFields![0].text;
+            let changeRequest = self.firebaseUser.createProfileChangeRequest();
+            let newDisplayName = editNameAlert.textFields![0].text!;
+            changeRequest.displayName = newDisplayName
+            
+            Utility.showActivityIndicator(in: self.navigationController!.view!);
+
             changeRequest.commitChanges(completion: { error in
                 if let error = error {
                     //let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
+                    print(error.localizedDescription);
+                } else {
+                    self.userRef.child("name").setValue(newDisplayName);
+                    self.nameCell.detailTextLabel?.text = self.firebaseUser.displayName;
                 }
+                Utility.hideActivityIndicator();
             });
         });
         
@@ -77,6 +108,7 @@ class SettingsTableViewController: UITableViewController {
         
         editNameAlert.addTextField { textField in
             textField.autocapitalizationType = .words;
+            textField.text = self.firebaseUser.displayName;
         }
         
         editNameAlert.setupTextFields();
@@ -91,16 +123,32 @@ class SettingsTableViewController: UITableViewController {
         let editEmailAlert = UIAlertController(title: "Edit Email", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
-            firebaseUser.updateEmail(to: newEmail, completion: { error in
+            let newEmail = editEmailAlert.textFields![0].text!;
+            
+            Utility.showActivityIndicator(in: self.navigationController!.view!);
+
+            self.firebaseUser.updateEmail(to: newEmail, completion: { error in
                 if let error = error {
-                    //let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
+                    let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
+                    self.present(errorAlert, animated: true, completion: {
+                        UIView.animate(withDuration: 2, animations: {
+                            errorAlert.dismiss(animated: true, completion: {
+                                Utility.hideActivityIndicator();
+                            });
+                        });
+                    });
+                } else {
+                    self.userRef.child("email").setValue(newEmail);
+                    self.emailCell.detailTextLabel?.text = self.firebaseUser.email;
                 }
+                Utility.hideActivityIndicator();
             });
         });
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
         
         editEmailAlert.addTextField { textField in
+            textField.text = self.firebaseUser.email;
             textField.keyboardType = .emailAddress;
         }
         
@@ -116,9 +164,11 @@ class SettingsTableViewController: UITableViewController {
         let editPasswordAlert = UIAlertController(title: "Edit Password", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
-            firebaseUser.updatePassword(to: newPassword, completion: { error in
+            let newPassword = editPasswordAlert.textFields![0].text!;
+            self.firebaseUser.updatePassword(to: newPassword, completion: { error in
                 if let error = error {
                     //let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
+                    print(error.localizedDescription)
                 }
             });
         });
@@ -141,16 +191,16 @@ class SettingsTableViewController: UITableViewController {
         let deleteAccountAlert = UIAlertController(title: "Are you sure you want to delete your account?", message: "This actions is irreversible.", preferredStyle: .alert);
         
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { alert in
-            firebaseUser.delete { error in
-                {
-                    if let error = error {
-                        //let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
-                    } else {
-                        // Delete related queries
-                        performSegue(withIdentifier: "unwindToLogin", sender: self);
-                    }
+            self.firebaseUser.delete(completion: { error in
+                if let error = error {
+                    //let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
+                    print(error.localizedDescription);
+                } else {
+                    // Delete related queries
+                    self.user.deleteRelatedData();
+                    self.performSegue(withIdentifier: "unwindToLogin", sender: self);
                 }
-            }
+            });
         });
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);

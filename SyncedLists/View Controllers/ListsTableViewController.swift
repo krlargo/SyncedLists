@@ -22,8 +22,6 @@ class ListsTableViewController: UITableViewController {
     var handle: AuthStateDidChangeListenerHandle?
 
     // MARK: - IBActions
-    @IBAction func logout(_ sender: Any) {}
-    
     @IBAction func addList(_ sender: Any) {
         let alert = UIAlertController(title: "Add List", message: "", preferredStyle: .alert);
         
@@ -73,6 +71,8 @@ class ListsTableViewController: UITableViewController {
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
 
+        Utility.showActivityIndicator(in: self.navigationController!.view!);
+        
         self.currentUserRef.child("listIDs").observe(.value, with: { snapshot in
             // Collect all the current user's list IDs
             self.lists.removeAll();
@@ -81,12 +81,17 @@ class ListsTableViewController: UITableViewController {
                 let listRef = self.listsRef.child(listID);
                 
                 listRef.observeSingleEvent(of: .value, with: { listSnap in
-                    let list = List(snapshot: listSnap, completionHandler: self.tableView.reloadData);
+                    let list = List(snapshot: listSnap, completionHandler: self.reloadData);
                     self.lists.append(list);
                     
                 });
             }
         });
+    }
+    
+    func reloadData() {
+        self.tableView.reloadData();
+        Utility.hideActivityIndicator();
     }
     
     override func viewWillAppear(_ animated: Bool) {
