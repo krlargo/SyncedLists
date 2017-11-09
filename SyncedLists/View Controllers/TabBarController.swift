@@ -10,20 +10,24 @@ import UIKit
 
 class TabBarController: UITabBarController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    /*override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated);
 
-        let myTabBarItem1 = (self.tabBar.items?[0])! as UITabBarItem
-        myTabBarItem1.image = UIImage(named: "Unselected")?.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
-        myTabBarItem1.selectedImage = UIImage(named: "Selected ")?.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
-        myTabBarItem1.title = ""
-        myTabBarItem1.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
-
+        let iconInsets = UIEdgeInsets(top: 110, left: 105, bottom: 110, right: 105);
+        
         let listsItem = self.tabBar.items?[0];
-        listsItem?.image
+        let listImage = UIImage(named: "Lists Icon");
+        listsItem?.image = listImage;
+        listsItem?.imageInsets = iconInsets;
         
-        let invitesItem = self.tabBar.items?[1]!;
+        let invitesItem = self.tabBar.items?[1];
+        let invitesImage = UIImage(named: "Invites Icon");
+        invitesItem?.image = invitesImage;
+        invitesItem?.imageInsets = iconInsets;
         
-        let settingsItem = self.tabBar.items?[2]!;
-    }
+        let settingsItem = self.tabBar.items?[2];
+        let settingsImage = UIImage(named: "Settings Icon");
+        settingsItem?.image = settingsImage;
+        settingsItem?.imageInsets = iconInsets
+    }*/
 }

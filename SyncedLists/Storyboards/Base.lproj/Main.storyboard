@@ -18,8 +18,8 @@
         <scene sceneID="g9i-jJ-nOE">
             <objects>
                 <navigationController id="je1-Ct-jbd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Lists" selectedImage="List Icon" id="SJU-Kn-jVC">
-                        <inset key="imageInsets" minX="105" minY="110" maxX="105" maxY="105"/>
+                    <tabBarItem key="tabBarItem" title="Lists" image="List Icon" id="SJU-Kn-jVC">
+                        <color key="badgeColor" red="0.25952532890000002" green="0.69917218550000004" blue="0.35500759549999999" alpha="1" colorSpace="calibratedRGB"/>
                     </tabBarItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="VQ0-fF-iZi">
@@ -81,7 +81,9 @@
                             <outlet property="delegate" destination="lVE-zg-4g5" id="kBO-R3-VHp"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Lists" id="F6U-N3-xvO"/>
+                    <tabBarItem key="tabBarItem" title="Lists" id="F6U-N3-xvO">
+                        <inset key="imageInsets" minX="110" minY="110" maxX="110" maxY="110"/>
+                    </tabBarItem>
                     <navigationItem key="navigationItem" title="Lists" id="6cb-sA-9m1">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="5WH-fP-rgS"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FC3-Ie-uyV">
@@ -277,9 +279,9 @@
         <!--Tab Bar Controller-->
         <scene sceneID="pyI-SD-z11">
             <objects>
-                <tabBarController id="aYG-Qf-gYp" sceneMemberID="viewController">
+                <tabBarController id="aYG-Qf-gYp" customClass="TabBarController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="imF-WB-zCn"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="2FV-h7-h70">
+                    <tabBar key="tabBar" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="2FV-h7-h70">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -459,9 +461,7 @@
         <scene sceneID="Vqr-iK-bda">
             <objects>
                 <navigationController id="97U-Cj-MNP" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Invites" selectedImage="Invites Icon" id="JBe-DR-5zK">
-                        <inset key="imageInsets" minX="105" minY="110" maxX="105" maxY="105"/>
-                    </tabBarItem>
+                    <tabBarItem key="tabBarItem" title="Invites" image="Invites Icon" id="JBe-DR-5zK"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="leT-Z1-yvh">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -483,9 +483,7 @@
         <scene sceneID="dL6-II-CSh">
             <objects>
                 <navigationController id="0gp-y5-PsS" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" selectedImage="Settings Icon" id="kqK-y1-TuN">
-                        <inset key="imageInsets" minX="105" minY="110" maxX="105" maxY="105"/>
-                    </tabBarItem>
+                    <tabBarItem key="tabBarItem" title="Settings" image="Settings Icon" id="kqK-y1-TuN"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="xd9-EB-4ul">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -505,8 +503,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Invites Icon" width="475" height="475"/>
-        <image name="List Icon" width="475" height="475"/>
-        <image name="Settings Icon" width="475" height="475"/>
+        <image name="Invites Icon" width="37" height="37"/>
+        <image name="List Icon" width="37" height="37"/>
+        <image name="Settings Icon" width="37" height="37"/>
     </resources>
 </document>
