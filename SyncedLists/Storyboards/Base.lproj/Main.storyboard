@@ -313,7 +313,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="hiZ-SD-aoR" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="BsP-4M-ifX"/>
+                                            <segue destination="hiZ-SD-aoR" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="jDV-xx-g0d"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -348,9 +348,6 @@
                         <outletCollection property="buttons" destination="lsj-ca-BR3" collectionClass="NSMutableArray" id="Lcj-fR-nap"/>
                         <outletCollection property="buttons" destination="g8k-D5-vdG" collectionClass="NSMutableArray" id="On3-ic-Ys8"/>
                         <outletCollection property="buttons" destination="Erf-Y0-3sX" collectionClass="NSMutableArray" id="7l6-m1-U7d"/>
-                        <outletCollection property="buttons" destination="lsj-ca-BR3" collectionClass="NSMutableArray" id="fDU-8t-dcq"/>
-                        <outletCollection property="buttons" destination="g8k-D5-vdG" collectionClass="NSMutableArray" id="eEu-Ev-iMa"/>
-                        <segue destination="hiZ-SD-aoR" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="Q1V-sJ-YDu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fzc-mP-I8G" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -475,9 +472,11 @@
                         <outlet property="emailCell" destination="rVc-bX-mln" id="5Da-bR-NrK"/>
                         <outlet property="nameCell" destination="UKY-8Q-PzA" id="ZSZ-0h-3nH"/>
                         <outlet property="passwordCell" destination="EsJ-uK-jR3" id="qyr-cj-D12"/>
+                        <segue destination="D61-RX-dAp" kind="unwind" identifier="settingsToLogin" unwindAction="unwindToLoginWithSegue:" id="nfW-Vo-osF"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8se-AW-lmv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="D61-RX-dAp" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1025" y="231"/>
         </scene>
