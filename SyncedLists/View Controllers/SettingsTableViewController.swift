@@ -89,13 +89,11 @@ class SettingsTableViewController: UITableViewController {
             let changeRequest = self.firebaseUser.createProfileChangeRequest();
             let newDisplayName = editNameAlert.textFields![0].text!;
             changeRequest.displayName = newDisplayName
-            
             Utility.showActivityIndicator(in: self.navigationController!.view!);
 
             changeRequest.commitChanges(completion: { error in
                 if let error = error {
-                    //let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
-                    print(error.localizedDescription);
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
                     self.userRef.child("name").setValue(newDisplayName);
                     self.nameCell.detailTextLabel?.text = self.firebaseUser.displayName;
@@ -124,19 +122,11 @@ class SettingsTableViewController: UITableViewController {
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
             let newEmail = editEmailAlert.textFields![0].text!;
-            
             Utility.showActivityIndicator(in: self.navigationController!.view!);
-
+            
             self.firebaseUser.updateEmail(to: newEmail, completion: { error in
                 if let error = error {
-                    let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
-                    self.present(errorAlert, animated: true, completion: {
-                        UIView.animate(withDuration: 2, animations: {
-                            errorAlert.dismiss(animated: true, completion: {
-                                Utility.hideActivityIndicator();
-                            });
-                        });
-                    });
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
                     self.userRef.child("email").setValue(newEmail);
                     self.emailCell.detailTextLabel?.text = self.firebaseUser.email;
@@ -162,14 +152,16 @@ class SettingsTableViewController: UITableViewController {
     
     func presentEditPasswordAlert() {
         let editPasswordAlert = UIAlertController(title: "Edit Password", message: "", preferredStyle: .alert);
-        
+
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
             let newPassword = editPasswordAlert.textFields![0].text!;
+            Utility.showActivityIndicator(in: self.navigationController!.view!);
+            
             self.firebaseUser.updatePassword(to: newPassword, completion: { error in
                 if let error = error {
-                    //let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
-                    print(error.localizedDescription)
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 }
+                Utility.hideActivityIndicator();
             });
         });
         
@@ -191,15 +183,17 @@ class SettingsTableViewController: UITableViewController {
         let deleteAccountAlert = UIAlertController(title: "Are you sure you want to delete your account?", message: "This actions is irreversible.", preferredStyle: .alert);
         
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { alert in
+            Utility.showActivityIndicator(in: self.navigationController!.view!);
+            
             self.firebaseUser.delete(completion: { error in
                 if let error = error {
-                    //let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert);
-                    print(error.localizedDescription);
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
                     // Delete related queries
                     self.user.deleteRelatedData();
                     self.performSegue(withIdentifier: "unwindToLogin", sender: self);
                 }
+                Utility.hideActivityIndicator();
             });
         });
         

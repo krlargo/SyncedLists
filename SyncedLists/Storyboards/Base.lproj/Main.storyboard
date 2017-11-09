@@ -282,7 +282,7 @@
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Erf-Y0-3sX">
                                         <rect key="frame" x="0.0" y="0.0" width="240" height="40"/>
-                                        <color key="backgroundColor" red="0.25952532890000002" green="0.69917218550000004" blue="0.35500759549999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="0.25882352941176467" green="0.69917218550000004" blue="0.35500759549999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="sqw-Rd-zPS"/>
                                         </constraints>
@@ -302,7 +302,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="y5U-kY-HgK" kind="show" id="6s1-aE-vMw"/>
+                                            <segue destination="lnm-PE-Xjr" kind="show" id="vYT-CE-Hl0"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g8k-D5-vdG">
@@ -359,17 +359,17 @@
             <point key="canvasLocation" x="242" y="-138"/>
         </scene>
         <!--Settings-->
-        <scene sceneID="i5c-fA-y2y">
+        <scene sceneID="Wc0-ct-OpF">
             <objects>
-                <tableViewController title="Settings" id="y5U-kY-HgK" customClass="SettingsTableViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="Xop-Ng-7gm">
+                <tableViewController id="lnm-PE-Xjr" customClass="SettingsTableViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="c5E-d8-tUC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
                             <tableViewSection id="2LQ-yW-Fbn">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="oDd-V6-4oV" detailTextLabel="RqC-cd-hZ9" style="IBUITableViewCellStyleValue1" id="UKY-8Q-PzA">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" textLabel="oDd-V6-4oV" detailTextLabel="RqC-cd-hZ9" style="IBUITableViewCellStyleValue1" id="UKY-8Q-PzA">
                                         <rect key="frame" x="0.0" y="35" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="UKY-8Q-PzA" id="Put-QD-t1U">
@@ -393,7 +393,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="ESO-1l-23T" detailTextLabel="bVC-OD-avV" style="IBUITableViewCellStyleValue1" id="rVc-bX-mln">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" textLabel="ESO-1l-23T" detailTextLabel="bVC-OD-avV" style="IBUITableViewCellStyleValue1" id="rVc-bX-mln">
                                         <rect key="frame" x="0.0" y="79" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="rVc-bX-mln" id="iI4-GQ-cds">
@@ -417,7 +417,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="hrm-pC-iS5" style="IBUITableViewCellStyleDefault" id="EsJ-uK-jR3">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" textLabel="hrm-pC-iS5" style="IBUITableViewCellStyleDefault" id="EsJ-uK-jR3">
                                         <rect key="frame" x="0.0" y="123" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EsJ-uK-jR3" id="F5l-4a-xJs">
@@ -438,7 +438,7 @@
                             </tableViewSection>
                             <tableViewSection id="mrP-Yh-g2g">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="zK9-mN-TrC" style="IBUITableViewCellStyleDefault" id="3Mw-Do-ggo">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" textLabel="zK9-mN-TrC" style="IBUITableViewCellStyleDefault" id="3Mw-Do-ggo">
                                         <rect key="frame" x="0.0" y="203" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="3Mw-Do-ggo" id="DSG-dP-tpI">
@@ -459,20 +459,27 @@
                             </tableViewSection>
                         </sections>
                         <connections>
-                            <outlet property="dataSource" destination="y5U-kY-HgK" id="n72-tn-DTL"/>
-                            <outlet property="delegate" destination="y5U-kY-HgK" id="pbX-ro-V8u"/>
+                            <outlet property="dataSource" destination="lnm-PE-Xjr" id="V3f-V1-zaY"/>
+                            <outlet property="delegate" destination="lnm-PE-Xjr" id="48P-y6-KYh"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="Settings" id="GMt-sU-ZrV">
+                        <barButtonItem key="rightBarButtonItem" title="Debug" id="kof-Jm-2RK">
+                            <connections>
+                                <action selector="debug:" destination="lnm-PE-Xjr" id="zf0-0W-0v1"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
-                        <outlet property="deleteAccountCell" destination="3Mw-Do-ggo" id="ieJ-9v-uJd"/>
-                        <outlet property="emailCell" destination="rVc-bX-mln" id="DPd-yW-dYY"/>
-                        <outlet property="nameCell" destination="UKY-8Q-PzA" id="Pjb-9f-K6U"/>
-                        <outlet property="passwordCell" destination="EsJ-uK-jR3" id="QRN-gw-zPk"/>
+                        <outlet property="deleteAccountCell" destination="3Mw-Do-ggo" id="tRY-D0-rbl"/>
+                        <outlet property="emailCell" destination="rVc-bX-mln" id="5Da-bR-NrK"/>
+                        <outlet property="nameCell" destination="UKY-8Q-PzA" id="ZSZ-0h-3nH"/>
+                        <outlet property="passwordCell" destination="EsJ-uK-jR3" id="qyr-cj-D12"/>
                     </connections>
                 </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="qga-3Q-LV5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8se-AW-lmv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1025" y="227"/>
+            <point key="canvasLocation" x="1025" y="231"/>
         </scene>
     </scenes>
 </document>
