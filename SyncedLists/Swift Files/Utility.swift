@@ -38,20 +38,11 @@ class Utility {
     class func presentErrorAlert(message: String, from viewController: UIViewController) {
         let errorAlert = UIAlertController(title: "Error", message: "\n\(message)\n\n", preferredStyle: .alert);
         viewController.present(errorAlert, animated: true, completion: {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                 errorAlert.dismiss(animated: true, completion: {
                     Utility.hideActivityIndicator();
                 });
             })
         });
-    }
-    
-    // MARK: Image Resize w/ Preserved Quality
-    class func scaleImage(_ image: UIImage, toSize newSize: CGSize)->UIImage{
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height));
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()?.withRenderingMode(.alwaysTemplate);
-        UIGraphicsEndImageContext()
-        return newImage!;
     }
 }
