@@ -63,8 +63,6 @@ class ListsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        Utility.showActivityIndicator(in: self.navigationController!.view!);
-        
         self.user = User(authData: Auth.auth().currentUser!);
         self.userRef = usersRef.child(user.id); // Set reference
         
@@ -74,6 +72,8 @@ class ListsTableViewController: UITableViewController {
         navigationItem.backBarButtonItem = backButton;
 
         self.userRef.child("listIDs").observe(.value, with: { snapshot in
+            Utility.showActivityIndicator(in: self.navigationController?.view);
+
             // Collect all the current user's list IDs
             self.lists.removeAll();
             for case let snap as DataSnapshot in snapshot.children {
@@ -85,6 +85,7 @@ class ListsTableViewController: UITableViewController {
                     self.lists.append(list);
                 });
             }
+            Utility.hideActivityIndicator(); // In case there are no lists
         });
     }
     

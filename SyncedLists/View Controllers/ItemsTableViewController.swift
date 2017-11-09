@@ -56,12 +56,12 @@ class ItemsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        Utility.showActivityIndicator(in: self.navigationController!.view!);
-
         self.user = User(authData: Auth.auth().currentUser!);
         self.itemsRef = Database.database().reference(withPath: "items").child(listID);
         
         self.itemsRef.observe(.value, with: { snapshot in
+            Utility.showActivityIndicator(in: self.navigationController?.view);
+
             var loadedItems: [Item] = [];
             
             for case let snapshot as DataSnapshot in snapshot.children {
@@ -70,7 +70,9 @@ class ItemsTableViewController: UITableViewController {
             }
             
             self.items = loadedItems;
+            
             self.tableView.reloadData();
+            Utility.hideActivityIndicator(); // In case there are no items;
         });
     }
     

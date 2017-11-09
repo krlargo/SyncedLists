@@ -13,7 +13,11 @@ class Utility {
     // Mark: - Activity Indicator
     static var activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView();
     
-    class func showActivityIndicator(in parentView: UIView) {
+    class func showActivityIndicator(in parentView: UIView?) {
+        guard let parentView = parentView else {
+            return;
+        }
+        
         activityIndicator.activityIndicatorViewStyle = .whiteLarge;
         activityIndicator.center = CGPoint(x: 0, y: 0);
         activityIndicator.color = UIColor(displayP3Red: 66/255, green: 178/255, blue: 91/255, alpha: 1.0);

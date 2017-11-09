@@ -89,7 +89,7 @@ class SettingsTableViewController: UITableViewController {
             let changeRequest = self.firebaseUser.createProfileChangeRequest();
             let newDisplayName = editNameAlert.textFields![0].text!;
             changeRequest.displayName = newDisplayName
-            Utility.showActivityIndicator(in: self.navigationController!.view!);
+            Utility.showActivityIndicator(in: self.navigationController?.view);
 
             changeRequest.commitChanges(completion: { error in
                 if let error = error {
@@ -122,7 +122,7 @@ class SettingsTableViewController: UITableViewController {
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
             let newEmail = editEmailAlert.textFields![0].text!;
-            Utility.showActivityIndicator(in: self.navigationController!.view!);
+            Utility.showActivityIndicator(in: self.navigationController?.view);
             
             self.firebaseUser.updateEmail(to: newEmail, completion: { error in
                 if let error = error {
@@ -155,7 +155,7 @@ class SettingsTableViewController: UITableViewController {
 
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
             let newPassword = editPasswordAlert.textFields![0].text!;
-            Utility.showActivityIndicator(in: self.navigationController!.view!);
+            Utility.showActivityIndicator(in: self.navigationController?.view);
             
             self.firebaseUser.updatePassword(to: newPassword, completion: { error in
                 if let error = error {
@@ -183,7 +183,7 @@ class SettingsTableViewController: UITableViewController {
         let deleteAccountAlert = UIAlertController(title: "Are you sure you want to delete your account?", message: "This actions is irreversible.", preferredStyle: .alert);
         
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { alert in
-            Utility.showActivityIndicator(in: self.navigationController!.view!);
+            Utility.showActivityIndicator(in: self.navigationController?.view);
             
             self.firebaseUser.delete(completion: { error in
                 if let error = error {
