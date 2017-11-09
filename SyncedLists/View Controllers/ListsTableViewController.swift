@@ -130,7 +130,6 @@ class ListsTableViewController: UITableViewController {
         switch(editingStyle) {
         case .delete:
             let list = lists[indexPath.row];
-            
             let userListRef = userRef.child("listIDs").child(list.id!);
             userListRef.removeValue(); // Remove list from USERS
             list.ref?.removeValue(); // Remove list from LISTS

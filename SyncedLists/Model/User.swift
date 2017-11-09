@@ -13,16 +13,13 @@ import Foundation
 class User {
     var name: String;
     var email: String;
-    
-    // Firebase userID uses "," instead of "."
-    var id: String {
-        return User.emailToID(email);
-    }
+    var id: String;
     
     // Constructor for Firebase-loaded User
     init(authData: FirebaseAuth.User) {
         self.name = authData.displayName!;
         self.email = authData.email!;
+        self.id = authData.uid;
     }
 
     func toAnyObject() -> Any {
@@ -49,24 +46,5 @@ class User {
             }
             userRef.removeValue(); // Delete user when finished
         });
-    }
-    
-    // Type methods
-    class func emailToID(_ emailStr: String) -> String {
-        return emailStr.replacingOccurrences(of: ".", with: ",");
-    }
-    
-    class func nameOfUser(withEmail emailStr: String) -> String {
-        var name: String = "";
-        let userID = User.emailToID(emailStr);
-        
-        Database.database().reference(withPath: "users")
-            .child(userID).child("name")
-            .observe(.value, with: { snapshot in
-                if let observedName = snapshot.value as? String {
-                    name = observedName;
-                }
-            });
-        return name;
     }
 }

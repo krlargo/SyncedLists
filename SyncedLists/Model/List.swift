@@ -34,7 +34,7 @@ class List {
             
             var completedCount = 0;
             for item in snapshot.children.allObjects as! [DataSnapshot] {
-                if(item.hasChild("completedByUserID")) {
+                if(item.hasChild("completedByUser")) {
                     completedCount += 1;
                 }
             }

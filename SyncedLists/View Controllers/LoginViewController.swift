@@ -39,9 +39,7 @@ class LoginViewController: UIViewController {
                 alert.addAction(okayAction);
                 self.present(alert, animated: true, completion: nil);
             }
-            
             Utility.hideActivityIndicator();
-
         });
     }
     
@@ -58,6 +56,8 @@ class LoginViewController: UIViewController {
                 return;
             }
             
+            Utility.showActivityIndicator(in: self.view);
+
             Auth.auth().createUser(withEmail: email, password: password) { user, error in
                 if(error == nil) { // Attempt login if account already exists
                     Auth.auth().signIn(withEmail: email, password: password);
@@ -67,7 +67,8 @@ class LoginViewController: UIViewController {
                     changeRequest.commitChanges(completion: { error in
                         if(error == nil) {
                             let usersRef = Database.database().reference(withPath: "users");
-                            let newUserRef = usersRef.child(User.emailToID(currentUser.email!));
+                            //let newUserRef = usersRef.child(User.emailToID(currentUser.email!));
+                            let newUserRef = usersRef.child(currentUser.uid);
                             newUserRef.child("name").setValue(currentUser.displayName);
                             newUserRef.child("email").setValue(currentUser.email);
                             self.performSegue(withIdentifier: "loginSegue", sender: nil);
@@ -80,6 +81,7 @@ class LoginViewController: UIViewController {
                     self.present(alert, animated: true, completion: nil);
                 }
             }
+            Utility.hideActivityIndicator();
         }
         saveAction.isEnabled = false;
         

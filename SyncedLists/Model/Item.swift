@@ -11,9 +11,9 @@ import Foundation
 
 class Item {
     var name: String;
-    var addedByUserEmail: String;
+    var addedByUser: String;
+    var completedByUser: String?
     var addedByUserName: String!;
-    var completedByUserEmail: String?
     var completedByUserName: String?
     var ref: DatabaseReference? // Needed for deletion
     
@@ -21,20 +21,20 @@ class Item {
     init(snapshot: DataSnapshot, completionHandler: @escaping () -> Void) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.name = snapshotValue["name"] as! String;
-        self.addedByUserEmail = snapshotValue["addedByUserEmail"] as! String;
-        self.completedByUserEmail = snapshotValue["completedByUserEmail"] as? String
+        self.addedByUser = snapshotValue["addedByUser"] as! String;
+        self.completedByUser = snapshotValue["completedByUser"] as? String;
         self.ref = snapshot.ref;
 
         // Nest observers so completionHandler only needs to be called once
         // Observe addedByUserName
         Database.database().reference(withPath: "users")
-            .child(User.emailToID(addedByUserEmail)).child("name")
+            .child(addedByUser).child("name")
             .observeSingleEvent(of: .value, with: { snapshot in
                 self.addedByUserName = snapshot.value as! String;
                 // If available, observe completedByUserName
-                if let completedByUserEmail = self.completedByUserEmail {
+                if let completedByUser = self.completedByUser {
                     Database.database().reference(withPath: "users")
-                        .child(User.emailToID(completedByUserEmail)).child("name")
+                        .child(completedByUser).child("name")
                         .observeSingleEvent(of: .value, with: { snapshot in
                             self.completedByUserName = snapshot.value as? String;
                             completionHandler();
@@ -47,17 +47,18 @@ class Item {
     // Constructor for locally created Item
     init(name: String, addedBy user: User) {
         self.name = name;
-        self.addedByUserEmail = user.email;
+        self.addedByUser = user.id;
         self.addedByUserName = user.name;
-        self.completedByUserEmail = nil;
+        self.completedByUser = nil;
+        self.completedByUserName = nil;
         self.ref = nil;
     }
     
     func toAnyObject() -> Any {
         return [
             "name": self.name,
-            "addedByUserEmail": self.addedByUserEmail,
-            "completedByUserEmail": self.completedByUserEmail
+            "addedByUser": self.addedByUser,
+            "completedByUser": self.completedByUser
         ];
     }
 }
