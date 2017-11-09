@@ -279,7 +279,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="pyI-SD-z11">
             <objects>
-                <tabBarController id="aYG-Qf-gYp" customClass="TabBarController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController id="aYG-Qf-gYp" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="imF-WB-zCn"/>
                     <tabBar key="tabBar" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="2FV-h7-h70">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>

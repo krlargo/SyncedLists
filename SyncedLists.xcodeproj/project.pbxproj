@@ -25,7 +25,6 @@
 		3889E7941F988A5700FB0BE7 /* ListsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3889E7931F988A4F00FB0BE7 /* ListsTableViewController.swift */; };
 		3889E7961F988BD900FB0BE7 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3889E7951F988BD900FB0BE7 /* List.swift */; };
 		3891288F1FB3E08E00A1F8B0 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3891288E1FB3E08E00A1F8B0 /* Utility.swift */; };
-		389128911FB4428D00A1F8B0 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389128901FB4428D00A1F8B0 /* TabBarController.swift */; };
 		38D9A1F91FB44A9D00501321 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38D9A1F81FB44A9D00501321 /* Assets.xcassets */; };
 		698A46BBA7AEF9D1E4C0EACB /* Pods_SyncedListsUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40D072F501D656763AEAEFC /* Pods_SyncedListsUITests.framework */; };
 		A26DB61291A7B82C67EAF87F /* Pods_SyncedListsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BF9DF9EEAE0E7124C3CFDFA /* Pods_SyncedListsTests.framework */; };
@@ -76,7 +75,6 @@
 		3889E7931F988A4F00FB0BE7 /* ListsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsTableViewController.swift; sourceTree = "<group>"; };
 		3889E7951F988BD900FB0BE7 /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 		3891288E1FB3E08E00A1F8B0 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
-		389128901FB4428D00A1F8B0 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		38D9A1F81FB44A9D00501321 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3B9ED14D569637D68FA7B18A /* Pods-SyncedLists.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SyncedLists.release.xcconfig"; path = "Pods/Target Support Files/Pods-SyncedLists/Pods-SyncedLists.release.xcconfig"; sourceTree = "<group>"; };
 		5597E6A1387356E387124941 /* Pods-SyncedListsUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SyncedListsUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SyncedListsUITests/Pods-SyncedListsUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -215,7 +213,6 @@
 			isa = PBXGroup;
 			children = (
 				380676EA1FB04BBE0037E348 /* LoginViewController.swift */,
-				389128901FB4428D00A1F8B0 /* TabBarController.swift */,
 				386555531FB39E5B00427C57 /* HomeViewController.swift */,
 				3889E7931F988A4F00FB0BE7 /* ListsTableViewController.swift */,
 				3889E7881F95876F00FB0BE7 /* ItemsTableViewController.swift */,
@@ -560,7 +557,6 @@
 				386555541FB39E5B00427C57 /* HomeViewController.swift in Sources */,
 				386555561FB3A3FF00427C57 /* SettingsTableViewController.swift in Sources */,
 				3889E7961F988BD900FB0BE7 /* List.swift in Sources */,
-				389128911FB4428D00A1F8B0 /* TabBarController.swift in Sources */,
 				386555521FB2F51400427C57 /* AlertController+Extension.swift in Sources */,
 				3889E7521F957A9C00FB0BE7 /* AppDelegate.swift in Sources */,
 			);
