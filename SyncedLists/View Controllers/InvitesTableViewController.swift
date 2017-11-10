@@ -17,7 +17,7 @@ class InvitesTableViewController: UITableViewController {
     let invitesRef = Database.database().reference(withPath: "invites");
     var userRef: DatabaseReference!
     
-    var invites: [(listID: String, senderID: String)] = [];
+    var invites: [(id: String, listName: String, senderName: String)] = [];
     var user: User!
     var handle: AuthStateDidChangeListenerHandle?
     
@@ -33,6 +33,7 @@ class InvitesTableViewController: UITableViewController {
             // Get all of the user's inviteIds
             for case let snapshot as DataSnapshot in snapshot.children {
                 let inviteID = snapshot.key;
+                
                 self.invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
                     let snapshotValue = snapshot.value as! [String: String];
                     let listID = snapshotValue["listID"]!;
@@ -49,8 +50,7 @@ class InvitesTableViewController: UITableViewController {
                             let snapshotValue = snapshot.value as! [String: Any];
                             senderName = snapshotValue["name"] as! String!;
                             
-                            let invite = (listName, senderName);
-                            
+                            let invite = (inviteID, listName, senderName);
                             
                             self.invites.append(invite);
                             self.tableView.reloadData();
@@ -77,13 +77,56 @@ class InvitesTableViewController: UITableViewController {
         if(invites.isEmpty) {
             cell!.textLabel!.text = "No Invites";
             cell!.textLabel!.textColor = UIColor.lightGray;
-            
+            cell!.detailTextLabel?.text = "";
+
             return cell!;
         }
         
-        cell!.textLabel!.text = invites[indexPath.row].listID;
+        cell!.textLabel!.text = invites[indexPath.row].listName;
         cell!.textLabel!.textColor = UIColor.darkText;
+        cell!.detailTextLabel!.text = invites[indexPath.row].senderName;
         
         return cell!;
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "invitesCell");
+        
+        if(invites.isEmpty) { return; }
+        
+        presentInviteAlert(index: indexPath.row);
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if(invites.isEmpty) { return; }
+        
+        let invite = invites[indexPath.row];
+        
+        switch(editingStyle) {
+        case .delete:
+            // Remove invite from user
+            self.usersRef.child(self.user.id).child("inviteIDs").child(invite.id).removeValue();
+            self.invitesRef.child(invite.id).removeValue();
+        default:
+            break;
+        }
+    }
+    
+    func presentInviteAlert(index: Int) {
+        let invite = invites[index];
+        
+        let inviteAlert = UIAlertController(title: "Invitation", message: "\(invite.senderName) has invited you to edit \"\(invite.listName)\".", preferredStyle: .alert);
+        
+        let acceptAction = UIAlertAction(title: "Accept", style: .default, handler: { alert in
+            // Do nothing for now
+            Utility.presentErrorAlert(message: "Accepted Invite!", from: self);
+        });
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
+        
+        inviteAlert.addAction(cancelAction);
+        inviteAlert.addAction(acceptAction);
+        
+        present(inviteAlert, animated: true, completion: nil);
     }
 }
