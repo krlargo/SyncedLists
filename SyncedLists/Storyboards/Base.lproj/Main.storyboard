@@ -263,10 +263,10 @@
             </objects>
             <point key="canvasLocation" x="1838" y="-138"/>
         </scene>
-        <!--Notes View Controller-->
+        <!--Notes-->
         <scene sceneID="TYd-5Z-qPz">
             <objects>
-                <viewController id="SGM-TE-UNg" customClass="NotesViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Notes" id="SGM-TE-UNg" customClass="NotesViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rIR-aG-tqx">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
