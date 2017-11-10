@@ -19,10 +19,18 @@ class NotesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        Utility.showActivityIndicator(in: self.navigationController!.view!);
+        
+        // Set line spacing
+        let style = NSMutableParagraphStyle();
+        style.lineSpacing = 8;
+        let attributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.paragraphStyle: style, NSAttributedStringKey.font: self.notesTextView.font];
+        
         let listRef = listsRef.child(listID);
         listRef.child("notes").observe(.value, with: { snapshot in
             let text = snapshot.value as? String;
-            self.notesTextView.text = (text ?? "");
+            self.notesTextView.attributedText = NSAttributedString(string: text ?? "", attributes: attributes);
+            Utility.hideActivityIndicator();
         });
     }
 }
