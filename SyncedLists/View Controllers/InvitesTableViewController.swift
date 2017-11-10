@@ -24,11 +24,10 @@ class InvitesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        Utility.showActivityIndicator(in: self.navigationController!.view!)
-        
         user = User(authData: Auth.auth().currentUser!);
         usersRef.child(user.id).child("inviteIDs").observe(.value, with: { snapshot in
 
+            Utility.showActivityIndicator(in: self.navigationController!.view!)
             self.invites.removeAll();
             
             // Get all of the user's inviteIds

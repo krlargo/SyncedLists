@@ -18,6 +18,8 @@ class NotesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        notesTextView.delegate = self;
 
         Utility.showActivityIndicator(in: self.navigationController!.view!);
         
@@ -32,5 +34,20 @@ class NotesViewController: UIViewController {
             self.notesTextView.attributedText = NSAttributedString(string: text ?? "", attributes: attributes);
             Utility.hideActivityIndicator();
         });
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated);
+        saveToDatabase();
+    }
+}
+
+extension NotesViewController: UITextViewDelegate {
+    func textViewDidEndEditing(_ textView: UITextView) {
+        saveToDatabase();
+    }
+    
+    func saveToDatabase() {
+        listsRef.child(listID).updateChildValues(["notes": notesTextView.text ?? NSNull()]);
     }
 }
