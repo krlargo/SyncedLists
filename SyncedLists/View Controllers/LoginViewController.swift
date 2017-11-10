@@ -129,7 +129,9 @@ class LoginViewController: UIViewController {
         }
         
         // Setup textfields
+        emailTextField.clearButtonMode = .whileEditing;
         emailTextField.delegate = self;
+        passwordTextField.clearButtonMode = .whileEditing;
         passwordTextField.delegate = self;
         
         let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));

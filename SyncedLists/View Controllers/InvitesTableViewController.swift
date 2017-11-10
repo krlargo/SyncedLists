@@ -48,8 +48,8 @@ class InvitesTableViewController: UITableViewController {
                     // Load list name
                     var listName = "", senderName = "";
                     self.listsRef.child(listID).observeSingleEvent(of: .value, with: { snapshot in
-                        let snapshotValue = snapshot.value as! [String: String];
-                        listName = snapshotValue["name"]!;
+                        let snapshotValue = snapshot.value as! [String: Any];
+                        listName = snapshotValue["name"] as! String;
                         
                         // Load sender name
                         self.usersRef.child(senderID).observeSingleEvent(of: .value, with: { snapshot in
