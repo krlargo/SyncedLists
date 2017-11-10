@@ -22,22 +22,27 @@ class LoginViewController: UIViewController {
     @IBAction func login(_ sender: Any) {
         ///,,,
         if(emailTextField.text! == "" && passwordTextField.text! == "") {
-            Auth.auth().signIn(withEmail: "xkevlar@live.com", password: "abc123");
-            self.performSegue(withIdentifier: "loginSegue", sender: nil);
-        }
+            Auth.auth().signIn(withEmail: "xkevlar@live.com", password: "abc123", completion: { (user, error) in
+                guard let error = error else {
+                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                    return;
+                }
+                Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+            });
+        } else {
         ///'''
-        
-        Utility.showActivityIndicator(in: self.view);
-        
-        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
-            if(error == nil) { // Attempt login if account already exists
-                Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!);
-                self.performSegue(withIdentifier: "loginSegue", sender: nil);
-            } else {
-                Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
-            }
-            Utility.hideActivityIndicator();
-        });
+            
+            Utility.showActivityIndicator(in: self.view);
+            
+            Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
+                if(error == nil) { // Attempt login if account already exists
+                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                } else {
+                    Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
+                }
+                Utility.hideActivityIndicator();
+            });
+        } ///
     }
     
     @IBAction func signUp(_ sender: Any) {
