@@ -584,12 +584,6 @@
                                 <segue destination="D61-RX-dAp" kind="unwind" unwindAction="unwindToLoginWithSegue:" id="ZwD-yk-tvo"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Debug" id="kof-Jm-2RK">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <connections>
-                                <action selector="debug:" destination="lnm-PE-Xjr" id="zf0-0W-0v1"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="deleteAccountCell" destination="3Mw-Do-ggo" id="tRY-D0-rbl"/>
