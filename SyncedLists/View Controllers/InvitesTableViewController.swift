@@ -17,13 +17,49 @@ class InvitesTableViewController: UITableViewController {
     let invitesRef = Database.database().reference(withPath: "invites");
     var userRef: DatabaseReference!
     
-    var invites: [String] = [];
+    var invites: [(listID: String, senderID: String)] = [];
     var user: User!
     var handle: AuthStateDidChangeListenerHandle?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        Utility.showActivityIndicator(in: self.navigationController!.view!)
+        
+        user = User(authData: Auth.auth().currentUser!);
+        usersRef.child(user.id).child("inviteIDs").observe(.value, with: { snapshot in
+            self.invites = [];
+            
+            // Get all of the user's inviteIds
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let inviteID = snapshot.key;
+                self.invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
+                    let snapshotValue = snapshot.value as! [String: String];
+                    let listID = snapshotValue["listID"]!;
+                    let senderID = snapshotValue["senderID"]!;
+                    
+                    // Get list name
+                    var listName = "", senderName = "";
+                    self.listsRef.child(listID).observeSingleEvent(of: .value, with: { snapshot in
+                        let snapshotValue = snapshot.value as! [String: String];
+                        listName = snapshotValue["name"]!;
+                        
+                        // Get sender's name
+                        self.usersRef.child(senderID).observeSingleEvent(of: .value, with: { snapshot in
+                            let snapshotValue = snapshot.value as! [String: Any];
+                            senderName = snapshotValue["name"] as! String!;
+                            
+                            let invite = (listName, senderName);
+                            
+                            
+                            self.invites.append(invite);
+                            self.tableView.reloadData();
+                            Utility.hideActivityIndicator();
+                        });
+                    });
+                });
+            }
+        });
     }
 
     // MARK: - Table view data source
@@ -39,17 +75,14 @@ class InvitesTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "invitesCell");
         
         if(invites.isEmpty) {
-            tableView.allowsSelection = false;
-            
             cell!.textLabel!.text = "No Invites";
             cell!.textLabel!.textColor = UIColor.lightGray;
             
             return cell!;
-        } else {
-            tableView.allowsSelection = true;
-            
-            cell!.textLabel!.text = "";
         }
+        
+        cell!.textLabel!.text = invites[indexPath.row].listID;
+        cell!.textLabel!.textColor = UIColor.darkText;
         
         return cell!;
     }
