@@ -73,7 +73,7 @@ class LoginViewController: UIViewController {
                             
                             // Add user to EMAILS
                             let emailsRef = Database.database().reference(withPath: "emails");
-                            emailsRef.child(User.emailToID(currentUser.email)).setValue(currentUser.uid);
+                            emailsRef.child(User.emailToID(currentUser.email!)).setValue(currentUser.uid);
                             
                             self.performSegue(withIdentifier: "loginSegue", sender: nil);
                         } else {

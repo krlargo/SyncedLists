@@ -48,7 +48,7 @@ class User {
             userRef.removeValue(); // Delete user when finished
         });
         
-        emailsRef.child(User.emailToID(user.email)).removeValue();
+        emailsRef.child(User.emailToID(self.email)).removeValue();
     }
     
     class func emailToID(_ email: String) -> String {
