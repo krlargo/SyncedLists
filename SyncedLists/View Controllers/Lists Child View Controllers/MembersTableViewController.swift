@@ -16,6 +16,8 @@ class MembersTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
     }
 
     // MARK: - Table view data source
@@ -24,23 +26,11 @@ class MembersTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (members.isEmpty) ? 1 : members.count;
+        return members.count;
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "membersCell")!;
-
-        if(members.isEmpty) {
-            tableView.allowsSelection = false;
-            
-            cell.textLabel!.text = "No Invites";
-            cell.textLabel!.textColor = UIColor.lightGray;
-            
-            return cell;
-        }
-        
-        tableView.allowsSelection = true;
-        cell.textLabel!.text = "";
 
         return cell;
     }
