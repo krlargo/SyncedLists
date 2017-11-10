@@ -14,7 +14,8 @@ import UIKit
 class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     // MARK: - Variables
     var itemsRef = Database.database().reference(withPath: "items");
-
+    var listID: String!
+    
     var items: [Item] = [];
     var user: User!
     
@@ -113,7 +114,7 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
             (item.addedByUserName == nil) ?
             "" : "Added: \(item.addedByUserName!)";
         
-        if(item.completedByUser == nil || item.completedByUserName == nil) {
+        if(item.completedByUserID == nil || item.completedByUserName == nil) {
             cell.completedByLabel.text = "";
             cell.accessoryType = .none;
         } else {
@@ -130,15 +131,15 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell") as! ItemCell;
         let item = items[indexPath.row];
         
-        if(item.completedByUser == nil) {
-            item.completedByUser = user.id;
+        if(item.completedByUserID == nil) {
+            item.completedByUserID = user.id;
             item.completedByUserName = user.name;
         } else {
-            item.completedByUser = nil;
+            item.completedByUserID = nil;
             item.completedByUserName = nil;
         }
         
-        item.ref?.updateChildValues(["completedByUser": item.completedByUser ?? NSNull()]);
+        item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -151,6 +152,19 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         }
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch(segue.identifier!) {
+        case "listMembersSegue":
+            let membersTVC = segue.destination as! MembersTableViewController;
+            membersTVC.listID = self.listID;
+        case "listNotesSegue":
+            let notesVC = segue.destination as! NotesViewController;
+            notesVC.listID = self.listID;
+        default:
+            return;
+        }
+    }
+    
     func showMembersTVC() {
         performSegue(withIdentifier: "listMembersSegue", sender: self);
     }
@@ -158,6 +172,7 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     func showNotesVC() {
         performSegue(withIdentifier: "listNotesSegue", sender: self);
     }
+    
 }
 
 extension ItemsTableViewController: UIPopoverPresentationControllerDelegate {
