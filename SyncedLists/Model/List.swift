@@ -11,7 +11,7 @@ import Foundation
 
 class List {
     var name: String;
-    var owner: String;
+    var ownerID: String;
     
     var ref: DatabaseReference? // Needed for deletion
     var id: String?
@@ -23,7 +23,7 @@ class List {
     init(snapshot: DataSnapshot, completionHandler: @escaping () -> Void) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.name = snapshotValue["name"] as! String;
-        self.owner = snapshotValue["owner"] as! String;
+        self.ownerID = snapshotValue["ownerID"] as! String;
         self.ref = snapshot.ref;
         self.id = snapshot.key;
         
@@ -34,7 +34,7 @@ class List {
             
             var completedCount = 0;
             for item in snapshot.children.allObjects as! [DataSnapshot] {
-                if(item.hasChild("completedByUser")) {
+                if(item.hasChild("completedByUserID")) {
                     completedCount += 1;
                 }
             }
@@ -45,9 +45,9 @@ class List {
     }
     
     // Constructor for locally created Item
-    init(name: String, owner: String) {
+    init(name: String, id: String) {
         self.name = name;
-        self.owner = owner;
+        self.ownerID = id;
         self.ref = nil;
         self.id = nil;
     }
@@ -55,7 +55,7 @@ class List {
     func toAnyObject() -> Any {
         return [
             "name": self.name,
-            "owner": self.owner
+            "ownerID": self.ownerID
         ];
     }
 }
