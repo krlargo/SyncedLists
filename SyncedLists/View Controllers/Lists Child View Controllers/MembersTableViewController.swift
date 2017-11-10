@@ -9,13 +9,10 @@
 import UIKit
 
 class MembersTableViewController: UITableViewController {
-    let listsRef = Database.database().reference(withPath: "lists");
-    var userRef: DatabaseReference!
+    
+    var listID: String!
     
     var members: [User] = [];
-    var user: User!
-
-    var handle: AuthStateDidChangeListenerHandle?
     
     override func viewDidLoad() {
         super.viewDidLoad()
