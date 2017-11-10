@@ -57,18 +57,24 @@ class LoginViewController: UIViewController {
             Utility.showActivityIndicator(in: self.view);
 
             Auth.auth().createUser(withEmail: email, password: password) { user, error in
-                if(error == nil) { // Attempt login if account already exists
+                if(error == nil) {
+                    // Login and add user metadata to database
                     Auth.auth().signIn(withEmail: email, password: password);
                     let currentUser = Auth.auth().currentUser!
                     let changeRequest = currentUser.createProfileChangeRequest();
                     changeRequest.displayName = displayName;
                     changeRequest.commitChanges(completion: { error in
                         if(error == nil) {
+                            // Add user to USERS
                             let usersRef = Database.database().reference(withPath: "users");
-
                             let newUserRef = usersRef.child(currentUser.uid);
                             newUserRef.child("name").setValue(currentUser.displayName);
                             newUserRef.child("email").setValue(currentUser.email);
+                            
+                            // Add user to EMAILS
+                            let emailsRef = Database.database().reference(withPath: "emails");
+                            emailsRef.child(User.emailToID(currentUser.email)).setValue(currentUser.uid);
+                            
                             self.performSegue(withIdentifier: "loginSegue", sender: nil);
                         } else {
                             Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
@@ -125,6 +131,7 @@ class LoginViewController: UIViewController {
         // Setup textfields
         emailTextField.delegate = self;
         passwordTextField.delegate = self;
+        
         let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));
         self.view.addGestureRecognizer(dismissKeyboardGesture);
     }
