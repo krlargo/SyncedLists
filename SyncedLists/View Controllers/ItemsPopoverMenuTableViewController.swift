@@ -73,10 +73,13 @@ class ItemsPopoverMenuTableViewController: UITableViewController {
             itemRef.setValue(item.toAnyObject());
             
             self.tableView.reloadData();
+            self.dismiss(animated: true, completion: nil);
         });
         saveAction.isEnabled = false;
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel);
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            self.dismiss(animated: true, completion: nil);
+        });
         
         alert.addTextField { itemNameTextField in
             itemNameTextField.autocapitalizationType = .words;
