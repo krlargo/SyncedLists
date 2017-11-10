@@ -680,6 +680,9 @@
                             <outlet property="delegate" destination="S1b-3w-NWN" id="FLh-wy-ehg"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="Members" id="Gjh-Kz-BYf">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="AaK-SX-OvT"/>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gGA-d5-c4I" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
