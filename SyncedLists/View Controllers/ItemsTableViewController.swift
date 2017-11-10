@@ -134,12 +134,12 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row];
         
-        if let completedByUser = item.completedByUser {
-            item.completedByUser = nil;
-            item.completedByUserName = nil;
-        } else {
+        if(item.completedByUser == nil) {
             item.completedByUser = user.id;
             item.completedByUserName = user.name;
+        } else {
+            item.completedByUser = nil;
+            item.completedByUserName = nil;
         }
         
         item.ref?.updateChildValues(["completedByUser": item.completedByUser ?? NSNull()]);
@@ -154,11 +154,18 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
             return;
         }
     }
+    
+    func showMembersTVC() {
+        performSegue(withIdentifier: "listMembersSegue", sender: self);
+    }
+    
+    func showNotesVC() {
+        performSegue(withIdentifier: "listNotesSegue", sender: self);
+    }
 }
 
 extension ItemsTableViewController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        print("delegate method ran")
         return UIModalPresentationStyle.none
     }
 }
