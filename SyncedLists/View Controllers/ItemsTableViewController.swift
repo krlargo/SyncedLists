@@ -11,45 +11,33 @@ import FirebaseDatabase
 import Foundation
 import UIKit
 
-class ItemsTableViewController: UITableViewController {
-
+class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     // MARK: - Variables
-    var listID: String!
     var itemsRef = Database.database().reference(withPath: "items");
-    
-    var items: [Item] = [];
-    var user: User!
     var handle: AuthStateDidChangeListenerHandle?
 
+    var listID: String!
+    var items: [Item] = [];
+    var user: User!
+
     // MARK: - IBActions
-    @IBAction func addItem(_ sender: Any) {
-        let alert = UIAlertController(title: "Add Item", message: "", preferredStyle: .alert);
+    @IBAction func manageList(_ sender: UIBarButtonItem) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil);
+        let itemsPopoverMenuVC = storyboard.instantiateViewController(withIdentifier: "itemsPopoverMenu") as! ItemsPopoverMenuTableViewController;
         
-        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
-            guard let textField = alert.textFields?.first,
-                let text = textField.text else { return; }
-            
-            let item = Item(name: text, addedBy: self.user);
-            let itemRef = self.itemsRef.childByAutoId();
-            itemRef.setValue(item.toAnyObject());
-            
-            self.tableView.reloadData();
-        });
-        saveAction.isEnabled = false;
+        itemsPopoverMenuVC.preferredContentSize = CGSize(width: 150, height: 119);
+        itemsPopoverMenuVC.modalPresentationStyle = .popover;
+        itemsPopoverMenuVC.delegate = self;
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel);
-        
-        alert.addTextField { itemNameTextField in
-            itemNameTextField.autocapitalizationType = .words;
-            itemNameTextField.placeholder = "List Name";
+        if let popover = itemsPopoverMenuVC.popoverPresentationController {
+            popover.backgroundColor = UIColor.white;
+            popover.barButtonItem = sender;
+            popover.delegate = self;
+            popover.permittedArrowDirections = .up;
+            popover.sourceView = sender.customView;
         }
         
-        alert.setupTextFields();
-        
-        alert.addAction(cancelAction);
-        alert.addAction(saveAction);
-        
-        present(alert, animated: true, completion: nil)
+        present(itemsPopoverMenuVC, animated: true, completion: nil);
     }
     
     // MARK: Overridden Methods
@@ -165,6 +153,13 @@ class ItemsTableViewController: UITableViewController {
         default:
             return;
         }
+    }
+}
+
+extension ItemsTableViewController: UIPopoverPresentationControllerDelegate {
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        print("delegate method ran")
+        return UIModalPresentationStyle.none
     }
 }
 
