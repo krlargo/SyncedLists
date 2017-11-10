@@ -11,7 +11,6 @@ import FirebaseDatabase
 import UIKit
 
 class SettingsTableViewController: UITableViewController {
-    
     // MARK: - Variables
     var user: User!
     var userRef: DatabaseReference!

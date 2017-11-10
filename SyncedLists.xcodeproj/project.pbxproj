@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		380676EB1FB04BBE0037E348 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380676EA1FB04BBE0037E348 /* LoginViewController.swift */; };
 		384B31A61FB5163400323BA6 /* ItemsPopoverMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384B31A51FB5163400323BA6 /* ItemsPopoverMenuTableViewController.swift */; };
+		384B31A91FB55E1000323BA6 /* MembersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384B31A81FB55E1000323BA6 /* MembersTableViewController.swift */; };
+		384B31AB1FB5717200323BA6 /* NotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384B31AA1FB5717200323BA6 /* NotesViewController.swift */; };
 		386555521FB2F51400427C57 /* AlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386555511FB2F51400427C57 /* AlertController+Extension.swift */; };
 		386555561FB3A3FF00427C57 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386555551FB3A3FF00427C57 /* SettingsTableViewController.swift */; };
 		3889E7521F957A9C00FB0BE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3889E7511F957A9C00FB0BE7 /* AppDelegate.swift */; };
@@ -54,6 +56,8 @@
 		23620DF085DFA26351F4B182 /* Pods-SyncedListsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SyncedListsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SyncedListsTests/Pods-SyncedListsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		380676EA1FB04BBE0037E348 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		384B31A51FB5163400323BA6 /* ItemsPopoverMenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsPopoverMenuTableViewController.swift; sourceTree = "<group>"; };
+		384B31A81FB55E1000323BA6 /* MembersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersTableViewController.swift; sourceTree = "<group>"; };
+		384B31AA1FB5717200323BA6 /* NotesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewController.swift; sourceTree = "<group>"; };
 		385A2CC01FB1A1D10075178C /* SyncedLists.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SyncedLists.entitlements; sourceTree = "<group>"; };
 		386555511FB2F51400427C57 /* AlertController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertController+Extension.swift"; sourceTree = "<group>"; };
 		386555551FB3A3FF00427C57 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -126,6 +130,17 @@
 				BB22A6B4DD655134C0FD20AB /* Pods-SyncedListsUITests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		384B31A71FB55DE400323BA6 /* Lists Child View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3889E7881F95876F00FB0BE7 /* ItemsTableViewController.swift */,
+				384B31A51FB5163400323BA6 /* ItemsPopoverMenuTableViewController.swift */,
+				384B31A81FB55E1000323BA6 /* MembersTableViewController.swift */,
+				384B31AA1FB5717200323BA6 /* NotesViewController.swift */,
+			);
+			path = "Lists Child View Controllers";
 			sourceTree = "<group>";
 		};
 		3889E7451F957A9C00FB0BE7 = {
@@ -216,8 +231,7 @@
 			children = (
 				380676EA1FB04BBE0037E348 /* LoginViewController.swift */,
 				3889E7931F988A4F00FB0BE7 /* ListsTableViewController.swift */,
-				3889E7881F95876F00FB0BE7 /* ItemsTableViewController.swift */,
-				384B31A51FB5163400323BA6 /* ItemsPopoverMenuTableViewController.swift */,
+				384B31A71FB55DE400323BA6 /* Lists Child View Controllers */,
 				38D9A1FD1FB45C0400501321 /* InvitesTableViewController.swift */,
 				386555551FB3A3FF00427C57 /* SettingsTableViewController.swift */,
 			);
@@ -560,8 +574,10 @@
 				3889E7941F988A5700FB0BE7 /* ListsTableViewController.swift in Sources */,
 				3889E7891F95876F00FB0BE7 /* ItemsTableViewController.swift in Sources */,
 				386555561FB3A3FF00427C57 /* SettingsTableViewController.swift in Sources */,
+				384B31A91FB55E1000323BA6 /* MembersTableViewController.swift in Sources */,
 				3889E7961F988BD900FB0BE7 /* List.swift in Sources */,
 				386555521FB2F51400427C57 /* AlertController+Extension.swift in Sources */,
+				384B31AB1FB5717200323BA6 /* NotesViewController.swift in Sources */,
 				3889E7521F957A9C00FB0BE7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

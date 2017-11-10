@@ -18,7 +18,6 @@ protocol ItemsMenuDelegate {
 
 class ItemsPopoverMenuTableViewController: UITableViewController {
     var delegate: ItemsMenuDelegate!
-    var dismissPopover: (() -> Void)!
     
     // MARK: - IBOutlets
     @IBOutlet weak var addItemCell: UITableViewCell!

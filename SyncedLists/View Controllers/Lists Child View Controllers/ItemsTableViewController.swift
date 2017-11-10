@@ -14,12 +14,12 @@ import UIKit
 class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     // MARK: - Variables
     var itemsRef = Database.database().reference(withPath: "items");
-    var handle: AuthStateDidChangeListenerHandle?
 
-    var listID: String!
     var items: [Item] = [];
     var user: User!
-
+    
+    var handle: AuthStateDidChangeListenerHandle?
+    
     // MARK: - IBActions
     @IBAction func manageList(_ sender: UIBarButtonItem) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil);
@@ -89,15 +89,12 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return (items.isEmpty) ? 1 : items.count;
-
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell") as! ItemCell;
-        
+
         if(items.isEmpty) {
-            tableView.allowsSelection = false;
-            
             cell.textLabel!.text = "No Items";
             cell.textLabel!.textColor = UIColor.lightGray;
             
@@ -107,10 +104,6 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
             
             cell.accessoryType = .none;
             return cell;
-        } else {
-            tableView.allowsSelection = true;
-            
-            cell.textLabel!.text = "";
         }
         
         let item = items[indexPath.row];
@@ -132,6 +125,9 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if(items.isEmpty) { return; }
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell") as! ItemCell;
         let item = items[indexPath.row];
         
         if(item.completedByUser == nil) {
@@ -181,5 +177,9 @@ class ItemCell: UITableViewCell {
     
     required init?(coder decoder: NSCoder) {
         super.init(coder: decoder)
+    }
+    
+    override func prepareForReuse() {
+        self.textLabel?.text = "";
     }
 }
