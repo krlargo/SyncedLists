@@ -175,7 +175,7 @@
                     </navigationItem>
                     <connections>
                         <segue destination="S1b-3w-NWN" kind="show" identifier="listMembersSegue" id="J0B-Qf-KK0"/>
-                        <segue destination="SGM-TE-UNg" kind="show" identifier="listNodeSegue" id="8mC-L0-VB5"/>
+                        <segue destination="SGM-TE-UNg" kind="show" identifier="listNotesSegue" id="8mC-L0-VB5"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4In-2T-sdk" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -256,7 +256,7 @@
                     <connections>
                         <outlet property="addItemCell" destination="p6f-FE-xbv" id="7NE-LR-xh4"/>
                         <outlet property="membersCell" destination="W1f-sg-8Rh" id="K7L-9a-62l"/>
-                        <outlet property="notesCell" destination="jm6-gI-BOW" id="LTb-Ml-RfU"/>
+                        <outlet property="notesCell" destination="tmV-PE-b0S" id="KJe-wC-qbT"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HfY-PQ-1z3" userLabel="First Responder" sceneMemberID="firstResponder"/>
