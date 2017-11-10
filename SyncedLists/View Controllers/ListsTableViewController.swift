@@ -31,7 +31,7 @@ class ListsTableViewController: UITableViewController {
                 let text = textField.text else { return; }
             
             // Add list to LISTS in database
-            let list = List(name: text, owner: self.user.email);
+            let list = List(name: text, id: self.user.id);
             
             let newListRef = self.listsRef.childByAutoId();
             newListRef.setValue(list.toAnyObject());
