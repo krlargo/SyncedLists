@@ -38,7 +38,7 @@ class Utility {
     class func presentErrorAlert(message: String, from viewController: UIViewController) {
         let errorAlert = UIAlertController(title: "Error", message: "\n\(message)\n\n", preferredStyle: .alert);
         viewController.present(errorAlert, animated: true, completion: {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
                 errorAlert.dismiss(animated: true, completion: {
                     Utility.hideActivityIndicator();
                 });
