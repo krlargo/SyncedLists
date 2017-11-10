@@ -25,27 +25,33 @@ class InvitesTableViewController: UITableViewController {
         super.viewDidLoad()
         
         user = User(authData: Auth.auth().currentUser!);
+        
+        // Load user invites
         usersRef.child(user.id).child("inviteIDs").observe(.value, with: { snapshot in
+            // Used so we know to stop activity animator if there are no invites
+            var loadingInvites = false;
 
             Utility.showActivityIndicator(in: self.navigationController!.view!)
             self.invites.removeAll();
             
-            // Get all of the user's inviteIds
+            // For each user invite
             for case let snapshot as DataSnapshot in snapshot.children {
-                let inviteID = snapshot.key;
+                loadingInvites = true;
                 
+                // Load invite metadata
+                let inviteID = snapshot.key;
                 self.invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
                     let snapshotValue = snapshot.value as! [String: String];
                     let listID = snapshotValue["listID"]!;
                     let senderID = snapshotValue["senderID"]!;
                     
-                    // Get list name
+                    // Load list name
                     var listName = "", senderName = "";
                     self.listsRef.child(listID).observeSingleEvent(of: .value, with: { snapshot in
                         let snapshotValue = snapshot.value as! [String: String];
                         listName = snapshotValue["name"]!;
                         
-                        // Get sender's name
+                        // Load sender name
                         self.usersRef.child(senderID).observeSingleEvent(of: .value, with: { snapshot in
                             let snapshotValue = snapshot.value as! [String: Any];
                             senderName = snapshotValue["name"] as! String!;
@@ -53,13 +59,21 @@ class InvitesTableViewController: UITableViewController {
                             let invite = (inviteID, listName, senderName);
                             
                             self.invites.append(invite);
-                            self.tableView.reloadData();
-                            Utility.hideActivityIndicator();
-                        });
-                    });
-                });
+                            
+                            defer {
+                                self.tableView.reloadData();
+                                Utility.hideActivityIndicator();
+                            }
+                        }); // Load sender name
+                    }); // Load list name
+                }); // Load invite metadata
+            } // For each invite
+            
+            if(!loadingInvites) {
+                self.tableView.reloadData();
+                Utility.hideActivityIndicator();
             }
-        });
+        }); // Load user invites
     }
 
     // MARK: - Table view data source
@@ -110,6 +124,8 @@ class InvitesTableViewController: UITableViewController {
         default:
             break;
         }
+        
+        tableView.reloadData();
     }
     
     func presentInviteAlert(index: Int) {
