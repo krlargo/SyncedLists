@@ -28,7 +28,8 @@ class InvitesTableViewController: UITableViewController {
         
         user = User(authData: Auth.auth().currentUser!);
         usersRef.child(user.id).child("inviteIDs").observe(.value, with: { snapshot in
-            self.invites = [];
+
+            self.invites.removeAll();
             
             // Get all of the user's inviteIds
             for case let snapshot as DataSnapshot in snapshot.children {
