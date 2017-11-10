@@ -220,7 +220,7 @@ class SettingsTableViewController: UITableViewController {
                 } else {
                     // Delete related queries
                     self.user.deleteCascadingData();
-                    self.performSegue(withIdentifier: "settingsToLogin", sender: self);
+                    self.performSegue(withIdentifier: "settingsToLoginSegue", sender: self);
                 }
                 Utility.hideActivityIndicator();
             });
