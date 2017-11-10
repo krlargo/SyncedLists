@@ -34,6 +34,7 @@ class User {
         let usersRef = ref.child("users");
         let listsRef = ref.child("lists");
         let itemsRef = ref.child("items");
+        let emailsRef = ref.child("emails");
         
         let userRef = usersRef.child(self.id);
         
@@ -46,5 +47,15 @@ class User {
             }
             userRef.removeValue(); // Delete user when finished
         });
+        
+        emailsRef.child(User.emailToID(user.email)).removeValue();
+    }
+    
+    class func emailToID(_ email: String) -> String {
+        return email.replacingOccurrences(of: ".", with: ",");
+    }
+    
+    class func IDToEmail(_ id: String) -> String {
+        return id.replacingOccurrences(of: ",", with: ".");
     }
 }
