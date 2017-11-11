@@ -20,7 +20,8 @@ class MembersTableViewController: UITableViewController {
     var listID: String!
     var listOwnerName: String!
     
-    var members: [(id: String, name: String)] = [];
+    var joinedUsers: [(id: String, name: String)] = [];
+    var invitedUsers: [(id: String, name: String)] = [];
     
     // MARK: - IBActions
     @IBAction func addMember(_ sender: Any) {
@@ -57,8 +58,8 @@ class MembersTableViewController: UITableViewController {
                     let recipientUserRef = self.usersRef.child(recipientID);
                     recipientUserRef.child("inviteIDs").child(inviteID).setValue(true);
                     
-                    // Add recipient to LISTS members
-                    self.listRef.child("memberIDs").child(recipientID).setValue(true);
+                    // Add recipient to LISTS invitedIDs
+                    self.listRef.child("invitedIDs").child(recipientID).setValue(true);
                 } else {
                     Utility.presentErrorAlert(message: "User with email \"\(email)\" does not exist.", from: self);
                 }
@@ -106,13 +107,13 @@ class MembersTableViewController: UITableViewController {
             });
         });
         
-        // Get memberIDs
+        // Load joined users
         listRef.child("memberIDs").observe(.value, with: { snapshot in
             var loadingMembers = false;
             
             Utility.showActivityIndicator(in: self.navigationController!.view!);
             
-            self.members.removeAll();
+            self.joinedUsers.removeAll();
             
             for case let snapshot as DataSnapshot in snapshot.children {
                 loadingMembers = true;
@@ -120,7 +121,34 @@ class MembersTableViewController: UITableViewController {
                 let memberID = snapshot.key;
                 self.usersRef.child(memberID).child("name").observeSingleEvent(of: .value, with: { snapshot in
                     let memberName = snapshot.value as! String;
-                    self.members.append((memberID, memberName));
+                    self.joinedUsers.append((memberID, memberName));
+                });
+                
+                self.tableView.reloadData();
+                Utility.hideActivityIndicator();
+            }
+            
+            if(!loadingMembers) {
+                self.tableView.reloadData();
+                Utility.hideActivityIndicator();
+            }
+        });
+        
+        // Load invited users
+        listRef.child("invitedIDs").observe(.value, with: { snapshot in
+            var loadingMembers = false;
+            
+            Utility.showActivityIndicator(in: self.navigationController!.view!);
+            
+            self.invitedUsers.removeAll();
+            
+            for case let snapshot as DataSnapshot in snapshot.children {
+                loadingMembers = true;
+                
+                let invitedID = snapshot.key;
+                self.usersRef.child(invitedID).child("name").observeSingleEvent(of: .value, with: { snapshot in
+                    let invitedName = snapshot.value as! String;
+                    self.joinedUsers.append((invitedID, invitedName));
                 });
                 
                 self.tableView.reloadData();
@@ -140,7 +168,7 @@ class MembersTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return members.count + 1;
+        return joinedUsers.count + invitedUsers.count + 1;
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -149,14 +177,18 @@ class MembersTableViewController: UITableViewController {
         if(indexPath.row == 0) {
             cell.textLabel!.text = listOwnerName;
             cell.detailTextLabel!.text = "Owner";
-            return cell;
+        } else if(indexPath.row <= joinedUsers.count) {
+            let index = indexPath.row-1; // Offset due to owner
+        
+            cell.textLabel!.text = joinedUsers[index].name;
+            cell.detailTextLabel!.text = "Joined";
+        } else {
+            let index = indexPath.row-joinedUsers.count-1; // Offset due to owner+members
+            
+            cell.textLabel!.text = invitedUsers[index].name;
+            cell.detailTextLabel!.text = "Invited";
         }
-        
-        let index = indexPath.row-1; // Offset due to owner
-        
-        cell.textLabel!.text = members[index].name;
-        cell.detailTextLabel!.text = "Invited/Joined";
-        
+
         return cell;
     }
     
