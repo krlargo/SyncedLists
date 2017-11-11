@@ -23,11 +23,11 @@ class LoginViewController: UIViewController {
         ///,,,
         if(emailTextField.text! == "" && passwordTextField.text! == "") {
             Auth.auth().signIn(withEmail: "xkevlar@live.com", password: "abc123", completion: { (user, error) in
-                guard let error = error else {
+                if let error = error {
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+                } else {
                     self.performSegue(withIdentifier: "loginSegue", sender: nil);
-                    return;
                 }
-                Utility.presentErrorAlert(message: error.localizedDescription, from: self);
             });
         } else {
         ///'''
@@ -35,10 +35,10 @@ class LoginViewController: UIViewController {
             Utility.showActivityIndicator(in: self.view);
             
             Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
-                if(error == nil) { // Attempt login if account already exists
-                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                if let error = error { // Attempt login if account already exists
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
-                    Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
+                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
                 }
                 Utility.hideActivityIndicator();
             });
