@@ -45,9 +45,9 @@ class List {
     }
     
     // Constructor for locally created Item
-    init(name: String, id: String) {
+    init(name: String, ownerID: String) {
         self.name = name;
-        self.ownerID = id;
+        self.ownerID = ownerID;
         self.ref = nil;
         self.id = nil;
     }
@@ -57,6 +57,13 @@ class List {
             "name": self.name,
             "ownerID": self.ownerID
         ];
+    }
+    
+    func delete() {
+        // Remove list from ITEMS
+        let itemsRef = Database.database().reference(withPath: "items");
+        itemsRef.child(self.id!).removeValue();
+        self.ref?.removeValue(); // Remove list from LISTS
     }
 }
 

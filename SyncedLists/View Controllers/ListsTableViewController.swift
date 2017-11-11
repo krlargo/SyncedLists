@@ -31,7 +31,7 @@ class ListsTableViewController: UITableViewController {
                 let text = textField.text else { return; }
             
             // Add list to LISTS in database
-            let list = List(name: text, id: self.user.id);
+            let list = List(name: text, ownerID: self.user.id);
             
             let newListRef = self.listsRef.childByAutoId();
             newListRef.setValue(list.toAnyObject());
@@ -148,8 +148,12 @@ class ListsTableViewController: UITableViewController {
         case .delete:
             let list = lists[indexPath.row];
             let userListRef = userRef.child("listIDs").child(list.id!);
-            userListRef.removeValue(); // Remove list from USERS
-            list.ref?.removeValue(); // Remove list from LISTS
+            userListRef.removeValue(); // Remove list from user in USER
+
+            // If user is list owner, then delete entire list from database
+            if(list.ownerID == user.id) {
+                list.delete();
+            }
         default:
             return;
         }
