@@ -29,7 +29,7 @@ class User {
         ];
     }
 
-    func deleteCascadingData() {
+    func delete() {
         let ref = Database.database().reference();
         let usersRef = ref.child("users");
         let listsRef = ref.child("lists");
