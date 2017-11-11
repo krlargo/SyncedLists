@@ -17,7 +17,7 @@ class User {
     
     // Constructor for Firebase-loaded User
     init(authData: FirebaseAuth.User) {
-        self.name = authData.dissplayName!;
+        self.name = authData.displayName!;
         self.email = authData.email!;
         self.id = authData.uid;
     }
