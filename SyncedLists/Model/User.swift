@@ -17,7 +17,7 @@ class User {
     
     // Constructor for Firebase-loaded User
     init(authData: FirebaseAuth.User) {
-        self.name = authData.displayName!;
+        self.name = authData.dissplayName!;
         self.email = authData.email!;
         self.id = authData.uid;
     }
@@ -42,13 +42,13 @@ class User {
             // Iterate through each of the user's lists
             for case let snapshot as DataSnapshot in snapshot.children {
                 let listID = snapshot.key;
-                listsRef.child(listID).removeValue(); // Delete list with listID
-                itemsRef.child(listID).removeValue(); // Delete items with listID
+                listsRef.child(listID).removeValue(); // Delete user's list from LISTS
+                itemsRef.child(listID).removeValue(); // Delete user's list's items from ITEMS
             }
-            userRef.removeValue(); // Delete user when finished
+            userRef.removeValue(); // Delete from USERS
         });
         
-        emailsRef.child(User.emailToID(self.email)).removeValue();
+        emailsRef.child(User.emailToID(self.email)).removeValue(); //
     }
     
     class func emailToID(_ email: String) -> String {
