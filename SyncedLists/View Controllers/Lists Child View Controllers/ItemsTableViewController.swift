@@ -144,7 +144,7 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         switch(editingStyle) {
         case .delete:
             let item = items[indexPath.row];
-            item.ref?.removeValue();
+            item.delete();
         default:
             return;
         }

@@ -61,4 +61,8 @@ class Item {
             "completedByUserID": self.completedByUserID
         ];
     }
+    
+    func delete() {
+        self.ref?.removeValue();
+    }
 }
