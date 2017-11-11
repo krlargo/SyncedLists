@@ -42,13 +42,13 @@ class User {
             // Iterate through each of the user's lists
             for case let snapshot as DataSnapshot in snapshot.children {
                 let listID = snapshot.key;
-                listsRef.child(listID).removeValue(); // Delete user's list from LISTS
-                itemsRef.child(listID).removeValue(); // Delete user's list's items from ITEMS
+                listsRef.child(listID).removeValue(); // Delete from LISTS
+                itemsRef.child(listID).removeValue(); // Delete from ITEMS
             }
             userRef.removeValue(); // Delete from USERS
         });
         
-        emailsRef.child(User.emailToID(self.email)).removeValue(); //
+        emailsRef.child(User.emailToID(self.email)).removeValue(); // Delete from EMAILS
     }
     
     class func emailToID(_ email: String) -> String {
