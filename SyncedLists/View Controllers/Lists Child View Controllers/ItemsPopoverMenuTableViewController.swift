@@ -90,6 +90,6 @@ class ItemsPopoverMenuTableViewController: UITableViewController {
         alert.addAction(cancelAction);
         alert.addAction(saveAction);
         
-        present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil);
     }
 }
