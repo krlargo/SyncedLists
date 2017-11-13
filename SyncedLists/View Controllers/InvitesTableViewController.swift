@@ -17,7 +17,8 @@ class InvitesTableViewController: UITableViewController {
     let invitesRef = Database.database().reference(withPath: "invites");
     var userRef: DatabaseReference!
     
-    var invites: [(id: String, listName: String, senderName: String)] = [];
+    //var invites: [(id: String, listName: String, senderName: String)] = [];
+    var invites: [Invite] = [];
     var user: User!
     var handle: AuthStateDidChangeListenerHandle?
     
@@ -26,54 +27,46 @@ class InvitesTableViewController: UITableViewController {
         
         user = User(authData: Auth.auth().currentUser!);
         
-        // Load user invites
-        usersRef.child(user.id).child("inviteIDs").observe(.value, with: { snapshot in
-            // Used so we know to stop activity animator if there are no invites
+        // Load inviteIDs from USER
+        let userRef = usersRef.child(user.id);
+        userRef.child("inviteIDs").observe(.value, with: { snapshot in
             var loadingInvites = false;
-
-            Utility.showActivityIndicator(in: self.navigationController!.view!)
-            self.invites.removeAll();
+            Utility.showActivityIndicator(in: self.view!);
             
-            // For each user invite
+            // Load user's invites
+            self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
                 loadingInvites = true;
+                //Utility.showActivityIndicator(in: self.navigationController!.view!);
                 
-                // Load invite metadata
                 let inviteID = snapshot.key;
-                self.invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
-                    let snapshotValue = snapshot.value as! [String: String];
-                    let listID = snapshotValue["listID"]!;
-                    let senderID = snapshotValue["senderID"]!;
-                    
-                    // Load list name
-                    var listName = "", senderName = "";
-                    self.listsRef.child(listID).observeSingleEvent(of: .value, with: { snapshot in
-                        let snapshotValue = snapshot.value as! [String: Any];
-                        listName = snapshotValue["name"] as! String;
-                        
-                        // Load sender name
-                        self.usersRef.child(senderID).observeSingleEvent(of: .value, with: { snapshot in
-                            let snapshotValue = snapshot.value as! [String: Any];
-                            senderName = snapshotValue["name"] as! String!;
-                            
-                            let invite = (inviteID, listName, senderName);
-                            
+
+                self.invitesRef.observeSingleEvent(of: .value, with: { snapshot in
+                    // Check if inviteID exists in INVITES
+                    if(snapshot.hasChild(inviteID)) {
+                        // Load INVITE metadata
+                        self.invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
+                            let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
                             self.invites.append(invite);
-                            
-                            defer {
-                                self.tableView.reloadData();
-                                Utility.hideActivityIndicator();
-                            }
-                        }); // Load sender name
-                    }); // Load list name
-                }); // Load invite metadata
-            } // For each invite
+                        });
+                    }
+                    // Delete inviteID from USER
+                    else {
+                        userRef.child("inviteIDs").child(inviteID).removeValue();
+                    }
+                });
+                Utility.showActivityIndicator(in: self.navigationController!.view!);
+            }
             
             if(!loadingInvites) {
-                self.tableView.reloadData();
-                Utility.hideActivityIndicator();
+                self.reloadData();
             }
         }); // Load user invites
+    }
+    
+    func reloadData() {
+        self.tableView.reloadData();
+        Utility.hideActivityIndicator();
     }
 
     // MARK: - Table view data source
@@ -118,9 +111,7 @@ class InvitesTableViewController: UITableViewController {
         
         switch(editingStyle) {
         case .delete:
-            // Remove invite from user
-            self.usersRef.child(self.user.id).child("inviteIDs").child(invite.id).removeValue();
-            self.invitesRef.child(invite.id).removeValue();
+            invite.delete();
         default:
             break;
         }
@@ -131,11 +122,21 @@ class InvitesTableViewController: UITableViewController {
     func presentInviteAlert(index: Int) {
         let invite = invites[index];
         
-        let inviteAlert = UIAlertController(title: "Invitation", message: "\(invite.senderName) has invited you to edit \"\(invite.listName)\".", preferredStyle: .alert);
+        let inviteAlert = UIAlertController(title: "Invite", message: "\(invite.senderName!) has invited you to edit \"\(invite.listName!)\".", preferredStyle: .alert);
         
         let acceptAction = UIAlertAction(title: "Accept", style: .default, handler: { alert in
-            // Do nothing for now
-            Utility.presentErrorAlert(message: "Accepted Invite!", from: self);
+            // Add recipientID to LIST's membersIDs
+            let listRef = self.listsRef.child(invite.listID);
+            listRef.child("memberIDs").child(invite.recipientID).setValue(true);
+            
+            // Add listID to USER's listIDs
+            let userRef = self.usersRef.child(invite.recipientID);
+            userRef.child("listIDs").child(invite.listID).setValue(true);
+            
+            // Delete invite
+            invite.delete();
+            
+            self.reloadData();
         });
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);

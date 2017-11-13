@@ -20,60 +20,79 @@ class MembersTableViewController: UITableViewController {
     var listID: String!
     var listOwnerName: String!
     
-    var joinedUsers: [(id: String, name: String)] = [];
-    var invitedUsers: [(id: String, name: String)] = [];
+    var joinedUsers: [User] = [];
+    var invites: [Invite] = [];
     
     // MARK: - IBActions
     @IBAction func addMember(_ sender: Any) {
-        let alert = UIAlertController(title: "Add Member", message: "", preferredStyle: .alert);
+        func isValidEmail(testStr:String) -> Bool {
+            return true;
+            let emailRegEx = "/.+@.+\\..+/i";
+            let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+            return emailTest.evaluate(with: testStr)
+        }
         
-        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
+        let alert = UIAlertController(title: "Invite Member", message: "", preferredStyle: .alert);
+        
+        let saveAction = UIAlertAction(title: "Invite", style: .default, handler: { _ in
             guard let textField = alert.textFields?.first,
-                let email = textField.text else { return; }
+                let email = textField.text?.lowercased() else { return; }
             
             // Email validation
             if(email == Auth.auth().currentUser!.email!) {
                 Utility.presentErrorAlert(message: "You cannot invite yourself.", from: self);
                 return;
+            } else if(!isValidEmail(testStr: email)) {
+                Utility.presentErrorAlert(message: "Invalid email format.", from: self);
+                return;
             }
             
             Utility.showActivityIndicator(in: self.navigationController!.view!);
             
+            // Save invite
             self.emailsRef.observeSingleEvent(of: .value, with: { snapshot in
                 let recipientEmailAsID = User.emailToID(email);
+                
                 if(snapshot.hasChild(recipientEmailAsID)) {
                     let snapshotValue = snapshot.value as! [String: String];
 
-                    let recipientID = snapshotValue[recipientEmailAsID]!;
                     let senderID = Auth.auth().currentUser!.uid;
-                    let invite = (listID: self.listID, senderID: senderID);
-                    
-                    // Add to INVITES
-                    let inviteRef = self.invitesRef.childByAutoId();
-                    let inviteID = inviteRef.key;
-                    inviteRef.child("listID").setValue(invite.listID!);
-                    inviteRef.child("senderID").setValue(invite.senderID);
-                    
-                    // Add invite to USERS inviteIDs
-                    let recipientUserRef = self.usersRef.child(recipientID);
-                    recipientUserRef.child("inviteIDs").child(inviteID).setValue(true);
-                    
-                    // Add recipient to LISTS invitedIDs
-                    self.listRef.child("invitedIDs").child(recipientID).setValue(true);
+                    let recipientID = snapshotValue[recipientEmailAsID]!;
+
+                    let invite = Invite(senderID: senderID, recipientID: recipientID, listID: self.listID)
+
+                    self.listRef.child("inviteIDs").observeSingleEvent(of: .value, with: { snapshot in
+                        // If list's inviteIDs already contains email
+                        if(snapshot.hasChild(recipientID)) {
+                            Utility.presentErrorAlert(message: "User with email \"\(email)\" has already been invited.", from: self)
+                        } else { // Invite user
+                            // Add to INVITES
+                            let inviteRef = self.invitesRef.childByAutoId();
+                            inviteRef.setValue(invite.toAnyObject());
+                            
+                            // Add to LISTS
+                            self.listRef.child("inviteIDs").child(inviteRef.key).setValue(true);
+
+                            // Add to USERS
+                            let recipientUserRef = self.usersRef.child(recipientID);
+                            recipientUserRef.child("inviteIDs").child(inviteRef.key).setValue(true);
+                        }
+                    });
                 } else {
                     Utility.presentErrorAlert(message: "User with email \"\(email)\" does not exist.", from: self);
                 }
-                self.tableView.reloadData();
-                Utility.hideActivityIndicator();
+                self.reloadData();
             });
+            self.reloadData();
         });
         saveAction.isEnabled = false;
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel);
         
-        alert.addTextField { itemNameTextField in
-            itemNameTextField.autocapitalizationType = .words;
-            itemNameTextField.placeholder = "Recipient Email";
+        alert.addTextField { emailTextField in
+            emailTextField.autocapitalizationType = .words;
+            emailTextField.keyboardType = .emailAddress;
+            emailTextField.placeholder = "Recipient Email";
         }
         
         alert.setupTextFields();
@@ -102,73 +121,59 @@ class MembersTableViewController: UITableViewController {
                 let snapshotValue = snapshot.value as! [String: Any];
                 self.listOwnerName = snapshotValue["name"] as! String;
                 
-                self.tableView.reloadData();
-                Utility.hideActivityIndicator();
+                self.reloadData();
             });
         });
         
         // Load joined users
         listRef.child("memberIDs").observe(.value, with: { snapshot in
-            var loadingMembers = false;
+            //Utility.showActivityIndicator(in: self.navigationController!.view!);
             
-            Utility.showActivityIndicator(in: self.navigationController!.view!);
-            
+            // Get each joined user's metadata
             self.joinedUsers.removeAll();
-            
             for case let snapshot as DataSnapshot in snapshot.children {
-                loadingMembers = true;
-                
                 let memberID = snapshot.key;
-                self.usersRef.child(memberID).child("name").observeSingleEvent(of: .value, with: { snapshot in
-                    let memberName = snapshot.value as! String;
-                    self.joinedUsers.append((memberID, memberName));
-                });
                 
-                self.tableView.reloadData();
-                Utility.hideActivityIndicator();
+                self.usersRef.child(memberID).observeSingleEvent(of: .value, with: { snapshot in
+                    let joinedUser = User(snapshot: snapshot);
+                    self.joinedUsers.append(joinedUser);
+                });
             }
             
-            if(!loadingMembers) {
-                self.tableView.reloadData();
-                Utility.hideActivityIndicator();
-            }
+            self.reloadData();
         });
         
-        // Load invited users
-        listRef.child("invitedIDs").observe(.value, with: { snapshot in
-            var loadingMembers = false;
+        // Load inviteIDs
+        listRef.child("inviteIDs").observe(.value, with: { snapshot in
+            //Utility.showActivityIndicator(in: self.navigationController!.view!);
             
-            Utility.showActivityIndicator(in: self.navigationController!.view!);
-            
-            self.invitedUsers.removeAll();
-            
+            self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
-                loadingMembers = true;
                 
-                let invitedID = snapshot.key;
-                self.usersRef.child(invitedID).child("name").observeSingleEvent(of: .value, with: { snapshot in
-                    let invitedName = snapshot.value as! String;
-                    self.joinedUsers.append((invitedID, invitedName));
+                // Load invite from INVITES
+                let inviteID = snapshot.key;
+                self.invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
+                    let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
+                    self.invites.append(invite);
                 });
-                
-                self.tableView.reloadData();
-                Utility.hideActivityIndicator();
             }
             
-            if(!loadingMembers) {
-                self.tableView.reloadData();
-                Utility.hideActivityIndicator();
-            }
+            self.reloadData();
         });
     }
-    
+
+    func reloadData() {
+        self.tableView.reloadData();
+        Utility.hideActivityIndicator();
+    }
+
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1;
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return joinedUsers.count + invitedUsers.count + 1;
+        return joinedUsers.count + invites.count + 1;
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -185,7 +190,7 @@ class MembersTableViewController: UITableViewController {
         } else {
             let index = indexPath.row-joinedUsers.count-1; // Offset due to owner+members
             
-            cell.textLabel!.text = invitedUsers[index].name;
+            cell.textLabel!.text = invites[index].recipientName;
             cell.detailTextLabel!.text = "Invited";
         }
 
@@ -196,6 +201,20 @@ class MembersTableViewController: UITableViewController {
 
         switch(editingStyle) {
         case .delete:
+            if(indexPath.row <= joinedUsers.count) {
+                let index = indexPath.row-1;
+                let member = joinedUsers[index];
+                
+                // Delete USER from LIST
+                self.listRef.child("memberIDs").child(member.id).removeValue();
+                
+                // Delete LIST from USER
+                self.usersRef.child(member.id).child("listID").child(self.listID).removeValue();
+            } else {
+                let index = indexPath.row-joinedUsers.count-1;
+                let invitedUser = invites[index];
+                invitedUser.delete();
+            }
             break;
         default:
             break;
