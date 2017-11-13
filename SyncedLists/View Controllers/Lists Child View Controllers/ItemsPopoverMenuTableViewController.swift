@@ -72,12 +72,12 @@ class ItemsPopoverMenuTableViewController: UITableViewController {
             itemRef.setValue(item.toAnyObject());
             
             self.tableView.reloadData();
-            self.dismiss(animated: true, completion: nil);
+            self.dismiss(animated: true, completion: nil); // Dismiss popoup menu
         });
         saveAction.isEnabled = false;
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-            self.dismiss(animated: true, completion: nil);
+            self.dismiss(animated: true, completion: nil); // Dismiss popup menu
         });
         
         alert.addTextField { itemNameTextField in

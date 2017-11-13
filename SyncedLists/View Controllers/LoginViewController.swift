@@ -29,6 +29,15 @@ class LoginViewController: UIViewController {
                     self.performSegue(withIdentifier: "loginSegue", sender: nil);
                 }
             });
+        } else if(emailTextField.text! != "" && passwordTextField.text! == "") {
+            Auth.auth().signIn(withEmail: emailTextField.text!, password: "abc123", completion: { (user, error) in
+                if let error = error {
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+                } else {
+                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                }
+            });
+        
         } else {
         ///'''
             
@@ -80,7 +89,13 @@ class LoginViewController: UIViewController {
                             let emailsRef = Database.database().reference(withPath: "emails");
                             emailsRef.child(User.emailToID(currentUser.email!)).setValue(currentUser.uid);
                             
-                            self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                            Auth.auth().signIn(withEmail: email, password: password, completion: { (user, error) in
+                                if let error = error {
+                                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+                                } else {
+                                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                                }
+                            });
                         } else {
                             Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
                         }

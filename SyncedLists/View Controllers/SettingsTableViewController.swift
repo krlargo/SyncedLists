@@ -219,7 +219,7 @@ class SettingsTableViewController: UITableViewController {
                     Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
                     // Delete related queries
-                    self.user.deleteCascadingData();
+                    self.user.delete();
                     self.performSegue(withIdentifier: "settingsToLoginSegue", sender: self);
                 }
                 Utility.hideActivityIndicator();

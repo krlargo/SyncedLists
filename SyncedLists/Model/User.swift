@@ -21,6 +21,13 @@ class User {
         self.email = authData.email!;
         self.id = authData.uid;
     }
+    
+    init(snapshot: DataSnapshot) {
+        let snapshotValue = snapshot.value as! [String: AnyObject];
+        self.name = snapshotValue["name"] as! String;
+        self.email = snapshotValue["email"] as! String;
+        self.id = snapshot.key;
+    }
 
     func toAnyObject() -> Any {
         return [
@@ -35,20 +42,32 @@ class User {
         let listsRef = ref.child("lists");
         let itemsRef = ref.child("items");
         let emailsRef = ref.child("emails");
+        let invitesRef = ref.child("invites");
         
         let userRef = usersRef.child(self.id);
         
+        // Delete from LISTS
         userRef.child("listIDs").observeSingleEvent(of: .value, with: { snapshot in
-            // Iterate through each of the user's lists
+            // For each of the user's lists, if user is owner, delete list
             for case let snapshot as DataSnapshot in snapshot.children {
-                let listID = snapshot.key;
-                listsRef.child(listID).removeValue(); // Delete from LISTS
-                itemsRef.child(listID).removeValue(); // Delete from ITEMS
+                let list = List(snapshot: snapshot, completionHandler: nil);
+                if(self.id == list.ownerID) {
+                    list.delete();
+                }
             }
-            userRef.removeValue(); // Delete from USERS
         });
         
+        // Delete from INVITES
+        userRef.child("inviteIDs").observeSingleEvent(of: .value, with: { snapshot in
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let invite = Invite(snapshot: snapshot, completionHandler: nil);
+                invite.delete();
+            }
+        });
+
         emailsRef.child(User.emailToID(self.email)).removeValue(); // Delete from EMAILS
+
+        userRef.removeValue(); // Delete from USERS
     }
     
     class func emailToID(_ email: String) -> String {

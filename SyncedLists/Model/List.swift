@@ -13,19 +13,19 @@ class List {
     var name: String;
     var ownerID: String;
     
-    var ref: DatabaseReference? // Needed for deletion
     var id: String?
+    var ref: DatabaseReference? // Needed for deletion
     
     var completedCount: Int = 0;
     var itemCount: Int = 0;
     
     // Constructor for Firebase-loaded Item
-    init(snapshot: DataSnapshot, completionHandler: @escaping () -> Void) {
+    init(snapshot: DataSnapshot, completionHandler: (() -> Void)?) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.name = snapshotValue["name"] as! String;
         self.ownerID = snapshotValue["ownerID"] as! String;
-        self.ref = snapshot.ref;
         self.id = snapshot.key;
+        self.ref = snapshot.ref;
         
         // Get itemCount and completedItemsCount
         let listItemsRef = Database.database().reference(withPath: "items");
@@ -40,7 +40,11 @@ class List {
             }
             self.completedCount = completedCount;
             
-            defer { completionHandler(); } // Reload tableview data when this is finished
+            defer {
+                if let completionHandler = completionHandler {
+                completionHandler();
+                }
+            }
         });
     }
     
@@ -60,10 +64,31 @@ class List {
     }
     
     func delete() {
-        // Remove list from ITEMS
+        // Delete from ITEMS
         let itemsRef = Database.database().reference(withPath: "items");
         itemsRef.child(self.id!).removeValue();
-        self.ref?.removeValue(); // Remove list from LISTS
+        
+        // Delete from USERS
+        self.ref!.child("memberIDs").observeSingleEvent(of: .value, with: { snapshot in
+            // For each list member, delete listID
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let userID = snapshot.key;
+                let userRef = Database.database().reference(withPath: "users").child(userID);
+                userRef.child("listIDs").child(self.id!).removeValue();
+            }
+        });
+        
+        // Delete from INVITES
+        self.ref!.child("inviteIDs").observeSingleEvent(of: .value, with: { snapshot in
+            // For each inviteID, delete invite
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let invite = Invite(snapshot: snapshot, completionHandler: nil);
+                invite.delete();
+            }
+        });
+        
+        // Delete from LISTS
+        self.ref!.removeValue();
     }
 }
 

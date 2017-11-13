@@ -63,6 +63,10 @@ class Item {
     }
     
     func delete() {
+        // No need to delete from LISTS becauase lists
+        // simply references items by listID
+        
+        // Delete from ITEMS
         self.ref?.removeValue();
     }
 }

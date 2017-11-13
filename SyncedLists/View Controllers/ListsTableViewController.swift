@@ -26,21 +26,22 @@ class ListsTableViewController: UITableViewController {
         let alert = UIAlertController(title: "Add List", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
-            
             guard let textField = alert.textFields?.first,
                 let text = textField.text else { return; }
             
-            // Add list to LISTS in database
+            Utility.showActivityIndicator(in: self.navigationController!.view!);
+            
             let list = List(name: text, ownerID: self.user.id);
+
+            // Add to LISTS
+            let listRef = self.listsRef.childByAutoId();
+            listRef.setValue(list.toAnyObject());
             
-            let newListRef = self.listsRef.childByAutoId();
-            newListRef.setValue(list.toAnyObject());
-            
-            // Add list to USERS in database
+            // Add to USERS
             let currentUserListsRef = self.userRef.child("listIDs");
-            currentUserListsRef.child(newListRef.key).setValue(true);
+            currentUserListsRef.child(listRef.key).setValue(true);
             
-            self.tableView.reloadData();
+            self.reloadData();
         });
         saveAction.isEnabled = false;
         
@@ -72,20 +73,26 @@ class ListsTableViewController: UITableViewController {
         navigationItem.backBarButtonItem = backButton;
 
         self.userRef.child("listIDs").observe(.value, with: { snapshot in
+            var loadingLists = false;
             Utility.showActivityIndicator(in: self.navigationController?.view);
 
-            // Collect all the current user's list IDs
+            // Load user's lists
             self.lists.removeAll();
-            for case let snap as DataSnapshot in snapshot.children {
-                let listID = snap.key;
+            for case let snapshot as DataSnapshot in snapshot.children {
+                loadingLists = true;
+                
+                let listID = snapshot.key;
                 let listRef = self.listsRef.child(listID);
                 
-                listRef.observeSingleEvent(of: .value, with: { listSnap in
-                    let list = List(snapshot: listSnap, completionHandler: self.reloadData);
+                listRef.observeSingleEvent(of: .value, with: { snapshot in
+                    let list = List(snapshot: snapshot, completionHandler: self.reloadData);
                     self.lists.append(list);
                 });
             }
-            Utility.hideActivityIndicator(); // In case there are no lists
+            
+            if(!loadingLists) {
+                self.reloadData();
+            }
         });
     }
     
@@ -126,19 +133,17 @@ class ListsTableViewController: UITableViewController {
             cell!.textLabel!.textColor = UIColor.lightGray;
             cell!.detailTextLabel?.text = "";
             cell!.accessoryType = .none;
-            
-            return cell!;
         } else {
             tableView.allowsSelection = true;
             
             cell!.textLabel!.textColor = UIColor.darkText;
             cell!.accessoryType = .disclosureIndicator;
+            
+            let list = lists[indexPath.row];
+            
+            cell!.textLabel!.text! = list.name;
+            cell!.detailTextLabel!.text! = "\(list.completedCount)/\(list.itemCount)";
         }
-        
-        let list = lists[indexPath.row];
-        
-        cell!.textLabel!.text! = list.name;
-        cell!.detailTextLabel!.text! = "\(list.completedCount)/\(list.itemCount)";
         
         return cell!;
     }
@@ -147,10 +152,12 @@ class ListsTableViewController: UITableViewController {
         switch(editingStyle) {
         case .delete:
             let list = lists[indexPath.row];
+
+            // Delete list from current user only
             let userListRef = userRef.child("listIDs").child(list.id!);
             userListRef.removeValue(); // Remove list from user in USER
 
-            // If user is list owner, then delete entire list from database
+            // If current user is list owner, then delete entire list
             if(list.ownerID == user.id) {
                 list.delete();
             }
