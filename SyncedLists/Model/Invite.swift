@@ -83,6 +83,9 @@ class Invite {
                                                 self.senderName = "[Deleted User]";
                                             }
                                         });
+                                        if let completionHandler = completionHandler {
+                                            completionHandler();
+                                        }
                                     });
                             } else { // Recipient doesn't exist; delete entire invite
                                 self.delete();

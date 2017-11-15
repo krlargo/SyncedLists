@@ -142,7 +142,7 @@ class MembersTableViewController: UITableViewController {
                 });
             }
             
-            self.reloadData();
+            defer { self.reloadData(); }
         });
         
         // Load inviteIDs
@@ -160,7 +160,7 @@ class MembersTableViewController: UITableViewController {
                 });
             }
             
-            self.reloadData();
+            defer { self.reloadData(); }
         });
     }
 
