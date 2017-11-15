@@ -55,7 +55,7 @@ class InvitesTableViewController: UITableViewController {
                         userRef.child("inviteIDs").child(inviteID).removeValue();
                     }
                 });
-                Utility.showActivityIndicator(in: self.navigationController!.view!);
+                //Utility.showActivityIndicator(in: self.navigationController!.view!);
             }
             
             if(!loadingInvites) {
