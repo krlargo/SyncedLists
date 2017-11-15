@@ -76,6 +76,8 @@ class MembersTableViewController: UITableViewController {
                             // Add to USERS
                             let recipientUserRef = self.usersRef.child(recipientID);
                             recipientUserRef.child("inviteIDs").child(inviteRef.key).setValue(true);
+                            
+                            self.reloadData();
                         }
                     });
                 } else {
