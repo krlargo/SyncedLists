@@ -157,12 +157,12 @@ class ListsTableViewController: UITableViewController {
             let userListRef = userRef.child("listIDs").child(list.id!);
             userListRef.removeValue(); // Remove list from user in USER
 
-            print("list.ownerID: \(list.ownerID)");
-            print("user.id: \(user.id)");
-            
             // If current user is list owner, then delete entire list
             if(list.ownerID == user.id) {
                 list.delete();
+            } else { // Otherwise, delete memberID from list's memberIDs
+                let listRef = listsRef.child(list.id!);
+                listRef.child("memberIDs").child(user.id).removeValue();
             }
         default:
             return;
