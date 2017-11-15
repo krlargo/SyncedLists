@@ -30,6 +30,7 @@ class LoginViewController: UIViewController {
     @IBAction func unwindToLogin(segue:UIStoryboardSegue) { }
     
     @IBAction func login(_ sender: Any) {
+        Utility.showActivityIndicator(in: self.view);
         ///,,,
         if(emailTextField.text! == "" && passwordTextField.text! == "") {
             Auth.auth().signIn(withEmail: "xkevlar@live.com", password: "abc123", completion: { (user, error) in
@@ -37,6 +38,7 @@ class LoginViewController: UIViewController {
                     Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
                     self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                    Utility.hideActivityIndicator();
                 }
             });
         } else if(emailTextField.text! != "" && passwordTextField.text! == "") {
@@ -45,6 +47,7 @@ class LoginViewController: UIViewController {
                     Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
                     self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                    Utility.hideActivityIndicator();
                 }
             });
         
@@ -81,8 +84,6 @@ class LoginViewController: UIViewController {
             Utility.showActivityIndicator(in: self.view);
 
             self.signUpUser(displayName: displayName, email: email, password: password);
-            
-            Utility.hideActivityIndicator();
         }
         saveAction.isEnabled = false;
         
@@ -143,6 +144,7 @@ class LoginViewController: UIViewController {
                                 Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                             } else {
                                 self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                                Utility.hideActivityIndicator();
                             }
                         });
                     } else {
