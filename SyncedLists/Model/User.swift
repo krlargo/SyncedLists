@@ -48,20 +48,27 @@ class User {
         
         // Delete from LISTS
         userRef.child("listIDs").observeSingleEvent(of: .value, with: { snapshot in
-            // For each of the user's lists, if user is owner, delete list
+            // For each listID
             for case let snapshot as DataSnapshot in snapshot.children {
-                let list = List(snapshot: snapshot, completionHandler: nil);
-                if(self.id == list.ownerID) {
-                    list.delete();
-                }
+                let listID = snapshot.key;
+                listsRef.child(listID).observeSingleEvent(of: .value, with: { snapshot in
+                    let list = List(snapshot: snapshot, completionHandler: nil);
+                    if(self.id == list.ownerID) {
+                        list.delete();
+                    }
+                });
             }
         });
         
         // Delete from INVITES
         userRef.child("inviteIDs").observeSingleEvent(of: .value, with: { snapshot in
+            // For each inviteID
             for case let snapshot as DataSnapshot in snapshot.children {
-                let invite = Invite(snapshot: snapshot, completionHandler: nil);
-                invite.delete();
+                let inviteID = snapshot.key;
+                invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
+                    let invite = Invite(snapshot: snapshot, completionHandler: nil);
+                    invite.delete();
+                });
             }
         });
 
