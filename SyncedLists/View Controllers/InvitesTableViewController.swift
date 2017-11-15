@@ -30,15 +30,12 @@ class InvitesTableViewController: UITableViewController {
         // Load inviteIDs from USER
         let userRef = usersRef.child(user.id);
         userRef.child("inviteIDs").observe(.value, with: { snapshot in
-            var loadingInvites = false;
             Utility.showActivityIndicator(in: self.view!);
             
             // Load user's invites
             self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
-                loadingInvites = true;
-                //Utility.showActivityIndicator(in: self.navigationController!.view!);
-                
+
                 let inviteID = snapshot.key;
 
                 self.invitesRef.observeSingleEvent(of: .value, with: { snapshot in
@@ -55,13 +52,9 @@ class InvitesTableViewController: UITableViewController {
                         userRef.child("inviteIDs").child(inviteID).removeValue();
                     }
                 });
-                //Utility.showActivityIndicator(in: self.navigationController!.view!);
             }
-            
-            if(!loadingInvites) {
-                self.reloadData();
-            }
-        }); // Load user invites
+            Utility.hideActivityIndicator();
+        });
     }
     
     func reloadData() {
