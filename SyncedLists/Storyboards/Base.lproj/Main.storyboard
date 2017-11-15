@@ -373,14 +373,36 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eXN-P5-L3Q">
+                                <rect key="frame" x="16" y="20" width="87" height="30"/>
+                                <state key="normal" title="SignUpKevin">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="signUpKevin:" destination="Vp5-g2-ucS" eventType="touchUpInside" id="YbK-z1-Jel"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pQq-Zj-fph">
+                                <rect key="frame" x="270" y="20" width="89" height="30"/>
+                                <state key="normal" title="SignUpStacy">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="signUpStacy:" destination="Vp5-g2-ucS" eventType="touchUpInside" id="j5b-bF-LDW"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.25952532890000002" green="0.69917218550000004" blue="0.35500759549999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="2Qb-so-Yhb" firstAttribute="top" secondItem="sxv-EW-Pdz" secondAttribute="bottom" constant="5" id="FSk-HK-7iU"/>
+                            <constraint firstItem="pQq-Zj-fph" firstAttribute="top" secondItem="9S9-wg-eqy" secondAttribute="top" id="MyA-T0-Z2Z"/>
+                            <constraint firstItem="eXN-P5-L3Q" firstAttribute="top" secondItem="9S9-wg-eqy" secondAttribute="top" id="PbK-jA-lvI"/>
                             <constraint firstItem="2Qb-so-Yhb" firstAttribute="centerX" secondItem="9S9-wg-eqy" secondAttribute="centerX" id="Q6u-Uh-Z1R"/>
                             <constraint firstItem="sxv-EW-Pdz" firstAttribute="centerX" secondItem="9S9-wg-eqy" secondAttribute="centerX" id="QxQ-ns-J7g"/>
                             <constraint firstItem="2Qb-so-Yhb" firstAttribute="centerY" secondItem="9S9-wg-eqy" secondAttribute="centerY" id="Yfu-Eq-Htv"/>
                             <constraint firstItem="2Qb-so-Yhb" firstAttribute="width" secondItem="sxv-EW-Pdz" secondAttribute="width" id="dUs-sj-jY0"/>
+                            <constraint firstItem="9S9-wg-eqy" firstAttribute="trailing" secondItem="pQq-Zj-fph" secondAttribute="trailing" constant="16" id="mca-BH-2B3"/>
+                            <constraint firstItem="eXN-P5-L3Q" firstAttribute="leading" secondItem="9S9-wg-eqy" secondAttribute="leading" constant="16" id="zLD-xc-7ZK"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="9S9-wg-eqy"/>
                     </view>

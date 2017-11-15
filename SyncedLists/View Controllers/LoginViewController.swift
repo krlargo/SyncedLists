@@ -11,6 +11,16 @@ import FirebaseDatabase
 import UIKit
 
 class LoginViewController: UIViewController {
+    /// MARK: - Temporary Buttons
+    @IBAction func signUpKevin(_ sender: Any) {
+        signUpUser(displayName: "Kevin", email: "krlargo@ucdavis.edu", password: "abc123");
+    }
+    
+    @IBAction func signUpStacy(_ sender: Any) {
+        signUpUser(displayName: "Stacy", email: "xkevlar@live.com", password: "abc123");
+    }
+    
+    
     // MARK: - IBOutlets
     @IBOutlet var buttons: [UIButton]!
     @IBOutlet weak var emailTextField: UITextField!
@@ -70,40 +80,8 @@ class LoginViewController: UIViewController {
             
             Utility.showActivityIndicator(in: self.view);
 
-            Auth.auth().createUser(withEmail: email, password: password) { user, error in
-                if(error == nil) {
-                    // Login and add user metadata to database
-                    Auth.auth().signIn(withEmail: email, password: password);
-                    let currentUser = Auth.auth().currentUser!
-                    let changeRequest = currentUser.createProfileChangeRequest();
-                    changeRequest.displayName = displayName;
-                    changeRequest.commitChanges(completion: { error in
-                        if(error == nil) {
-                            // Add user to USERS
-                            let usersRef = Database.database().reference(withPath: "users");
-                            let newUserRef = usersRef.child(currentUser.uid);
-                            newUserRef.child("name").setValue(currentUser.displayName);
-                            newUserRef.child("email").setValue(currentUser.email);
-                            
-                            // Add user to EMAILS
-                            let emailsRef = Database.database().reference(withPath: "emails");
-                            emailsRef.child(User.emailToID(currentUser.email!)).setValue(currentUser.uid);
-                            
-                            Auth.auth().signIn(withEmail: email, password: password, completion: { (user, error) in
-                                if let error = error {
-                                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
-                                } else {
-                                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
-                                }
-                            });
-                        } else {
-                            Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
-                        }
-                    });
-                } else {
-                    Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
-                }
-            }
+            self.signUpUser(displayName: displayName, email: email, password: password);
+            
             Utility.hideActivityIndicator();
         }
         saveAction.isEnabled = false;
@@ -138,6 +116,43 @@ class LoginViewController: UIViewController {
         alert.addAction(saveAction);
         
         present(alert, animated: true, completion: nil);
+    }
+    
+    func signUpUser(displayName: String, email: String, password: String) {
+        Auth.auth().createUser(withEmail: email, password: password) { user, error in
+            if(error == nil) {
+                // Login and add user metadata to database
+                Auth.auth().signIn(withEmail: email, password: password);
+                let currentUser = Auth.auth().currentUser!
+                let changeRequest = currentUser.createProfileChangeRequest();
+                changeRequest.displayName = displayName;
+                changeRequest.commitChanges(completion: { error in
+                    if(error == nil) {
+                        // Add user to USERS
+                        let usersRef = Database.database().reference(withPath: "users");
+                        let newUserRef = usersRef.child(currentUser.uid);
+                        newUserRef.child("name").setValue(currentUser.displayName);
+                        newUserRef.child("email").setValue(currentUser.email);
+                        
+                        // Add user to EMAILS
+                        let emailsRef = Database.database().reference(withPath: "emails");
+                        emailsRef.child(User.emailToID(currentUser.email!)).setValue(currentUser.uid);
+                        
+                        Auth.auth().signIn(withEmail: email, password: password, completion: { (user, error) in
+                            if let error = error {
+                                Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+                            } else {
+                                self.performSegue(withIdentifier: "loginSegue", sender: nil);
+                            }
+                        });
+                    } else {
+                        Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
+                    }
+                });
+            } else {
+                Utility.presentErrorAlert(message: error!.localizedDescription, from: self);
+            }
+        }
     }
     
     // MARK: - Overridden Methods
