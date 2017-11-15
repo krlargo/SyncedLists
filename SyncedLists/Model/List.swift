@@ -64,17 +64,19 @@ class List {
     }
     
     func delete() {
-        // Delete from ITEMS
+        let usersRef = Database.database().reference(withPath: "users");
         let itemsRef = Database.database().reference(withPath: "items");
+        let invitesRef = Database.database().reference(withPath: "invites");
+        
+        // Delete from ITEMS
         itemsRef.child(self.id!).removeValue();
         
         // Delete from USERS
         self.ref!.child("memberIDs").observeSingleEvent(of: .value, with: { snapshot in
-            // For each list member, delete listID
+            // For each memberID
             for case let snapshot as DataSnapshot in snapshot.children {
                 let userID = snapshot.key;
-                let userRef = Database.database().reference(withPath: "users").child(userID);
-                userRef.child("listIDs").child(self.id!).removeValue();
+                usersRef.child(userID).child(self.id!).removeValue();
             }
         });
         
