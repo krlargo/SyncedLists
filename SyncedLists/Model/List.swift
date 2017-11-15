@@ -84,8 +84,11 @@ class List {
         self.ref!.child("inviteIDs").observeSingleEvent(of: .value, with: { snapshot in
             // For each inviteID, delete invite
             for case let snapshot as DataSnapshot in snapshot.children {
-                let invite = Invite(snapshot: snapshot, completionHandler: nil);
-                invite.delete();
+                let inviteID = snapshot.key;
+                invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
+                    let invite = Invite(snapshot: snapshot, completionHandler: nil);
+                    invite.delete();
+                });
             }
         });
         
