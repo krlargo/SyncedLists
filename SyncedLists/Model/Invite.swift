@@ -38,8 +38,6 @@ class Invite {
     
     // Constructor for Firebase-loaded Item
     init(snapshot: DataSnapshot, completionHandler: (() -> Void)?) {
-        print("snapshot: \(snapshot)");
-        print("snapshotValue: \(snapshot.value)");
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.senderID = snapshotValue["senderID"] as! String;
         self.senderName = nil;
