@@ -122,15 +122,12 @@ class MembersTableViewController: UITableViewController {
             self.usersRef.child(ownerID).observeSingleEvent(of: .value, with: { snapshot in
                 let snapshotValue = snapshot.value as! [String: Any];
                 self.listOwnerName = snapshotValue["name"] as! String;
-                
                 self.reloadData();
             });
         });
         
         // Load joined users
         listRef.child("memberIDs").observe(.value, with: { snapshot in
-            //Utility.showActivityIndicator(in: self.navigationController!.view!);
-            
             // Get each joined user's metadata
             self.joinedUsers.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
@@ -141,14 +138,10 @@ class MembersTableViewController: UITableViewController {
                     self.joinedUsers.append(joinedUser);
                 });
             }
-            
-            defer { self.reloadData(); }
         });
         
         // Load inviteIDs
         listRef.child("inviteIDs").observe(.value, with: { snapshot in
-            //Utility.showActivityIndicator(in: self.navigationController!.view!);
-            
             self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
                 
@@ -159,8 +152,6 @@ class MembersTableViewController: UITableViewController {
                     self.invites.append(invite);
                 });
             }
-            
-            defer { self.reloadData(); }
         });
     }
 
