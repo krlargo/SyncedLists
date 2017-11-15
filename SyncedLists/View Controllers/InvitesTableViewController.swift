@@ -97,10 +97,7 @@ class InvitesTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "invitesCell");
-        
         if(invites.isEmpty) { return; }
-        
         presentInviteAlert(index: indexPath.row);
     }
     
