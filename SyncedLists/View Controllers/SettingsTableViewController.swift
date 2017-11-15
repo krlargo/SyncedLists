@@ -24,6 +24,7 @@ class SettingsTableViewController: UITableViewController {
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var emailCell: UITableViewCell!
     @IBOutlet weak var passwordCell: UITableViewCell!
+    @IBOutlet weak var contactCell: UITableViewCell!
     @IBOutlet weak var deleteAccountCell: UITableViewCell!
     
     @IBAction func debug(_ sender: Any) {
@@ -39,6 +40,7 @@ class SettingsTableViewController: UITableViewController {
         
         tableData = [
             [nameCell, emailCell, passwordCell],
+            [contactCell],
             [deleteAccountCell]
         ]
         
