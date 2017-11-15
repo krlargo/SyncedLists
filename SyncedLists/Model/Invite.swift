@@ -48,60 +48,61 @@ class Invite {
         self.id = snapshot.key;
         self.ref = snapshot.ref;
                
-        var observingList = false;
-        var observingUser = false;
-        
         listsRef.observeSingleEvent(of: .value, with: { snapshot in
            // Check if listID exists in LISTS
             if(snapshot.hasChild(self.listID)) {
                 self.listsRef.child(self.listID).child("name")
                     .observeSingleEvent(of: .value, with: { snapshot in
-                        observingList = true;
                         self.listName = snapshot.value as? String;
-
-                        // Observe USERS for recipientName
-                        self.usersRef.observeSingleEvent(of: .value, with: { snapshot in
-                            // If recipientID exists in USERS
-                            if(snapshot.hasChild(self.recipientID)) {
-                                // Get recipientName from recipientID
-                                self.usersRef.child(self.recipientID).child("name")
-                                    .observeSingleEvent(of: .value, with: { snapshot in
-                                        observingUser = true;
-                                        self.recipientName = snapshot.value as? String;
-
-                                        // Observe USERS for senderName
-                                        self.usersRef.observeSingleEvent(of: .value, with: { snapshot in
-                                            // If senderID exists in USERS
-                                            if(snapshot.hasChild(self.senderID)) {
-                                                // Get senderName from senderID
-                                                self.usersRef.child(self.senderID).child("name")
-                                                    .observeSingleEvent(of: .value, with: { snapshot in
-                                                        observingUser = true;
-                                                        self.senderName = snapshot.value as? String;
-                                                    });
-                                            } else {
-                                                self.senderName = "[Deleted User]";
-                                            }
-                                        });
-                                        if let completionHandler = completionHandler {
-                                            completionHandler();
-                                        }
-                                    });
-                            } else { // Recipient doesn't exist; delete entire invite
-                                self.delete();
-                            }
-                        });
-                    }); // Observe usersRef
+                        self.loadSenderName(completionHandler: completionHandler);
+                        self.loadRecipientName(completionHandler: completionHandler);
+                    });
             } else { // List does not exist in LISTS
                 self.delete();
             }
-            
-            defer {
-                if let completionHandler = completionHandler {
-                    completionHandler();
-                }
-            }
         }); // Observe listsRef
+    }
+    
+    func loadRecipientName(completionHandler: (() -> Void)?) {
+        // Observe USERS for recipientName
+        self.usersRef.observeSingleEvent(of: .value, with: { snapshot in
+            // If recipientID exists in USERS
+            if(snapshot.hasChild(self.recipientID)) {
+                // Get recipientName from recipientID
+                self.usersRef.child(self.recipientID).child("name")
+                    .observeSingleEvent(of: .value, with: { snapshot in
+                        self.recipientName = snapshot.value as? String;
+                        defer {
+                            if let completionHandler = completionHandler {
+                                completionHandler();
+                            }
+                        }
+                    });
+            } else { // Recipient doesn't exist; delete entire invite
+                self.delete();
+            }
+        });
+    }
+    
+    func loadSenderName(completionHandler: (() -> Void)?) {
+        // Observe USERS for senderName
+        self.usersRef.observeSingleEvent(of: .value, with: { snapshot in
+            // If senderID exists in USERS
+            if(snapshot.hasChild(self.senderID)) {
+                // Get senderName from senderID
+                self.usersRef.child(self.senderID).child("name")
+                    .observeSingleEvent(of: .value, with: { snapshot in
+                        self.senderName = snapshot.value as? String;
+                        defer {
+                            if let completionHandler = completionHandler {
+                                completionHandler();
+                            }
+                        }
+                    });
+            } else {
+                self.senderName = "[Deleted User]";
+            }
+       });
     }
     
     init(senderID: String, recipientID: String, listID: String) {
