@@ -82,7 +82,7 @@ class ListsTableViewController: UITableViewController {
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
         
-        self.userRef.child("listIDs").observeSingleEvent(of: .value, with: { snapshot in
+        self.userRef.child("listIDs").observe(.value, with: { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
             var loadingLists = false;
             
@@ -90,12 +90,17 @@ class ListsTableViewController: UITableViewController {
             for case let snapshot as DataSnapshot in snapshot.children {
                 loadingLists = true;
                 let listID = snapshot.key;
-                let listRef = self.listsRef.child(listID);
-                
-                listRef.observe(.value, with: { snapshot in
-                    let list = List(snapshot: snapshot, completionHandler: self.reloadData);
-                    self.lists.append(list);
-                    self.reloadData();
+
+                self.listsRef.observeSingleEvent(of: .value, with: { snapshot in
+                    if(snapshot.hasChild(listID)) { // Load list if listID exists in LISTS
+                        let listSnapshot = snapshot.childSnapshot(forPath: listID);
+                        let list = List(snapshot: listSnapshot, completionHandler: self.reloadData);
+                        self.lists.append(list);
+                    } else { // Delete listID from user if list does not exist in LISTS
+                        let usersListsRef = self.userRef.child("listIDs");
+                        usersListsRef.child(listID).removeValue();
+                        self.reloadData();
+                    }
                 });
             }
             if(!loadingLists) { self.reloadData(); }
