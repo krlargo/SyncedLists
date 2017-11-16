@@ -17,11 +17,21 @@ class InvitesTableViewController: UITableViewController {
     let invitesRef = Database.database().reference(withPath: "invites");
     var userRef: DatabaseReference!
     
-    //var invites: [(id: String, listName: String, senderName: String)] = [];
     var invites: [Invite] = [];
     var user: User!
     var handle: AuthStateDidChangeListenerHandle?
     
+    // MARK: - IBActions
+    @IBAction func logout(_ sender: Any) {
+        do {
+            try Auth.auth().signOut();
+            performSegue(withIdentifier: "logoutSegue", sender: self);
+        } catch(let error) {
+            Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+        }
+    }
+    
+    // MARK: - Overridden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,13 +41,13 @@ class InvitesTableViewController: UITableViewController {
         let userRef = usersRef.child(user.id);
         userRef.child("inviteIDs").observe(.value, with: { snapshot in
             Utility.showActivityIndicator(in: self.view!);
-            
+            var loadingInvites = false;
             // Load user's invites
             self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
-
+                loadingInvites = true;
+                
                 let inviteID = snapshot.key;
-
                 self.invitesRef.observeSingleEvent(of: .value, with: { snapshot in
                     // Check if inviteID exists in INVITES
                     if(snapshot.hasChild(inviteID)) {
@@ -53,7 +63,7 @@ class InvitesTableViewController: UITableViewController {
                     }
                 });
             }
-            Utility.hideActivityIndicator();
+            if(!loadingInvites) { self.reloadData(); }
         });
     }
     
