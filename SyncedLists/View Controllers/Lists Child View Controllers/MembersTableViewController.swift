@@ -112,14 +112,14 @@ class MembersTableViewController: UITableViewController {
         self.listRef = Database.database().reference(withPath: "lists").child(listID);
         
         // Get list ownerID
-        listRef.observeSingleEvent(of: .value, with: { snapshot in
-            Utility.showActivityIndicator(in: self.navigationController!.view!);
+        listRef.observe(.value, with: { snapshot in
+            //Utility.showActivityIndicator(in: self.navigationController!.view!);
             
             let snapshotValue = snapshot.value as! [String: Any];
             let ownerID = snapshotValue["ownerID"] as! String;
             
             // Get owner's name
-            self.usersRef.child(ownerID).observeSingleEvent(of: .value, with: { snapshot in
+            self.usersRef.child(ownerID).observe(.value, with: { snapshot in
                 let snapshotValue = snapshot.value as! [String: Any];
                 self.listOwnerName = snapshotValue["name"] as! String;
                 self.reloadData();
@@ -155,7 +155,7 @@ class MembersTableViewController: UITableViewController {
                 
                 // Load invite from INVITES
                 let inviteID = snapshot.key;
-                self.invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
+                self.invitesRef.child(inviteID).observe(.value, with: { snapshot in
                     let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
                     self.invites.append(invite);
                 });

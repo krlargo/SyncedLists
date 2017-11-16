@@ -48,11 +48,12 @@ class InvitesTableViewController: UITableViewController {
                 loadingInvites = true;
                 
                 let inviteID = snapshot.key;
-                self.invitesRef.observeSingleEvent(of: .value, with: { snapshot in
+                self.invitesRef.observe(.value, with: { snapshot in
                     // Check if inviteID exists in INVITES
                     if(snapshot.hasChild(inviteID)) {
+                        print("inviteID: \(inviteID)");
                         // Load INVITE metadata
-                        self.invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
+                        self.invitesRef.child(inviteID).observe(.value, with: { snapshot in
                             let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
                             self.invites.append(invite);
                         });

@@ -81,20 +81,21 @@ class ListsTableViewController: UITableViewController {
         let backButton = UIBarButtonItem();
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
-        self.userRef.child("listIDs").observe(.value, with: { snapshot in
+        
+        self.userRef.child("listIDs").observeSingleEvent(of: .value, with: { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
             var loadingLists = false;
             
-            // Load user's lists
             self.lists.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
                 loadingLists = true;
                 let listID = snapshot.key;
                 let listRef = self.listsRef.child(listID);
                 
-                listRef.observeSingleEvent(of: .value, with: { snapshot in
+                listRef.observe(.value, with: { snapshot in
                     let list = List(snapshot: snapshot, completionHandler: self.reloadData);
                     self.lists.append(list);
+                    self.reloadData();
                 });
             }
             if(!loadingLists) { self.reloadData(); }
