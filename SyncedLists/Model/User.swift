@@ -40,7 +40,6 @@ class User {
         let ref = Database.database().reference();
         let usersRef = ref.child("users");
         let listsRef = ref.child("lists");
-        let itemsRef = ref.child("items");
         let emailsRef = ref.child("emails");
         let invitesRef = ref.child("invites");
         

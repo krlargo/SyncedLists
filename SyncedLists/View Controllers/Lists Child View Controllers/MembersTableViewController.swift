@@ -119,7 +119,7 @@ class MembersTableViewController: UITableViewController {
             let ownerID = snapshotValue["ownerID"] as! String;
             
             // Get owner's name
-            self.usersRef.child(ownerID).observe(.value, with: { snapshot in
+            self.usersRef.child(ownerID).observeSingleEvent(of: .value, with: { snapshot in
                 let snapshotValue = snapshot.value as! [String: Any];
                 self.listOwnerName = snapshotValue["name"] as! String;
                 self.reloadData();
@@ -133,16 +133,20 @@ class MembersTableViewController: UITableViewController {
             self.joinedUsers.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
                 loadingMembers = true;
-
                 let memberID = snapshot.key;
-                self.usersRef.child(memberID).observeSingleEvent(of: .value, with: { snapshot in
-                    let joinedUser = User(snapshot: snapshot);
-                    self.joinedUsers.append(joinedUser);
+                
+                self.usersRef.observeSingleEvent(of: .value, with: { snapshot in
+                    if(snapshot.hasChild(memberID)) { // Load user if memberID exists in USERS
+                        let userSnapshot = snapshot.childSnapshot(forPath: memberID);
+                        let joinedUser = User(snapshot: userSnapshot);
+                        self.joinedUsers.append(joinedUser);
+                    } else { // Delete memberID from list if memberID does not exist in USERS
+                        self.listRef.child("memberID").child(memberID).removeValue();
+                    }
+                    self.reloadData();
                 });
             }
-            if(!loadingMembers) {
-                self.reloadData();
-            }
+            if(!loadingMembers) { self.reloadData(); }
         });
         
         // Load inviteIDs
@@ -152,12 +156,17 @@ class MembersTableViewController: UITableViewController {
             self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
                 loadingInvites = true;
-                
-                // Load invite from INVITES
                 let inviteID = snapshot.key;
-                self.invitesRef.child(inviteID).observe(.value, with: { snapshot in
-                    let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
-                    self.invites.append(invite);
+
+                self.invitesRef.observeSingleEvent(of: .value, with: { snapshot in
+                    if(snapshot.hasChild(inviteID)) { // Load invite if inviteID exists in INVITES
+                        let inviteSnapshot = snapshot.childSnapshot(forPath: inviteID);
+                        let invite = Invite(snapshot: inviteSnapshot, completionHandler: self.reloadData);
+                        self.invites.append(invite);
+                    } else { // Delete inviteID from list if inviteID does not exist in INVITES
+                        self.listRef.child("inviteID").child(inviteID).removeValue();
+                        self.reloadData();
+                    }
                 });
             }
             if(!loadingInvites) { self.reloadData(); }

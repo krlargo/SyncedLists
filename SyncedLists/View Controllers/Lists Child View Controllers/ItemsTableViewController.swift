@@ -125,7 +125,6 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if(items.isEmpty) { return; }
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: "itemCell") as! ItemCell;
         let item = items[indexPath.row];
         
         if(item.completedByUserID == nil) {

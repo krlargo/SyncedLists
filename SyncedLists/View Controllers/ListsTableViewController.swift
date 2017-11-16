@@ -96,7 +96,7 @@ class ListsTableViewController: UITableViewController {
                         let listSnapshot = snapshot.childSnapshot(forPath: listID);
                         let list = List(snapshot: listSnapshot, completionHandler: self.reloadData);
                         self.lists.append(list);
-                    } else { // Delete listID from user if list does not exist in LISTS
+                    } else { // Delete listID from user if listID does not exist in LISTS
                         let usersListsRef = self.userRef.child("listIDs");
                         usersListsRef.child(listID).removeValue();
                         self.reloadData();

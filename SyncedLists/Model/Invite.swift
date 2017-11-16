@@ -26,7 +26,7 @@ class Invite {
     let usersRef = Database.database().reference(withPath: "users");
     let listsRef = Database.database().reference(withPath: "lists");
 
-    var senderID: String;
+    var senderID: String?;
     var senderName: String?
     var recipientID: String;
     var recipientName: String?
@@ -39,7 +39,7 @@ class Invite {
     // Constructor for Firebase-loaded Item
     init(snapshot: DataSnapshot, completionHandler: (() -> Void)?) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
-        self.senderID = snapshotValue["senderID"] as! String;
+        self.senderID = snapshotValue["senderID"] as? String;
         self.senderName = nil;
         self.recipientID = snapshotValue["recipientID"] as! String;
         self.recipientName = nil;
@@ -47,38 +47,31 @@ class Invite {
         self.listName = nil;
         self.id = snapshot.key;
         self.ref = snapshot.ref;
-               
+        
+        // Observe LISTS for listName
         listsRef.observeSingleEvent(of: .value, with: { snapshot in
-           // Check if listID exists in LISTS
-            if(snapshot.hasChild(self.listID)) {
-                self.listsRef.child(self.listID).child("name")
-                    .observeSingleEvent(of: .value, with: { snapshot in
-                        self.listName = snapshot.value as? String;
-                        self.loadSenderName(completionHandler: completionHandler);
-                        self.loadRecipientName(completionHandler: completionHandler);
-                    });
-            } else { // List does not exist in LISTS
+            if(snapshot.hasChild(self.listID)) { // Load listName if listID exists in LISTS
+                let listSnapshot = snapshot.childSnapshot(forPath: self.listID);
+                self.listName = listSnapshot.childSnapshot(forPath: "name").value as? String;
+                
+                self.loadSenderName(completionHandler: completionHandler);
+                self.loadRecipientName(completionHandler: completionHandler);
+            } else { // Delete invite if listID does not exist in LISTS
                 self.delete();
             }
-        }); // Observe listsRef
+        });
     }
     
     func loadRecipientName(completionHandler: (() -> Void)?) {
         // Observe USERS for recipientName
-        self.usersRef.observeSingleEvent(of: .value, with: { snapshot in
-            // If recipientID exists in USERS
-            if(snapshot.hasChild(self.recipientID)) {
-                // Get recipientName from recipientID
-                self.usersRef.child(self.recipientID).child("name")
-                    .observeSingleEvent(of: .value, with: { snapshot in
-                        self.recipientName = snapshot.value as? String;
-                        defer {
-                            if let completionHandler = completionHandler {
-                                completionHandler();
-                            }
-                        }
-                    });
-            } else { // Recipient doesn't exist; delete entire invite
+        self.usersRef.observe(.value, with: { snapshot in
+            if(snapshot.hasChild(self.recipientID)) { // Load recipientName if recipientID exists in USERS
+                let userSnapshot = snapshot.childSnapshot(forPath: self.recipientID);
+                self.recipientName = userSnapshot.childSnapshot(forPath: "name").value as? String;
+                if let completionHandler = completionHandler {
+                    completionHandler();
+                }
+            } else { // Delete invite if recipientID does not exist in USERS
                 self.delete();
             }
         });
@@ -86,21 +79,25 @@ class Invite {
     
     func loadSenderName(completionHandler: (() -> Void)?) {
         // Observe USERS for senderName
-        self.usersRef.observeSingleEvent(of: .value, with: { snapshot in
-            // If senderID exists in USERS
-            if(snapshot.hasChild(self.senderID)) {
-                // Get senderName from senderID
-                self.usersRef.child(self.senderID).child("name")
-                    .observeSingleEvent(of: .value, with: { snapshot in
-                        self.senderName = snapshot.value as? String;
-                        defer {
-                            if let completionHandler = completionHandler {
-                                completionHandler();
-                            }
-                        }
-                    });
+        self.usersRef.observe(.value, with: { snapshot in
+            if let senderID = self.senderID {
+                if(snapshot.hasChild(senderID)) { // Load senderName if senderID exists in USERS
+                    let userSnapshot = snapshot.childSnapshot(forPath: senderID);
+                    self.senderName = userSnapshot.childSnapshot(forPath: "name").value as? String;
+                    if let completionHandler = completionHandler {
+                        completionHandler();
+                    }
+                } else {
+                    self.senderName = "[Deleted User]";
+                    self.ref!.child("senderID").removeValue();
+                    if let completionHandler = completionHandler {
+                        completionHandler();
+                    }
+                }
             } else {
-                self.senderName = "[Deleted User]";
+                if let completionHandler = completionHandler {
+                    completionHandler();
+                }
             }
        });
     }

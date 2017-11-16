@@ -11,9 +11,9 @@ import Foundation
 
 class Item {
     var name: String;
-    var addedByUserID: String;
+    var addedByUserID: String?
     var completedByUserID: String?
-    var addedByUserName: String!;
+    var addedByUserName: String!
     var completedByUserName: String?
     var ref: DatabaseReference? // Needed for deletion
     
@@ -21,27 +21,48 @@ class Item {
     init(snapshot: DataSnapshot, completionHandler: @escaping () -> Void) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.name = snapshotValue["name"] as! String;
-        self.addedByUserID = snapshotValue["addedByUserID"] as! String;
+        self.addedByUserID = snapshotValue["addedByUserID"] as? String;
         self.completedByUserID = snapshotValue["completedByUserID"] as? String;
         self.ref = snapshot.ref;
 
         // Nest observers so completionHandler only needs to be called once
         // Observe addedByUserName
-        Database.database().reference(withPath: "users")
-            .child(addedByUserID).child("name")
-            .observeSingleEvent(of: .value, with: { snapshot in
-                self.addedByUserName = snapshot.value as! String;
-                // If available, observe completedByUserName
-                if let completedByUserID = self.completedByUserID {
-                    Database.database().reference(withPath: "users")
-                        .child(completedByUserID).child("name")
-                        .observeSingleEvent(of: .value, with: { snapshot in
-                            self.completedByUserName = snapshot.value as? String;
-                            completionHandler();
-                        });
+        let usersRef = Database.database().reference(withPath: "users");
+        usersRef.observeSingleEvent(of: .value, with: { snapshot in
+            // Attempt to load addedUser
+            var loadingAddedUser = false;
+            if let addedByUserID = self.addedByUserID {
+                loadingAddedUser = true;
+                if(snapshot.hasChild(addedByUserID)) { // Load addedByUserName if addedByUserID exists in USERS
+                    let userSnapshot = snapshot.childSnapshot(forPath: addedByUserID);
+                    self.addedByUserName = userSnapshot.childSnapshot(forPath: "name").value as! String;
+                } else { // Delete addedByUserID if addedByUserID does not exist in USERS
+                    self.addedByUserName = "[User Deleted]";
+                    self.addedByUserID = nil;
+                    self.ref!.child("addedByUserID").removeValue();
                 }
                 completionHandler();
-            });
+            } else {
+                self.addedByUserName = "[User Deleted]";
+                completionHandler();
+            }
+            
+            // Attempt to load completedUser
+            var loadingCompletedUser = false;
+            if let completedByUserID = self.completedByUserID {
+                loadingCompletedUser = true;
+                if(snapshot.hasChild(completedByUserID)) { // Load completedByUserName if completedByUserID exists in USERS
+                    let userSnapshot = snapshot.childSnapshot(forPath: completedByUserID);
+                    self.completedByUserName = userSnapshot.childSnapshot(forPath: "name").value as? String;
+                } else { // Delete completedByUserID if completedByUserID does not exist in USERS
+                    self.completedByUserName = nil;
+                    self.completedByUserID = nil;
+                    self.ref!.child("completedByUserID").removeValue();
+                }
+                completionHandler();
+            }
+            if(!loadingCompletedUser || !loadingAddedUser) { completionHandler(); }
+        });
     }
     
     // Constructor for locally created Item

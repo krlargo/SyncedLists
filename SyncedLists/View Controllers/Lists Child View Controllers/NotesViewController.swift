@@ -26,7 +26,7 @@ class NotesViewController: UIViewController {
         // Set line spacing
         let style = NSMutableParagraphStyle();
         style.lineSpacing = 8;
-        let attributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.paragraphStyle: style, NSAttributedStringKey.font: self.notesTextView.font];
+        let attributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.paragraphStyle: style, NSAttributedStringKey.font: self.notesTextView.font!];
         
         let listRef = listsRef.child(listID);
         listRef.child("notes").observe(.value, with: { snapshot in

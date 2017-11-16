@@ -738,7 +738,6 @@
         <!--About-->
         <scene sceneID="zKT-Eo-PaQ">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="NLj-Yt-6cV" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController title="About" id="0hQ-UJ-RU0" customClass="AboutUsViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="4DA-kV-H3q"/>
@@ -846,6 +845,7 @@
                         <outlet property="versionLabel" destination="pZx-Cr-p0U" id="Rl1-An-qAO"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NLj-Yt-6cV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1838" y="634"/>
         </scene>

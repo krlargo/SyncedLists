@@ -42,25 +42,20 @@ class InvitesTableViewController: UITableViewController {
         userRef.child("inviteIDs").observe(.value, with: { snapshot in
             Utility.showActivityIndicator(in: self.view!);
             var loadingInvites = false;
-            // Load user's invites
+
             self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
                 loadingInvites = true;
                 
                 let inviteID = snapshot.key;
-                self.invitesRef.observe(.value, with: { snapshot in
-                    // Check if inviteID exists in INVITES
-                    if(snapshot.hasChild(inviteID)) {
-                        print("inviteID: \(inviteID)");
-                        // Load INVITE metadata
-                        self.invitesRef.child(inviteID).observe(.value, with: { snapshot in
-                            let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
-                            self.invites.append(invite);
-                        });
-                    }
-                    // Delete inviteID from USER
-                    else {
+                self.invitesRef.observeSingleEvent(of: .value, with: { snapshot in
+                    if(snapshot.hasChild(inviteID)) { // Load invite if inviteID exists in INVITES
+                        let inviteSnapshot = snapshot.childSnapshot(forPath: inviteID);
+                        let invite = Invite(snapshot: inviteSnapshot, completionHandler: self.reloadData);
+                        self.invites.append(invite);
+                    } else { // Delete inviteID from USER if inviteID does not exist in INVITES
                         userRef.child("inviteIDs").child(inviteID).removeValue();
+                        self.reloadData();
                     }
                 });
             }

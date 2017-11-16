@@ -19,7 +19,6 @@ class List {
     var completedCount: Int = 0;
     var itemCount: Int = 0;
     
-    // Constructor for Firebase-loaded Item
     init(snapshot: DataSnapshot, completionHandler: (() -> Void)?) {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.name = snapshotValue["name"] as! String;
@@ -40,10 +39,8 @@ class List {
             }
             self.completedCount = completedCount;
             
-            defer {
-                if let completionHandler = completionHandler {
-                    completionHandler();
-                }
+            if let completionHandler = completionHandler {
+                completionHandler();
             }
         });
     }
