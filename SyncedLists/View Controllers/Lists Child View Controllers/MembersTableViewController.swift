@@ -128,22 +128,30 @@ class MembersTableViewController: UITableViewController {
         
         // Load joined users
         listRef.child("memberIDs").observe(.value, with: { snapshot in
-            // Get each joined user's metadata
+            var loadingMembers = false;
+
             self.joinedUsers.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
+                loadingMembers = true;
+
                 let memberID = snapshot.key;
-                
                 self.usersRef.child(memberID).observeSingleEvent(of: .value, with: { snapshot in
                     let joinedUser = User(snapshot: snapshot);
                     self.joinedUsers.append(joinedUser);
                 });
             }
+            if(!loadingMembers) {
+                self.reloadData();
+            }
         });
         
         // Load inviteIDs
         listRef.child("inviteIDs").observe(.value, with: { snapshot in
+            var loadingInvites = false;
+
             self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
+                loadingInvites = true;
                 
                 // Load invite from INVITES
                 let inviteID = snapshot.key;
@@ -152,6 +160,7 @@ class MembersTableViewController: UITableViewController {
                     self.invites.append(invite);
                 });
             }
+            if(!loadingInvites) { self.reloadData(); }
         });
     }
 
