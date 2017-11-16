@@ -42,7 +42,7 @@ class List {
             
             defer {
                 if let completionHandler = completionHandler {
-                completionHandler();
+                    completionHandler();
                 }
             }
         });
