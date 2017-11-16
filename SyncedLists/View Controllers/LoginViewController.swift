@@ -11,16 +11,6 @@ import FirebaseDatabase
 import UIKit
 
 class LoginViewController: UIViewController {
-    /// MARK: - Temporary Buttons
-    @IBAction func signUpKevin(_ sender: Any) {
-        signUpUser(displayName: "Kevin", email: "krlargo@ucdavis.edu", password: "abc123");
-    }
-    
-    @IBAction func signUpStacy(_ sender: Any) {
-        signUpUser(displayName: "Stacy", email: "xkevlar@live.com", password: "abc123");
-    }
-    
-    
     // MARK: - IBOutlets
     @IBOutlet var buttons: [UIButton]!
     @IBOutlet weak var emailTextField: UITextField!
@@ -31,40 +21,15 @@ class LoginViewController: UIViewController {
     
     @IBAction func login(_ sender: Any) {
         Utility.showActivityIndicator(in: self.view);
-        ///,,,
-        if(emailTextField.text! == "" && passwordTextField.text! == "") {
-            Auth.auth().signIn(withEmail: "xkevlar@live.com", password: "abc123", completion: { (user, error) in
-                if let error = error {
-                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
-                } else {
-                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
-                    Utility.hideActivityIndicator();
-                }
-            });
-        } else if(emailTextField.text! != "" && passwordTextField.text! == "") {
-            Auth.auth().signIn(withEmail: emailTextField.text!, password: "abc123", completion: { (user, error) in
-                if let error = error {
-                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
-                } else {
-                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
-                    Utility.hideActivityIndicator();
-                }
-            });
-        
-        } else {
-        ///'''
             
-            Utility.showActivityIndicator(in: self.view);
-            
-            Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
-                if let error = error { // Attempt login if account already exists
-                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
-                } else {
-                    self.performSegue(withIdentifier: "loginSegue", sender: nil);
-                }
-                Utility.hideActivityIndicator();
-            });
-        } ///
+        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
+            if let error = error { // Attempt login if account already exists
+                Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+            } else {
+                self.performSegue(withIdentifier: "loginSegue", sender: nil);
+            }
+            Utility.hideActivityIndicator();
+        });
     }
     
     @IBAction func signUp(_ sender: Any) {
@@ -82,7 +47,6 @@ class LoginViewController: UIViewController {
             }
             
             Utility.showActivityIndicator(in: self.view);
-
             self.signUpUser(displayName: displayName, email: email, password: password);
         }
         saveAction.isEnabled = false;
