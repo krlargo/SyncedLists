@@ -50,16 +50,15 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         
         self.itemsRef.observe(.value, with: { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
+            var loadingItems = false;
             
             self.items.removeAll();
-            
             for case let snapshot as DataSnapshot in snapshot.children {
+                loadingItems = true;
                 let item = Item(snapshot: snapshot, completionHandler: self.reloadData);
                 self.items.append(item);
             }
-            
-            self.tableView.reloadData();
-            Utility.hideActivityIndicator(); // In case there are no items;
+            if(!loadingItems) { self.reloadData(); }
         });
     }
     
