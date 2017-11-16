@@ -12,6 +12,7 @@ import Foundation
 import UIKit
 
 class ListsTableViewController: UITableViewController {
+    
     // MARK: - Variables
     let usersRef = Database.database().reference(withPath: "users");
     let listsRef = Database.database().reference(withPath: "lists");
@@ -20,8 +21,17 @@ class ListsTableViewController: UITableViewController {
     var lists: [List] = [];
     var user: User!
     var handle: AuthStateDidChangeListenerHandle?
-
+    
     // MARK: - IBActions
+    @IBAction func logout(_ sender: Any) {
+        do {
+            try Auth.auth().signOut();
+            performSegue(withIdentifier: "logoutSegue", sender: self);
+        } catch(let error) {
+            Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+        }
+    }
+    
     @IBAction func addList(_ sender: Any) {
         let alert = UIAlertController(title: "Add List", message: "", preferredStyle: .alert);
         
@@ -32,7 +42,7 @@ class ListsTableViewController: UITableViewController {
             Utility.showActivityIndicator(in: self.navigationController!.view!);
             
             let list = List(name: text, ownerID: self.user.id);
-
+            
             // Add to LISTS
             let listRef = self.listsRef.childByAutoId();
             listRef.setValue(list.toAnyObject());
@@ -56,7 +66,7 @@ class ListsTableViewController: UITableViewController {
         
         alert.addAction(cancelAction);
         alert.addAction(saveAction);
-
+        
         present(alert, animated: true, completion: nil)
     }
     
@@ -65,22 +75,20 @@ class ListsTableViewController: UITableViewController {
         super.viewDidLoad()
         
         self.user = User(authData: Auth.auth().currentUser!);
-        self.userRef = usersRef.child(user.id); // Set reference
+        self.userRef = usersRef.child(user.id);
         
         // Set backButton
         let backButton = UIBarButtonItem();
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
-
         self.userRef.child("listIDs").observe(.value, with: { snapshot in
-            var loadingLists = false;
             Utility.showActivityIndicator(in: self.navigationController?.view);
-
+            var loadingLists = false;
+            
             // Load user's lists
             self.lists.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
                 loadingLists = true;
-                
                 let listID = snapshot.key;
                 let listRef = self.listsRef.child(listID);
                 
@@ -89,10 +97,7 @@ class ListsTableViewController: UITableViewController {
                     self.lists.append(list);
                 });
             }
-            
-            if(!loadingLists) {
-                self.reloadData();
-            }
+            if(!loadingLists) { self.reloadData(); }
         });
     }
     
@@ -152,11 +157,11 @@ class ListsTableViewController: UITableViewController {
         switch(editingStyle) {
         case .delete:
             let list = lists[indexPath.row];
-
+            
             // Delete list from current user only
             let userListRef = userRef.child("listIDs").child(list.id!);
             userListRef.removeValue(); // Remove list from user in USER
-
+            
             // If current user is list owner, then delete entire list
             if(list.ownerID == user.id) {
                 list.delete();
@@ -168,7 +173,7 @@ class ListsTableViewController: UITableViewController {
             return;
         }
     }
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "toItems") {
             if let indexPath = tableView.indexPathForSelectedRow {
