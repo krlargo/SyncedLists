@@ -27,10 +27,17 @@ class SettingsTableViewController: UITableViewController {
     @IBOutlet weak var contactCell: UITableViewCell!
     @IBOutlet weak var deleteAccountCell: UITableViewCell!
     
-    @IBAction func debug(_ sender: Any) {
-        Utility.hideActivityIndicator();
+    // MARK: - IBActions
+    @IBAction func logout(_ sender: Any) {
+        do {
+            try Auth.auth().signOut();
+            performSegue(withIdentifier: "logoutSegue", sender: self);
+        } catch(let error) {
+            Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+        }
     }
-    
+
+    // MARK: - Overridden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -222,7 +229,7 @@ class SettingsTableViewController: UITableViewController {
                 } else {
                     // Delete related queries
                     self.user.delete();
-                    self.performSegue(withIdentifier: "settingsToLoginSegue", sender: self);
+                    self.performSegue(withIdentifier: "logoutSegue", sender: self);
                 }
                 Utility.hideActivityIndicator();
             });
