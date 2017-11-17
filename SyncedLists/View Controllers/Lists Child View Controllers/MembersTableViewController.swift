@@ -15,6 +15,8 @@ class MembersTableViewController: UITableViewController {
     var usersRef = Database.database().reference(withPath: "users");
     var emailsRef = Database.database().reference(withPath: "emails");
     var invitesRef = Database.database().reference(withPath: "invites");
+    var listsRef = Database.database().reference(withPath: "lists");
+    
     var listRef: DatabaseReference!
     
     var listID: String!
@@ -108,7 +110,11 @@ class MembersTableViewController: UITableViewController {
     // MARK: - Overridden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+       
+        /*
+            Look up how to check for child data without loading entire parent
+         */
+       
         self.listRef = Database.database().reference(withPath: "lists").child(listID);
         
         // Get list ownerID
