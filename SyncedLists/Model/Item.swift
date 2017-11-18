@@ -28,41 +28,41 @@ class Item {
         // Nest observers so completionHandler only needs to be called once
         // Observe addedByUserName
         let usersRef = Database.database().reference(withPath: "users");
-        usersRef.observeSingleEvent(of: .value, with: { snapshot in
-            // Attempt to load addedUser
-            var loadingAddedUser = false;
-            if let addedByUserID = self.addedByUserID {
-                loadingAddedUser = true;
-                if(snapshot.hasChild(addedByUserID)) { // Load addedByUserName if addedByUserID exists in USERS
-                    let userSnapshot = snapshot.childSnapshot(forPath: addedByUserID);
-                    self.addedByUserName = userSnapshot.childSnapshot(forPath: "name").value as! String;
-                } else { // Delete addedByUserID if addedByUserID does not exist in USERS
+        //,,,
+        // Attempt to load addedBy-User
+        if let addedByUserID = self.addedByUserID {
+            usersRef.child(addedByUserID).observeSingleEvent(of: .value) { snapshot in
+                if(!(snapshot.value is NSNull)) {
+                    let snapshotValue = snapshot.value as! [String: Any];
+                    self.addedByUserName = snapshotValue["name"] as! String;
+                } else {
                     self.addedByUserName = "[User Deleted]";
                     self.addedByUserID = nil;
                     self.ref!.child("addedByUserID").removeValue();
                 }
                 completionHandler();
-            } else {
-                self.addedByUserName = "[User Deleted]";
-                completionHandler();
-            }
-            
-            // Attempt to load completedUser
-            var loadingCompletedUser = false;
-            if let completedByUserID = self.completedByUserID {
-                loadingCompletedUser = true;
-                if(snapshot.hasChild(completedByUserID)) { // Load completedByUserName if completedByUserID exists in USERS
-                    let userSnapshot = snapshot.childSnapshot(forPath: completedByUserID);
-                    self.completedByUserName = userSnapshot.childSnapshot(forPath: "name").value as? String;
-                } else { // Delete completedByUserID if completedByUserID does not exist in USERS
+            };
+        } else {
+            self.addedByUserName = "[User Deleted]";
+            completionHandler();
+        }
+        // Attempt to load completedBy-User
+        if let completedByUserID = self.completedByUserID {
+            usersRef.child(completedByUserID).observeSingleEvent(of: .value) { snapshot in
+                if(!(snapshot.value is NSNull)) {
+                    let snapshotValue = snapshot.value as! [String: Any];
+                    self.completedByUserName = snapshotValue["name"] as? String;
+                } else {
                     self.completedByUserName = nil;
                     self.completedByUserID = nil;
                     self.ref!.child("completedByUserID").removeValue();
                 }
                 completionHandler();
-            }
-            if(!loadingCompletedUser || !loadingAddedUser) { completionHandler(); }
-        });
+            };
+        } else {
+            self.completedByUserName = nil;
+            completionHandler();
+        }
     }
     
     // Constructor for locally created Item
