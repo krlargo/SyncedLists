@@ -6,18 +6,6 @@
 //  Copyright © 2017 Kevin Largo. All rights reserved.
 //
 
-/*
- When invite is accepted
- - in LISTS move invitedID->listID from invitedIDs to memberIDs
- - delete inviteID from recipientUSER's inviteIDs
- - delete invite from INVITES
- 
- When invite is declined
- - in LISTS remove invitedID from invitedIDs
- - delete inviteID from recipientUSER's inviteIDs
- - delete invite from INVITES
- */
-
 import FirebaseDatabase
 import Foundation
 
@@ -49,41 +37,40 @@ class Invite {
         self.ref = snapshot.ref;
         
         // Observe LISTS for listName
-        listsRef.observeSingleEvent(of: .value, with: { snapshot in
-            if(snapshot.hasChild(self.listID)) { // Load listName if listID exists in LISTS
-                let listSnapshot = snapshot.childSnapshot(forPath: self.listID);
-                self.listName = listSnapshot.childSnapshot(forPath: "name").value as? String;
-                
+        self.listsRef.child(self.listID).observeSingleEvent(of: .value) { snapshot in
+            if(!(snapshot.value is NSNull)) { // Load listName if listID exists in LISTS
+                let snapshotValue = snapshot.value as! [String: Any];
+                self.listName = snapshotValue["name"] as? String;
                 self.loadSenderName(completionHandler: completionHandler);
                 self.loadRecipientName(completionHandler: completionHandler);
             } else { // Delete invite if listID does not exist in LISTS
                 self.delete();
             }
-        });
+        };
     }
     
     func loadRecipientName(completionHandler: (() -> Void)?) {
         // Observe USERS for recipientName
-        self.usersRef.observe(.value, with: { snapshot in
-            if(snapshot.hasChild(self.recipientID)) { // Load recipientName if recipientID exists in USERS
-                let userSnapshot = snapshot.childSnapshot(forPath: self.recipientID);
-                self.recipientName = userSnapshot.childSnapshot(forPath: "name").value as? String;
+        self.usersRef.child(self.recipientID).observeSingleEvent(of: .value) { snapshot in
+            if(!(snapshot.value is NSNull)) { // Load recipientName if recipientID exists in USERS
+                let snapshotValue = snapshot.value as! [String: Any];
+                self.recipientName = snapshotValue["name"] as? String;
                 if let completionHandler = completionHandler {
                     completionHandler();
                 }
             } else { // Delete invite if recipientID does not exist in USERS
                 self.delete();
             }
-        });
+        }
     }
     
     func loadSenderName(completionHandler: (() -> Void)?) {
         // Observe USERS for senderName
-        self.usersRef.observe(.value, with: { snapshot in
-            if let senderID = self.senderID {
-                if(snapshot.hasChild(senderID)) { // Load senderName if senderID exists in USERS
-                    let userSnapshot = snapshot.childSnapshot(forPath: senderID);
-                    self.senderName = userSnapshot.childSnapshot(forPath: "name").value as? String;
+        if let senderID = self.senderID { // Load senderName if senderID exists in USERS
+            self.usersRef.child(senderID).observeSingleEvent(of: .value) { snapshot in
+                if(!(snapshot.value is NSNull)) {
+                    let snapshotValue = snapshot.value as! [String: Any];
+                    self.senderName = snapshotValue["name"] as? String;
                     if let completionHandler = completionHandler {
                         completionHandler();
                     }
@@ -94,12 +81,13 @@ class Invite {
                         completionHandler();
                     }
                 }
-            } else {
-                if let completionHandler = completionHandler {
-                    completionHandler();
-                }
             }
-       });
+        } else {
+            self.senderName = "[Deleted User]";
+            if let completionHandler = completionHandler {
+                completionHandler();
+            }
+        }
     }
     
     init(senderID: String, recipientID: String, listID: String) {
