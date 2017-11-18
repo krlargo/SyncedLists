@@ -28,7 +28,7 @@ class List {
         
         // Get itemCount and completedItemsCount
         let listItemsRef = Database.database().reference(withPath: "items");
-        listItemsRef.child(id!).observe(.value, with: { snapshot in
+        listItemsRef.child(id!).observe(.value) { snapshot in
             self.itemCount = Int(snapshot.childrenCount);
             
             var completedCount = 0;
@@ -42,7 +42,7 @@ class List {
             if let completionHandler = completionHandler {
                 completionHandler();
             }
-        });
+        }
     }
     
     // Constructor for locally created Item
@@ -69,25 +69,25 @@ class List {
         itemsRef.child(self.id!).removeValue();
         
         // Delete from USERS
-        self.ref!.child("memberIDs").observeSingleEvent(of: .value, with: { snapshot in
+        self.ref!.child("memberIDs").observeSingleEvent(of: .value) { snapshot in
             // For each memberID
             for case let snapshot as DataSnapshot in snapshot.children {
                 let userID = snapshot.key;
                 usersRef.child(userID).child(self.id!).removeValue();
             }
-        });
+        }
         
         // Delete from INVITES
-        self.ref!.child("inviteIDs").observeSingleEvent(of: .value, with: { snapshot in
+        self.ref!.child("inviteIDs").observeSingleEvent(of: .value) { snapshot in
             // For each inviteID, delete invite
             for case let snapshot as DataSnapshot in snapshot.children {
                 let inviteID = snapshot.key;
-                invitesRef.child(inviteID).observeSingleEvent(of: .value, with: { snapshot in
+                invitesRef.child(inviteID).observeSingleEvent(of: .value) { snapshot in
                     let invite = Invite(snapshot: snapshot, completionHandler: nil);
                     invite.delete();
-                });
+                }
             }
-        });
+        }
         
         // Delete from LISTS
         self.ref!.removeValue();
