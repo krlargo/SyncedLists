@@ -48,7 +48,7 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         self.user = User(authData: Auth.auth().currentUser!);
         self.itemsRef = Database.database().reference(withPath: "items").child(listID);
         
-        self.itemsRef.observe(.value, with: { snapshot in
+        self.itemsRef.observe(.value) { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
             var loadingItems = false;
             
@@ -59,7 +59,7 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
                 self.items.append(item);
             }
             if(!loadingItems) { self.reloadData(); }
-        });
+        }
     }
     
     func reloadData() {
@@ -138,6 +138,10 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
     }
     
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return !items.isEmpty;
+    }
+
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         switch(editingStyle) {
         case .delete:
