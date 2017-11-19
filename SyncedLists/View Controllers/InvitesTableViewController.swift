@@ -39,7 +39,7 @@ class InvitesTableViewController: UITableViewController {
         
         // Load inviteIDs from USER
         let userRef = usersRef.child(user.id);
-        userRef.child("inviteIDs").observe(.value, with: { snapshot in
+        userRef.child("inviteIDs").observe(.value) { snapshot in
             Utility.showActivityIndicator(in: self.view!);
             var loadingInvites = false;
 
@@ -48,19 +48,19 @@ class InvitesTableViewController: UITableViewController {
                 loadingInvites = true;
                 
                 let inviteID = snapshot.key;
-                self.invitesRef.observeSingleEvent(of: .value, with: { snapshot in
-                    if(snapshot.hasChild(inviteID)) { // Load invite if inviteID exists in INVITES
-                        let inviteSnapshot = snapshot.childSnapshot(forPath: inviteID);
-                        let invite = Invite(snapshot: inviteSnapshot, completionHandler: self.reloadData);
+                
+                self.invitesRef.child(inviteID).observeSingleEvent(of: .value) { snapshot in
+                    if(!(snapshot.value is NSNull)) {
+                        let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
                         self.invites.append(invite);
-                    } else { // Delete inviteID from USER if inviteID does not exist in INVITES
+                    } else {
                         userRef.child("inviteIDs").child(inviteID).removeValue();
                         self.reloadData();
                     }
-                });
+                }
             }
             if(!loadingInvites) { self.reloadData(); }
-        });
+        }
     }
     
     func reloadData() {
@@ -98,6 +98,10 @@ class InvitesTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if(invites.isEmpty) { return; }
         presentInviteAlert(index: indexPath.row);
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return !invites.isEmpty;
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
