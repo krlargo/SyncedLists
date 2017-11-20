@@ -82,7 +82,7 @@ class ListsTableViewController: UITableViewController {
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
         
-        self.userRef.child("listIDs").observe(.value, with: { snapshot in
+        self.userRef.child("listIDs").observe(.value) { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
             var loadingLists = false;
             
@@ -91,20 +91,18 @@ class ListsTableViewController: UITableViewController {
                 loadingLists = true;
                 let listID = snapshot.key;
 
-                self.listsRef.observeSingleEvent(of: .value, with: { snapshot in
-                    if(snapshot.hasChild(listID)) { // Load list if listID exists in LISTS
-                        let listSnapshot = snapshot.childSnapshot(forPath: listID);
-                        let list = List(snapshot: listSnapshot, completionHandler: self.reloadData);
+                self.listsRef.child(listID).observeSingleEvent(of: .value) { snapshot in
+                    if(!(snapshot.value is NSNull)) {
+                        let list = List(snapshot: snapshot, completionHandler: self.reloadData);
                         self.lists.append(list);
-                    } else { // Delete listID from user if listID does not exist in LISTS
-                        let usersListsRef = self.userRef.child("listIDs");
-                        usersListsRef.child(listID).removeValue();
-                        self.reloadData();
+                    } else {
+                        let userListsRef = self.userRef.child("listIDs");
+                        userListsRef.child(listID).removeValue();
                     }
-                });
+                }
             }
             if(!loadingLists) { self.reloadData(); }
-        });
+        }
     }
     
     func reloadData() {
@@ -159,7 +157,17 @@ class ListsTableViewController: UITableViewController {
         return cell!;
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if(lists.isEmpty) { return; }
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return !lists.isEmpty;
+    }
+
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if(lists.isEmpty) { return; }
+        
         switch(editingStyle) {
         case .delete:
             let list = lists[indexPath.row];
