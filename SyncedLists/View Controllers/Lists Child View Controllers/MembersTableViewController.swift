@@ -36,7 +36,7 @@ class MembersTableViewController: UITableViewController {
         
         let alert = UIAlertController(title: "Invite Member", message: "", preferredStyle: .alert);
         
-        let saveAction = UIAlertAction(title: "Invite", style: .default, handler: { _ in
+        let saveAction = UIAlertAction(title: "Invite", style: .default) { _ in
             guard let textField = alert.textFields?.first,
                 let email = textField.text?.lowercased() else { return; }
             
@@ -52,7 +52,7 @@ class MembersTableViewController: UITableViewController {
             Utility.showActivityIndicator(in: self.navigationController!.view!);
             
             // Save invite
-            self.emailsRef.observeSingleEvent(of: .value, with: { snapshot in
+            self.emailsRef.observeSingleEvent(of: .value) { snapshot in
                 let recipientEmailAsID = User.emailToID(email);
                 
                 if(snapshot.hasChild(recipientEmailAsID)) {
@@ -63,7 +63,7 @@ class MembersTableViewController: UITableViewController {
 
                     let invite = Invite(senderID: senderID, recipientID: recipientID, listID: self.listID)
 
-                    self.listRef.child("inviteIDs").observeSingleEvent(of: .value, with: { snapshot in
+                    self.listRef.child("inviteIDs").observeSingleEvent(of: .value) { snapshot in
                         // If list's inviteIDs already contains email
                         if(snapshot.hasChild(recipientID)) {
                             Utility.presentErrorAlert(message: "User with email \"\(email)\" has already been invited.", from: self)
@@ -81,14 +81,14 @@ class MembersTableViewController: UITableViewController {
                             
                             self.reloadData();
                         }
-                    });
+                    }
                 } else {
                     Utility.presentErrorAlert(message: "User with email \"\(email)\" does not exist.", from: self);
                 }
                 self.reloadData();
-            });
+            }
             self.reloadData();
-        });
+        }
         saveAction.isEnabled = false;
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel);
@@ -111,29 +111,21 @@ class MembersTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
        
-        /*
-            Look up how to check for child data without loading entire parent
-         */
-       
         self.listRef = Database.database().reference(withPath: "lists").child(listID);
-        
-        // Get list ownerID
-        listRef.observe(.value, with: { snapshot in
-            //Utility.showActivityIndicator(in: self.navigationController!.view!);
-            
-            let snapshotValue = snapshot.value as! [String: Any];
-            let ownerID = snapshotValue["ownerID"] as! String;
-            
-            // Get owner's name
-            self.usersRef.child(ownerID).observeSingleEvent(of: .value, with: { snapshot in
-                let snapshotValue = snapshot.value as! [String: Any];
-                self.listOwnerName = snapshotValue["name"] as! String;
-                self.reloadData();
-            });
-        });
+        listRef.observeSingleEvent(of: .value) { snapshot in
+            if let snapshotValue = snapshot.value as? [String: Any] {
+                let ownerID = snapshotValue["ownerID"] as! String;
+                self.usersRef.child(ownerID).observeSingleEvent(of: .value) { snapshot in
+                    if let snapshotValue = snapshot.value as? [String: Any] {
+                        self.listOwnerName = snapshotValue["name"] as! String;
+                        self.reloadData();
+                    }
+                }
+            }
+        }
         
         // Load joined users
-        listRef.child("memberIDs").observe(.value, with: { snapshot in
+        listRef.child("memberIDs").observe(.value) { snapshot in
             var loadingMembers = false;
 
             self.joinedUsers.removeAll();
@@ -141,22 +133,21 @@ class MembersTableViewController: UITableViewController {
                 loadingMembers = true;
                 let memberID = snapshot.key;
                 
-                self.usersRef.observeSingleEvent(of: .value, with: { snapshot in
-                    if(snapshot.hasChild(memberID)) { // Load user if memberID exists in USERS
-                        let userSnapshot = snapshot.childSnapshot(forPath: memberID);
-                        let joinedUser = User(snapshot: userSnapshot);
+                self.usersRef.child(memberID).observeSingleEvent(of: .value) { snapshot in
+                    if(!(snapshot.value is NSNull)) { // If snapshot has data, load User
+                        let joinedUser = User(snapshot: snapshot);
                         self.joinedUsers.append(joinedUser);
-                    } else { // Delete memberID from list if memberID does not exist in USERS
-                        self.listRef.child("memberID").child(memberID).removeValue();
+                    } else { // If snapshot doesn't contain data, delete memberID
+                        self.listRef.child("memberIDs").child(memberID).removeValue();
                     }
                     self.reloadData();
-                });
+                }
             }
             if(!loadingMembers) { self.reloadData(); }
-        });
+        }
         
         // Load inviteIDs
-        listRef.child("inviteIDs").observe(.value, with: { snapshot in
+        listRef.child("inviteIDs").observe(.value) { snapshot in
             var loadingInvites = false;
 
             self.invites.removeAll();
@@ -164,19 +155,18 @@ class MembersTableViewController: UITableViewController {
                 loadingInvites = true;
                 let inviteID = snapshot.key;
 
-                self.invitesRef.observeSingleEvent(of: .value, with: { snapshot in
-                    if(snapshot.hasChild(inviteID)) { // Load invite if inviteID exists in INVITES
-                        let inviteSnapshot = snapshot.childSnapshot(forPath: inviteID);
-                        let invite = Invite(snapshot: inviteSnapshot, completionHandler: self.reloadData);
+                self.invitesRef.child(inviteID).observeSingleEvent(of: .value) { snapshot in
+                    if(!(snapshot.value is NSNull)) { // If snapshot has data load Invite
+                        let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
                         self.invites.append(invite);
-                    } else { // Delete inviteID from list if inviteID does not exist in INVITES
-                        self.listRef.child("inviteID").child(inviteID).removeValue();
+                    } else { // If snapshot doesn't contain data, delete inviteID
+                        self.listRef.child("inviteIDs").child(inviteID).removeValue();
                         self.reloadData();
                     }
-                });
+                }
             }
             if(!loadingInvites) { self.reloadData(); }
-        });
+        }
     }
 
     func reloadData() {
@@ -214,6 +204,10 @@ class MembersTableViewController: UITableViewController {
         return cell;
     }
     
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return indexPath.row != 0;
+    }
+
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 
         switch(editingStyle) {
@@ -236,9 +230,5 @@ class MembersTableViewController: UITableViewController {
         default:
             break;
         }
-    }
-    
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return indexPath.row != 0;
     }
 }
