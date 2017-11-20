@@ -20,6 +20,7 @@ class TabBarController: UITabBarController {
         let userID = Auth.auth().currentUser!.uid;
 
         usersRef.child(userID).child("inviteIDs").observe(.value, with: { snapshot in
+            
             let inviteCount = Int(snapshot.childrenCount);
             invitesItem.badgeValue = inviteCount > 0 ? "\(inviteCount)" : nil;
         });

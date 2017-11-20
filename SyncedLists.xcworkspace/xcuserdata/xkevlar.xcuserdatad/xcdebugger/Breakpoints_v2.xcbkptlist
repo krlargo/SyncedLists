@@ -2,4 +2,54 @@
 <Bucket
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SyncedLists/View Controllers/ListsTableViewController.swift"
+            timestampString = "532854649.428427"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
+            landmarkName = "viewDidLoad()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (__ObjC.DataSnapshot) -&gt; () in SyncedLists.ListsTableViewController.viewDidLoad() -&gt; ()"
+                  moduleName = "SyncedLists"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xkevlar/Documents/Coding/Mobile/iOS/SyncedLists/SyncedLists/View%20Controllers/ListsTableViewController.swift"
+                  timestampString = "532851260.164592"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "94"
+                  endingLineNumber = "94"
+                  offsetFromSymbolStart = "1164">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (__ObjC.DataSnapshot) -&gt; () in closure #1 (__ObjC.DataSnapshot) -&gt; () in SyncedLists.ListsTableViewController.viewDidLoad() -&gt; ()"
+                  moduleName = "SyncedLists"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xkevlar/Documents/Coding/Mobile/iOS/SyncedLists/SyncedLists/View%20Controllers/ListsTableViewController.swift"
+                  timestampString = "532851260.167065"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "95"
+                  endingLineNumber = "95"
+                  offsetFromSymbolStart = "44">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
