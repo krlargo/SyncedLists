@@ -305,7 +305,7 @@
         <!--Login View Controller-->
         <scene sceneID="4df-ix-6BA">
             <objects>
-                <viewController id="Vp5-g2-ucS" customClass="LoginViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="loginViewController" id="Vp5-g2-ucS" customClass="LoginViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="DtF-O0-3DR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -408,7 +408,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="pyI-SD-z11">
             <objects>
-                <tabBarController id="aYG-Qf-gYp" customClass="TabBarController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="tabBarController" id="aYG-Qf-gYp" customClass="TabBarController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="imF-WB-zCn"/>
                     <tabBar key="tabBar" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="2FV-h7-h70">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
