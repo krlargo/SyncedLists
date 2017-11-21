@@ -19,6 +19,9 @@ class Utility {
             return;
         }
         
+        // Remove any running activityIndicators
+        backgroundView.removeFromSuperview();
+        
         backgroundView = UIView();
         backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3);
         backgroundView.layer.cornerRadius = 10;
