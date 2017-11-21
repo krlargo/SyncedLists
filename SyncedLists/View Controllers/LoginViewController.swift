@@ -11,6 +11,8 @@ import FirebaseDatabase
 import UIKit
 
 class LoginViewController: UIViewController {
+    var handle: AuthStateDidChangeListenerHandle?
+
     // MARK: - IBOutlets
     @IBOutlet var buttons: [UIButton]!
     @IBOutlet weak var emailTextField: UITextField!
@@ -23,9 +25,13 @@ class LoginViewController: UIViewController {
         Utility.showActivityIndicator(in: self.view);
             
         Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
+            let defaults = UserDefaults.standard;
+
             if let error = error { // Attempt login if account already exists
+                defaults.setValue(nil, forKey: "lastLoggedInEmail");
                 Utility.presentErrorAlert(message: error.localizedDescription, from: self);
             } else {
+                defaults.setValue(self.emailTextField.text!, forKey: "lastLoggedInEmail");
                 self.performSegue(withIdentifier: "loginSegue", sender: nil);
             }
             Utility.hideActivityIndicator();
@@ -130,18 +136,29 @@ class LoginViewController: UIViewController {
         }
         
         // Setup textfields
+        let defaults = UserDefaults.standard;
+        let lastLoggedInEmail = defaults.value(forKey: "lastLoggedInEmail") as? String;
+        
         emailTextField.clearButtonMode = .whileEditing;
         emailTextField.delegate = self;
+        emailTextField.text = lastLoggedInEmail;
+        
         passwordTextField.clearButtonMode = .whileEditing;
         passwordTextField.delegate = self;
         
         let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));
         self.view.addGestureRecognizer(dismissKeyboardGesture);
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated);
+
         passwordTextField.text?.removeAll();
+
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            guard let _ = Auth.auth().currentUser else { return; }
+            self.performSegue(withIdentifier: "loginSegue", sender: nil);
+        }
     }
 }
 
