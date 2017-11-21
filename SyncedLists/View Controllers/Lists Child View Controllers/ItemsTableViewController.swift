@@ -130,12 +130,33 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         if(item.completedByUserID == nil) {
             item.completedByUserID = user.id;
             item.completedByUserName = user.name;
-        } else {
+        } else if(item.completedByUserID == user.id) { // If current user == completedByUser
             item.completedByUserID = nil;
             item.completedByUserName = nil;
+        } else {
+            presentVerifyIfShouldUncheckAlert();
         }
         
         item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
+    }
+    
+    func presentVerifyIfShouldUncheckAlert(_ completedByUser: User, item: Item) {
+        let alert = UIAlertController(title: "Uncheck Item?", message: "This item was completed by \(completedByUser.name), are you sure you want to uncheck it?", preferredStyle: .alert);
+
+        let uncheckAction = UIAlertAction(title: "Uncheck", style: .destructive, handler: { action in
+            item.completedByUserID = nil;
+            item.completedByUserName = nil;
+            self.reloadData();
+        });
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            self.dismiss(animated: true, completion: nil);
+        });
+        
+        alert.addAction(cancelAction);
+        alert.addAction(uncheckAction);
+        
+        present(alert, animated: true, completion: nil);
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
