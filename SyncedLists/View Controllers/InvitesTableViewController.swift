@@ -25,7 +25,6 @@ class InvitesTableViewController: UITableViewController {
     @IBAction func logout(_ sender: Any) {
         do {
             try Auth.auth().signOut();
-            performSegue(withIdentifier: "logoutSegue", sender: self);
         } catch(let error) {
             Utility.presentErrorAlert(message: error.localizedDescription, from: self);
         }
@@ -66,7 +65,18 @@ class InvitesTableViewController: UITableViewController {
         self.tableView.reloadData();
         Utility.hideActivityIndicator();
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            if let user = user {
+                self.user = User(authData: user);
+            } else {
+                self.performSegue(withIdentifier: "logoutSegue", sender: self);
+            }
+        }
+    }
+    
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1;

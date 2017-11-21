@@ -31,7 +31,6 @@ class SettingsTableViewController: UITableViewController {
     @IBAction func logout(_ sender: Any) {
         do {
             try Auth.auth().signOut();
-            performSegue(withIdentifier: "logoutSegue", sender: self);
         } catch(let error) {
             Utility.presentErrorAlert(message: error.localizedDescription, from: self);
         }
@@ -58,8 +57,11 @@ class SettingsTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated);
         handle = Auth.auth().addStateDidChangeListener { (auth, user) in
-            guard let user = user else { return };
-            self.user = User(authData: user);
+            if let user = user {
+                self.user = User(authData: user);
+            } else {
+                self.performSegue(withIdentifier: "logoutSegue", sender: self);
+            }
         }
     }
     
