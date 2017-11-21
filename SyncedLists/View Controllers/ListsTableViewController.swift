@@ -35,7 +35,7 @@ class ListsTableViewController: UITableViewController {
     @IBAction func addList(_ sender: Any) {
         let alert = UIAlertController(title: "Add List", message: "", preferredStyle: .alert);
         
-        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
+        let saveAction = UIAlertAction(title: "Add", style: .default, handler: { _ in
             guard let textField = alert.textFields?.first,
                 let text = textField.text else { return; }
             
