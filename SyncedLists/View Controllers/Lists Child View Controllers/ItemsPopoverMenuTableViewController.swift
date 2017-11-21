@@ -63,7 +63,7 @@ class ItemsPopoverMenuTableViewController: UITableViewController {
     func addItem() {
         let alert = UIAlertController(title: "Add Item", message: "", preferredStyle: .alert);
         
-        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { _ in
+        let saveAction = UIAlertAction(title: "Add", style: .default, handler: { _ in
             guard let textField = alert.textFields?.first,
                 let text = textField.text else { return; }
             
@@ -82,7 +82,7 @@ class ItemsPopoverMenuTableViewController: UITableViewController {
         
         alert.addTextField { itemNameTextField in
             itemNameTextField.autocapitalizationType = .words;
-            itemNameTextField.placeholder = "List Name";
+            itemNameTextField.placeholder = "Item Name";
         }
         
         alert.setupTextFields();
