@@ -127,31 +127,29 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
 
         let item = items[indexPath.row];
         
+        // If unchecked, check by current user
         if(item.completedByUserID == nil) {
-            item.completedByUserID = user.id;
-            item.completedByUserName = user.name;
-        } else if(item.completedByUserID == user.id) { // If current user == completedByUser
-            item.completedByUserID = nil;
-            item.completedByUserName = nil;
-        } else {
-            presentVerifyIfShouldUncheckAlert();
+            item.ref!.updateChildValues(["completedByUserID": user.id]);
         }
-        
-        item.ref?.updateChildValues(["completedByUserID": item.completedByUserID ?? NSNull()]);
+        // If checked by current user, uncheck
+        else if(item.completedByUserID == user.id) {
+            item.ref!.child("completedByUserID").removeValue();
+        }
+        // If checked by different user, prompt confirmation
+        else {
+            presentConfirmIfShouldUncheckAlert(item: item);
+        }
     }
     
-    func presentVerifyIfShouldUncheckAlert(_ completedByUser: User, item: Item) {
-        let alert = UIAlertController(title: "Uncheck Item?", message: "This item was completed by \(completedByUser.name), are you sure you want to uncheck it?", preferredStyle: .alert);
+    func presentConfirmIfShouldUncheckAlert(item: Item) {
+        let alert = UIAlertController(title: "Uncheck Item?", message: "This item was completed by \(item.completedByUserName!), are you sure you want to uncheck it?", preferredStyle: .alert);
 
         let uncheckAction = UIAlertAction(title: "Uncheck", style: .destructive, handler: { action in
-            item.completedByUserID = nil;
-            item.completedByUserName = nil;
+            item.ref!.child("completedByUserID").removeValue();
             self.reloadData();
         });
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-            self.dismiss(animated: true, completion: nil);
-        });
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel);
         
         alert.addAction(cancelAction);
         alert.addAction(uncheckAction);
