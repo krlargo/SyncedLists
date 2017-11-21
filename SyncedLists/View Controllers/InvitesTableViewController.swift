@@ -45,12 +45,11 @@ class InvitesTableViewController: UITableViewController {
 
             self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children {
-                loadingInvites = true;
-                
                 let inviteID = snapshot.key;
                 
                 self.invitesRef.child(inviteID).observeSingleEvent(of: .value) { snapshot in
                     if(!(snapshot.value is NSNull)) {
+                        loadingInvites = true;
                         let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
                         self.invites.append(invite);
                     } else {
