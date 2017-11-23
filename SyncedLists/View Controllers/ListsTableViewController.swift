@@ -48,7 +48,7 @@ class ListsTableViewController: UITableViewController {
             
             // Add to USERS
             let currentUserListsRef = self.userRef.child("listIDs");
-            currentUserListsRef.child(listRef.key).setValue(true);
+            currentUserListsRef.child(listRef.key).setValue(ServerValue.timestamp());
             
             self.reloadData();
         });
@@ -86,7 +86,9 @@ class ListsTableViewController: UITableViewController {
             var loadingLists = false;
             
             self.lists.removeAll();
-            for case let snapshot as DataSnapshot in snapshot.children {
+            for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
+                (($0 as! DataSnapshot).value as! Int) < (($1 as! DataSnapshot).value as! Int)
+                }) {
                 loadingLists = true;
                 let listID = snapshot.key;
 
