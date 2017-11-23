@@ -43,7 +43,9 @@ class InvitesTableViewController: UITableViewController {
             var loadingInvites = false;
 
             self.invites.removeAll();
-            for case let snapshot as DataSnapshot in snapshot.children {
+            for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
+                (($0 as! DataSnapshot).value as! Int) < (($1 as! DataSnapshot).value as! Int)
+            }) {
                 let inviteID = snapshot.key;
                 
                 self.invitesRef.child(inviteID).observeSingleEvent(of: .value) { snapshot in
