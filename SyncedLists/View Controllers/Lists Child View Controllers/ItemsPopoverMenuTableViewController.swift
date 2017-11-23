@@ -68,8 +68,8 @@ class ItemsPopoverMenuTableViewController: UITableViewController {
                 let text = textField.text else { return; }
             
             let item = Item(name: text, addedBy: self.delegate.user);
-            let itemRef = self.delegate.itemsRef.childByAutoId();
-            itemRef.setValue(item.toAnyObject());
+            let timestampKey = String(Int(Date().timeIntervalSince1970*100000));
+            self.delegate.itemsRef.child(timestampKey).setValue(item.toAnyObject());
             
             self.tableView.reloadData();
             self.dismiss(animated: true, completion: nil); // Dismiss popoup menu
