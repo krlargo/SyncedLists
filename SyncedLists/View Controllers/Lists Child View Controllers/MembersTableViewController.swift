@@ -73,11 +73,11 @@ class MembersTableViewController: UITableViewController {
                             inviteRef.setValue(invite.toAnyObject());
                             
                             // Add to LISTS
-                            self.listRef.child("inviteIDs").child(inviteRef.key).setValue(true);
+                            self.listRef.child("inviteIDs").child(inviteRef.key).setValue(ServerValue.timestamp());
 
                             // Add to USERS
                             let recipientUserRef = self.usersRef.child(recipientID);
-                            recipientUserRef.child("inviteIDs").child(inviteRef.key).setValue(true);
+                            recipientUserRef.child("inviteIDs").child(inviteRef.key).setValue(ServerValue.timestamp());
                             
                             self.reloadData();
                         }
@@ -129,7 +129,9 @@ class MembersTableViewController: UITableViewController {
             var loadingMembers = false;
 
             self.joinedUsers.removeAll();
-            for case let snapshot as DataSnapshot in snapshot.children {
+            for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
+                (($0 as! DataSnapshot).value as! Int) < (($1 as! DataSnapshot).value as! Int)
+            }) {
                 loadingMembers = true;
                 let memberID = snapshot.key;
                 
@@ -151,8 +153,9 @@ class MembersTableViewController: UITableViewController {
             var loadingInvites = false;
 
             self.invites.removeAll();
-            for case let snapshot as DataSnapshot in snapshot.children {
-                loadingInvites = true;
+            for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
+                (($0 as! DataSnapshot).value as! Int) < (($1 as! DataSnapshot).value as! Int)
+            }) {                loadingInvites = true;
                 let inviteID = snapshot.key;
 
                 self.invitesRef.child(inviteID).observeSingleEvent(of: .value) { snapshot in
