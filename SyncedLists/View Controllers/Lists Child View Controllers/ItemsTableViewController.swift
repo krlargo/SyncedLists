@@ -53,7 +53,9 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
             var loadingItems = false;
             
             self.items.removeAll();
-            for case let snapshot as DataSnapshot in snapshot.children {
+            for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
+                ($0 as! DataSnapshot).key < ($1 as! DataSnapshot).key
+            }) {
                 loadingItems = true;
                 let item = Item(snapshot: snapshot, completionHandler: self.reloadData);
                 self.items.append(item);
