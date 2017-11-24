@@ -196,7 +196,7 @@ class ListsTableViewController: UITableViewController {
         if(segue.identifier == "toItems") {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let itemsTVC = segue.destination as! ItemsTableViewController;
-                itemsTVC.title = lists[indexPath.row].name;
+                itemsTVC.listNameTextField.text = lists[indexPath.row].name;
                 itemsTVC.listID = lists[indexPath.row].id;
             }
         }

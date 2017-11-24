@@ -12,6 +12,9 @@ import Foundation
 import UIKit
 
 class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
+    // MARK: - IBOutlets
+    @IBOutlet weak var listNameTextField: UITextField!
+    
     // MARK: - Variables
     var itemsRef = Database.database().reference(withPath: "items");
     var listID: String!
@@ -54,7 +57,7 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
             
             self.items.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
-                ($0 as! DataSnapshot).key < ($1 as! DataSnapshot).key
+                ($0 as! DataSnapshot).key < ($1 as! DataSnapshot).key // Sort by timestamp key
             }) {
                 loadingItems = true;
                 let item = Item(snapshot: snapshot, completionHandler: self.reloadData);

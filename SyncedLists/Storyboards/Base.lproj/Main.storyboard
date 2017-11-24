@@ -109,7 +109,7 @@
             </objects>
             <point key="canvasLocation" x="1025" y="-904"/>
         </scene>
-        <!--Items-->
+        <!--Items Table View Controller-->
         <scene sceneID="VMd-it-2Mu">
             <objects>
                 <tableViewController id="OQ9-GM-N7N" customClass="ItemsTableViewController" customModule="SyncedLists" customModuleProvider="target" sceneMemberID="viewController">
@@ -171,8 +171,16 @@
                             <outlet property="delegate" destination="OQ9-GM-N7N" id="Arf-Ou-pSq"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Items" id="gTZ-93-Ejy">
+                    <navigationItem key="navigationItem" id="gTZ-93-Ejy">
+                        <nil key="title"/>
                         <barButtonItem key="backBarButtonItem" title="Back" id="bfN-xD-8hZ"/>
+                        <textField key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="List Name" textAlignment="natural" minimumFontSize="17" id="fwP-1f-CA2">
+                            <rect key="frame" x="145.5" y="7" width="84" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </textField>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="JZO-sF-F8w">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
@@ -181,6 +189,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="listNameTextField" destination="fwP-1f-CA2" id="8R4-K8-XwQ"/>
                         <segue destination="S1b-3w-NWN" kind="show" identifier="listMembersSegue" id="J0B-Qf-KK0"/>
                         <segue destination="SGM-TE-UNg" kind="show" identifier="listNotesSegue" id="8mC-L0-VB5"/>
                     </connections>
