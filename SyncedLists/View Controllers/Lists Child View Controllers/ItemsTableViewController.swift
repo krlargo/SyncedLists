@@ -16,6 +16,7 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     @IBOutlet weak var listNameTextField: UITextField!
     
     // MARK: - Variables
+    var listRef: DatabaseReference!
     var itemsRef = Database.database().reference(withPath: "items");
     var listID: String!
     
@@ -48,8 +49,19 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        listNameTextField.delegate = self;
+        let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));
+        self.view.addGestureRecognizer(dismissKeyboardGesture);
+        
         self.user = User(authData: Auth.auth().currentUser!);
+        self.listRef = Database.database().reference(withPath: "lists").child(listID);
         self.itemsRef = Database.database().reference(withPath: "items").child(listID);
+        
+        // Observe title for changes
+        self.listRef.observe(.value) { snapshot in
+            let snapshotValue = snapshot.value as! [String: Any];
+            self.listNameTextField.text = snapshotValue["name"] as? String;
+        }
         
         self.itemsRef.observe(.value) { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
@@ -196,12 +208,23 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     func showNotesVC() {
         performSegue(withIdentifier: "listNotesSegue", sender: self);
     }
-    
 }
 
 extension ItemsTableViewController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.none
+    }
+}
+
+extension ItemsTableViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        let newListName = textField.text;
+        listRef.child("name").setValue(newListName);
+        print("textFieldDidEndEditing: setting 'name'");
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true);
     }
 }
 
