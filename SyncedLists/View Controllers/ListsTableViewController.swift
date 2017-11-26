@@ -82,16 +82,27 @@ class ListsTableViewController: UITableViewController {
         navigationItem.backBarButtonItem = backButton;
         
         self.userRef.child("listIDs").observe(.value) { snapshot in
+            for case let snapshot as DataSnapshot in snapshot.children {
+                let listID = snapshot.key;
+                self.listsRef.child(listID).observe(.value) { snapshot in
+                    observeData();
+                }
+            }
+        }
+    }
+    
+    func observeData() {
+        self.userRef.child("listIDs").observeSingleEvent(of: .value) { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
             var loadingLists = false;
             
             self.lists.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
-                (($0 as! DataSnapshot).value as! Int) < (($1 as! DataSnapshot).value as! Int)
-                }) {
+                (($0 as! DataSnapshot).value as! Int) > (($1 as! DataSnapshot).value as! Int)
+            }) {
                 loadingLists = true;
                 let listID = snapshot.key;
-
+                
                 self.listsRef.child(listID).observeSingleEvent(of: .value) { snapshot in
                     if(!(snapshot.value is NSNull)) {
                         let list = List(snapshot: snapshot, completionHandler: self.reloadData);
@@ -120,6 +131,7 @@ class ListsTableViewController: UITableViewController {
                 self.performSegue(withIdentifier: "logoutSegue", sender: self);
             }
         }
+        self.reloadData();
     }
     
     override func viewWillDisappear(_ animated: Bool) {
