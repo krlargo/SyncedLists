@@ -23,10 +23,33 @@ class LoginViewController: UIViewController {
     
     @IBAction func login(_ sender: Any) {
         Utility.showActivityIndicator(in: self.view);
-            
-        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user, error) in
+        
+        var loginCredentials = self.emailTextField.text!;
+        let password = self.passwordTextField.text!
+        
+        if(loginCredentials.isAlphanumeric) { // Is a username due to lack of "@" character
+            let usernamesRef = Database.database().reference(withPath: "usernames");
+            usernamesRef.child(loginCredentials).observeSingleEvent(of: .value) { snapshot in
+                if(!(snapshot.value is NSNull)) {
+                    let userID = snapshot.value as! String;
+                    let usersRef = Database.database().reference(withPath: "users");
+                    usersRef.child(userID).child("email").observeSingleEvent(of: .value) { snapshot in
+                        loginCredentials = snapshot.value as! String;
+                        self.signIn(with: loginCredentials, password: password);
+                    }
+                } else {
+                    Utility.presentErrorAlert(message: "The username \"\(loginCredentials)\" does not exist.", from: self);
+                }
+            }
+        } else {
+            self.signIn(with: loginCredentials, password: password);
+        }
+    }
+    
+    func signIn(with loginCredentials: String, password: String) {
+        Auth.auth().signIn(withEmail: loginCredentials, password: password, completion: { (user, error) in
             let defaults = UserDefaults.standard;
-
+            
             if let error = error { // Attempt login if account already exists
                 defaults.setValue(nil, forKey: "lastLoggedInEmail");
                 Utility.presentErrorAlert(message: error.localizedDescription, from: self);
