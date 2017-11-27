@@ -81,18 +81,18 @@ class ListsTableViewController: UITableViewController {
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
         
-        self.userRef.child("listIDs").observe(.value) { snapshot in
+        /*self.userRef.child("listIDs").observe(.value) { snapshot in
             for case let snapshot as DataSnapshot in snapshot.children {
                 let listID = snapshot.key;
                 self.listsRef.child(listID).observe(.value) { snapshot in
                     self.observeData();
                 }
             }
-        }
+        }*/
     }
     
     func observeData() {
-        self.userRef.child("listIDs").observeSingleEvent(of: .value) { snapshot in
+        self.userRef.child("listIDs").observe(.value) { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
             var loadingLists = false;
             
@@ -131,12 +131,13 @@ class ListsTableViewController: UITableViewController {
                 self.performSegue(withIdentifier: "logoutSegue", sender: self);
             }
         }
-        self.reloadData();
+        self.observeData();
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated);
         Auth.auth().removeStateDidChangeListener(handle!)
+        self.userRef.child("listIDs").removeAllObservers(); // Must remove observers since observers added each viewWillAppear
     }
     
     // MARK: - TableView Delegate Methods
