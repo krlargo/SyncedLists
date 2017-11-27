@@ -80,18 +80,23 @@ class ListsTableViewController: UITableViewController {
         let backButton = UIBarButtonItem();
         backButton.title = "Lists";
         navigationItem.backBarButtonItem = backButton;
-        
-        /*self.userRef.child("listIDs").observe(.value) { snapshot in
-            for case let snapshot as DataSnapshot in snapshot.children {
-                let listID = snapshot.key;
-                self.listsRef.child(listID).observe(.value) { snapshot in
-                    self.observeData();
-                }
-            }
-        }*/
     }
     
-    func observeData() {
+    func reloadData() {
+        self.tableView.reloadData();
+        Utility.hideActivityIndicator();
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            if let user = user {
+                self.user = User(authData: user);
+            } else {
+                self.performSegue(withIdentifier: "logoutSegue", sender: self);
+            }
+        }
+        
         self.userRef.child("listIDs").observe(.value) { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
             var loadingLists = false;
@@ -115,23 +120,6 @@ class ListsTableViewController: UITableViewController {
             }
             if(!loadingLists) { self.reloadData(); }
         }
-    }
-    
-    func reloadData() {
-        self.tableView.reloadData();
-        Utility.hideActivityIndicator();
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated);
-        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
-            if let user = user {
-                self.user = User(authData: user);
-            } else {
-                self.performSegue(withIdentifier: "logoutSegue", sender: self);
-            }
-        }
-        self.observeData();
     }
     
     override func viewWillDisappear(_ animated: Bool) {
