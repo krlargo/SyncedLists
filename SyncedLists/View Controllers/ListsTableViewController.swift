@@ -85,7 +85,7 @@ class ListsTableViewController: UITableViewController {
             for case let snapshot as DataSnapshot in snapshot.children {
                 let listID = snapshot.key;
                 self.listsRef.child(listID).observe(.value) { snapshot in
-                    observeData();
+                    self.observeData();
                 }
             }
         }

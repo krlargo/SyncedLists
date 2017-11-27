@@ -43,17 +43,29 @@ class LoginViewController: UIViewController {
         
         let saveAction = UIAlertAction(title: "Sign Up", style: .default) { action in
             let displayName = alert.textFields![0].text!;
-            let email = alert.textFields![1].text!;
-            let password = alert.textFields![2].text!;
-            let confirmPassword = alert.textFields![3].text!;
+            let username = alert.textFields![1].text!;
+            let email = alert.textFields![2].text!;
+            let password = alert.textFields![3].text!;
+            let confirmPassword = alert.textFields![4].text!;
             
+            // Passwords must match
             if(password != confirmPassword) {
                 Utility.presentErrorAlert(message: "Your passwords don't match.", from: self);
                 return;
             }
             
+            // Username must be unique
+            let usernamesRef = Database.database().reference(withPath: "usernames");
+            let usernameRef = usernamesRef.child(username);
+            usernameRef.observeSingleEvent(of: .value) { snapshot in
+                if(!(snapshot.value is NSNull)) {
+                    Utility.presentErrorAlert(message: "The username \"\(username)\" is already taken.", from: self);
+                    return;
+                }
+            }
+            
             Utility.showActivityIndicator(in: self.view);
-            self.signUpUser(displayName: displayName, email: email, password: password);
+            self.signUpUser(displayName: displayName, username: username, email: email, password: password);
         }
         saveAction.isEnabled = false;
         
@@ -64,6 +76,12 @@ class LoginViewController: UIViewController {
             displayNameTextField.delegate = self;
             displayNameTextField.placeholder = "Display Name";
             displayNameTextField.tag = 1;
+        }
+        
+        alert.addTextField { usernameTextField in
+            usernameTextField.delegate = self;
+            usernameTextField.placeholder = "Username";
+            usernameTextField.tag = 1;
         }
         
         alert.addTextField { emailTextField in
@@ -89,7 +107,7 @@ class LoginViewController: UIViewController {
         present(alert, animated: true, completion: nil);
     }
     
-    func signUpUser(displayName: String, email: String, password: String) {
+    func signUpUser(displayName: String, username: String, email: String, password: String) {
         Auth.auth().createUser(withEmail: email, password: password) { user, error in
             if(error == nil) {
                 // Login and add user metadata to database
@@ -104,6 +122,7 @@ class LoginViewController: UIViewController {
                         let newUserRef = usersRef.child(currentUser.uid);
                         newUserRef.child("name").setValue(currentUser.displayName);
                         newUserRef.child("email").setValue(currentUser.email);
+                        newUserRef.child("username").setValue(username);
                         
                         // Add user to EMAILS
                         let emailsRef = Database.database().reference(withPath: "emails");
