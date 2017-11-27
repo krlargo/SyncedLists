@@ -64,6 +64,12 @@ class LoginViewController: UIViewController {
                 }
             }
             
+            // Username should be alphanumeric
+            if(!username.isAlphanumeric) {
+                Utility.presentErrorAlert(message: "The username \"(username)\" is invalid; usernames can only contain letters and numbers.", from: self);
+                return;
+            }
+            
             Utility.showActivityIndicator(in: self.view);
             self.signUpUser(displayName: displayName, username: username, email: email, password: password);
         }

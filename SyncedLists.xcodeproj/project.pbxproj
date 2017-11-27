@@ -15,6 +15,7 @@
 		384B31AB1FB5717200323BA6 /* NotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384B31AA1FB5717200323BA6 /* NotesViewController.swift */; };
 		386555521FB2F51400427C57 /* AlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386555511FB2F51400427C57 /* AlertController+Extension.swift */; };
 		386555561FB3A3FF00427C57 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386555551FB3A3FF00427C57 /* SettingsTableViewController.swift */; };
+		38860C921FCBFC1500DFC394 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38860C911FCBFC1500DFC394 /* String+Extension.swift */; };
 		3889E7521F957A9C00FB0BE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3889E7511F957A9C00FB0BE7 /* AppDelegate.swift */; };
 		3889E7571F957A9C00FB0BE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3889E7551F957A9C00FB0BE7 /* Main.storyboard */; };
 		3889E75F1F957A9C00FB0BE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3889E75D1F957A9C00FB0BE7 /* LaunchScreen.storyboard */; };
@@ -66,6 +67,7 @@
 		385A2CC01FB1A1D10075178C /* SyncedLists.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SyncedLists.entitlements; sourceTree = "<group>"; };
 		386555511FB2F51400427C57 /* AlertController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertController+Extension.swift"; sourceTree = "<group>"; };
 		386555551FB3A3FF00427C57 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		38860C911FCBFC1500DFC394 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		3889E74E1F957A9C00FB0BE7 /* SyncedLists.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SyncedLists.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3889E7511F957A9C00FB0BE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3889E7561F957A9C00FB0BE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 			children = (
 				3889E7511F957A9C00FB0BE7 /* AppDelegate.swift */,
 				386555511FB2F51400427C57 /* AlertController+Extension.swift */,
+				38860C911FCBFC1500DFC394 /* String+Extension.swift */,
 				3889E78A1F9597D000FB0BE7 /* SyncedLists-Bridging-Header.h */,
 				3891288E1FB3E08E00A1F8B0 /* Utility.swift */,
 			);
@@ -584,6 +587,7 @@
 				3891288F1FB3E08E00A1F8B0 /* Utility.swift in Sources */,
 				3889E7941F988A5700FB0BE7 /* ListsTableViewController.swift in Sources */,
 				3889E7891F95876F00FB0BE7 /* ItemsTableViewController.swift in Sources */,
+				38860C921FCBFC1500DFC394 /* String+Extension.swift in Sources */,
 				386555561FB3A3FF00427C57 /* SettingsTableViewController.swift in Sources */,
 				384B31A91FB55E1000323BA6 /* MembersTableViewController.swift in Sources */,
 				38F746251FBC535600E3BE99 /* AboutUsViewController.swift in Sources */,
