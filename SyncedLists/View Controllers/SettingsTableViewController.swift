@@ -22,6 +22,7 @@ class SettingsTableViewController: UITableViewController {
     
     // MARK: - IBOutlets
     @IBOutlet weak var nameCell: UITableViewCell!
+    @IBOutlet weak var usernameCell: UITableViewCell!
     @IBOutlet weak var emailCell: UITableViewCell!
     @IBOutlet weak var passwordCell: UITableViewCell!
     @IBOutlet weak var contactCell: UITableViewCell!
@@ -45,7 +46,7 @@ class SettingsTableViewController: UITableViewController {
         userRef = Database.database().reference(withPath: "users").child(user.id);
         
         tableData = [
-            [nameCell, emailCell, passwordCell],
+            [nameCell, usernameCell, emailCell, passwordCell],
             [contactCell],
             [deleteAccountCell]
         ]
@@ -83,6 +84,8 @@ class SettingsTableViewController: UITableViewController {
         
         if(cell == nameCell) {
             presentEditNameAlert();
+        } else if(cell == usernameCell) {
+            presentEditUsernameAlert();
         } else if(cell == emailCell) {
             presentEditEmailAlert();
         } else if(cell == passwordCell) {
@@ -125,6 +128,41 @@ class SettingsTableViewController: UITableViewController {
         editNameAlert.addAction(saveAction);
         
         present(editNameAlert, animated: true, completion: nil);
+    }
+    
+    func presentEditUsernameAlert() {
+        let editUsernameAlert = UIAlertController(title: "Edit Username", message: "", preferredStyle: .alert);
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
+            let changeRequest = self.firebaseUser.createProfileChangeRequest();
+            let newDisplayName = editUsernameAlert.textFields![0].text!;
+            changeRequest.displayName = newDisplayName
+            Utility.showActivityIndicator(in: self.navigationController?.view);
+            
+            changeRequest.commitChanges(completion: { error in
+                if let error = error {
+                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
+                } else {
+                    self.userRef.child("name").setValue(newDisplayName);
+                    self.nameCell.detailTextLabel?.text = self.firebaseUser.displayName;
+                }
+                Utility.hideActivityIndicator();
+            });
+        });
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
+        
+        editUsernameAlert.addTextField { textField in
+            textField.autocapitalizationType = .words;
+            textField.text = self.firebaseUser.displayName;
+        }
+        
+        editUsernameAlert.setupTextFields();
+        
+        editUsernameAlert.addAction(cancelAction);
+        editUsernameAlert.addAction(saveAction);
+        
+        present(editUsernameAlert, animated: true, completion: nil);
     }
     
     func presentEditEmailAlert() {
