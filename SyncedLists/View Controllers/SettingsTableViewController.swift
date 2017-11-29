@@ -154,7 +154,7 @@ class SettingsTableViewController: UITableViewController {
 
             // Update in USERNAMES
             self.usernamesRef.child(self.originalUsername).removeValue(); // Remove old value
-            self.usernamesRef.child(newUsername).setValue(firebaseUser.uid); // Insert new value
+            self.usernamesRef.child(newUsername).setValue(self.firebaseUser.uid); // Insert new value
             
             // Update usernameCell
             self.usernameCell.detailTextLabel?.text = "@" + newUsername;
@@ -180,7 +180,7 @@ class SettingsTableViewController: UITableViewController {
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
             let newEmail = editEmailAlert.textFields![0].text!;
-            let oldEmail = firebaseUser.email!;
+            let oldEmail = self.firebaseUser.email!;
             
             Utility.showActivityIndicator(in: self.navigationController?.view);
             
@@ -196,7 +196,7 @@ class SettingsTableViewController: UITableViewController {
                     let oldEmailAsKey = oldEmail.replacingOccurrences(of: ".", with: ",");
                     
                     self.emailsRef.child(oldEmailAsKey).removeValue(); // Remove old value
-                    self.emailsRef.child(newEmailAsKey).setValue(firebaseUser.uid); // Insert new value
+                    self.emailsRef.child(newEmailAsKey).setValue(self.firebaseUser.uid); // Insert new value
 
                     self.emailCell.detailTextLabel?.text = self.firebaseUser.email;
                 }
