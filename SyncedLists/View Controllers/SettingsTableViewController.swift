@@ -14,6 +14,7 @@ class SettingsTableViewController: UITableViewController {
     // MARK: - Variables
     var user: User!
     var userRef: DatabaseReference!
+    let emailsRef = Database.database().reference(withPath: "emails");
     let usernamesRef = Database.database().reference(withPath: "usernames");
 
     var firebaseUser: FirebaseAuth.User!
@@ -179,13 +180,24 @@ class SettingsTableViewController: UITableViewController {
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
             let newEmail = editEmailAlert.textFields![0].text!;
+            let oldEmail = firebaseUser.email!;
+            
             Utility.showActivityIndicator(in: self.navigationController?.view);
             
             self.firebaseUser.updateEmail(to: newEmail, completion: { error in
                 if let error = error {
                     Utility.presentErrorAlert(message: error.localizedDescription, from: self);
                 } else {
+                    // Update in USERS
                     self.userRef.child("email").setValue(newEmail);
+
+                    // Update in EMAILS
+                    let newEmailAsKey = newEmail.replacingOccurrences(of: ".", with: ",");
+                    let oldEmailAsKey = oldEmail.replacingOccurrences(of: ".", with: ",");
+                    
+                    self.emailsRef.child(oldEmailAsKey).removeValue(); // Remove old value
+                    self.emailsRef.child(newEmailAsKey).setValue(firebaseUser.uid); // Insert new value
+
                     self.emailCell.detailTextLabel?.text = self.firebaseUser.email;
                 }
                 Utility.hideActivityIndicator();
