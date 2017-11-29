@@ -14,8 +14,12 @@ class SettingsTableViewController: UITableViewController {
     // MARK: - Variables
     var user: User!
     var userRef: DatabaseReference!
+    let usernamesRef = Database.database().reference(withPath: "usernames");
+
     var firebaseUser: FirebaseAuth.User!
     var handle: AuthStateDidChangeListenerHandle!
+    
+    var originalUsername: String!
     
     // Used for keeping track of section & item counts
     var tableData: [[UITableViewCell]]!;
@@ -51,8 +55,14 @@ class SettingsTableViewController: UITableViewController {
             [deleteAccountCell]
         ]
         
-        nameCell.detailTextLabel?.text = firebaseUser.displayName;
-        emailCell.detailTextLabel?.text = firebaseUser.email;
+        self.nameCell.detailTextLabel?.text = firebaseUser.displayName;
+        self.emailCell.detailTextLabel?.text = firebaseUser.email;
+        
+        userRef.child("username").observeSingleEvent(of: .value) { snapshot in
+            self.originalUsername = snapshot.value as! String;
+            self.usernameCell.detailTextLabel?.text = "@" + self.originalUsername;
+        }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -134,27 +144,26 @@ class SettingsTableViewController: UITableViewController {
         let editUsernameAlert = UIAlertController(title: "Edit Username", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
-            let changeRequest = self.firebaseUser.createProfileChangeRequest();
-            let newDisplayName = editUsernameAlert.textFields![0].text!;
-            changeRequest.displayName = newDisplayName
-            Utility.showActivityIndicator(in: self.navigationController?.view);
+            let newUsername = editUsernameAlert.textFields![0].text!;
+
+            // Validate newUsername
             
-            changeRequest.commitChanges(completion: { error in
-                if let error = error {
-                    Utility.presentErrorAlert(message: error.localizedDescription, from: self);
-                } else {
-                    self.userRef.child("name").setValue(newDisplayName);
-                    self.nameCell.detailTextLabel?.text = self.firebaseUser.displayName;
-                }
-                Utility.hideActivityIndicator();
-            });
+            // Update in USERS
+            self.userRef.child("username").setValue(newUsername);
+
+            // Update in USERNAMES
+            self.usernamesRef.child(self.originalUsername).removeValue(); // Remove old value
+            self.usernamesRef.child(newUsername).setValue(firebaseUser.uid); // Insert new value
+            
+            // Update usernameCell
+            self.usernameCell.detailTextLabel?.text = "@" + newUsername;
         });
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
         
         editUsernameAlert.addTextField { textField in
             textField.autocapitalizationType = .words;
-            textField.text = self.firebaseUser.displayName;
+            textField.text = self.originalUsername;
         }
         
         editUsernameAlert.setupTextFields();
