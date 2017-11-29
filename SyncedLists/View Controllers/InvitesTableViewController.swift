@@ -101,7 +101,7 @@ class InvitesTableViewController: UITableViewController {
         
         cell!.textLabel!.text = invites[indexPath.row].listName;
         cell!.textLabel!.textColor = UIColor.darkText;
-        cell!.detailTextLabel!.text = invites[indexPath.row].senderName;
+        cell!.detailTextLabel!.text = "@" + invites[indexPath.row].senderUsername!;
         
         return cell!;
     }
