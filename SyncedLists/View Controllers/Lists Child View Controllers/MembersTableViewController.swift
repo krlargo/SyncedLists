@@ -13,12 +13,14 @@ import UIKit
 class MembersTableViewController: UITableViewController {
     // MARK: - Variables
     var usersRef = Database.database().reference(withPath: "users");
+    var usernamesRef = Database.database().reference(withPath: "usernames");
     var emailsRef = Database.database().reference(withPath: "emails");
     var invitesRef = Database.database().reference(withPath: "invites");
     var listsRef = Database.database().reference(withPath: "lists");
     
     var listRef: DatabaseReference!
     
+    var currentUsername: String!
     var listID: String!
     var listOwnerName: String!
     
@@ -27,67 +29,71 @@ class MembersTableViewController: UITableViewController {
     
     // MARK: - IBActions
     @IBAction func addMember(_ sender: Any) {
-        func isValidEmail(testStr:String) -> Bool {
-            return true;
-            let emailRegEx = "/.+@.+\\..+/i";
-            let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-            return emailTest.evaluate(with: testStr)
-        }
-        
         let alert = UIAlertController(title: "Invite Member", message: "", preferredStyle: .alert);
         
         let saveAction = UIAlertAction(title: "Invite", style: .default) { _ in
             guard let textField = alert.textFields?.first,
-                let email = textField.text?.lowercased() else { return; }
+                let invitedUser = textField.text?.lowercased() else { return; }
             
             // Email validation
-            if(email == Auth.auth().currentUser!.email!) {
+            if(invitedUser == Auth.auth().currentUser!.email! ||
+                invitedUser == self.currentUsername) {
                 Utility.presentErrorAlert(message: "You cannot invite yourself.", from: self);
-                return;
-            } else if(!isValidEmail(testStr: email)) {
-                Utility.presentErrorAlert(message: "Invalid email format.", from: self);
                 return;
             }
             
             Utility.showActivityIndicator(in: self.navigationController!.view!);
             
             // Save invite
-            self.emailsRef.observeSingleEvent(of: .value) { snapshot in
-                let recipientEmailAsID = User.emailToID(email);
-                
-                if(snapshot.hasChild(recipientEmailAsID)) {
-                    let snapshotValue = snapshot.value as! [String: String];
-
-                    let senderID = Auth.auth().currentUser!.uid;
-                    let recipientID = snapshotValue[recipientEmailAsID]!;
-
-                    let invite = Invite(senderID: senderID, recipientID: recipientID, listID: self.listID)
-
-                    self.listRef.child("inviteIDs").observeSingleEvent(of: .value) { snapshot in
-                        // If list's inviteIDs already contains email
-                        if(snapshot.hasChild(recipientID)) {
-                            Utility.presentErrorAlert(message: "User with email \"\(email)\" has already been invited.", from: self)
-                        } else { // Invite user
-                            // Add to INVITES
-                            let inviteRef = self.invitesRef.childByAutoId();
-                            inviteRef.setValue(invite.toAnyObject());
-                            
-                            // Add to LISTS
-                            self.listRef.child("inviteIDs").child(inviteRef.key).setValue(ServerValue.timestamp());
-
-                            // Add to USERS
-                            let recipientUserRef = self.usersRef.child(recipientID);
-                            recipientUserRef.child("inviteIDs").child(inviteRef.key).setValue(ServerValue.timestamp());
-                            
-                            self.reloadData();
-                        }
+            let senderID = Auth.auth().currentUser!.uid;
+            var loadedID: String?
+            
+            // Check that recipient exists
+            if(invitedUser.isAlphanumeric) { // Check that username exists in database
+                self.usernamesRef.child(invitedUser).observeSingleEvent(of: .value) { snapshot in
+                    if(!(snapshot.value is NSNull)) {
+                        loadedID = snapshot.value as? String;
+                        inviteUser(with: loadedID);
                     }
-                } else {
-                    Utility.presentErrorAlert(message: "User with email \"\(email)\" does not exist.", from: self);
                 }
-                self.reloadData();
+            } else { // Check that email exists in database
+                let recipientEmailAsID = User.emailToID(invitedUser);
+                self.emailsRef.child(recipientEmailAsID).observeSingleEvent(of: .value) { snapshot in
+                    if(!(snapshot.value is NSNull)) {
+                        loadedID = snapshot.value as? String;
+                        inviteUser(with: loadedID);
+                    }
+                }
             }
-            self.reloadData();
+            
+            func inviteUser(with loadedID: String?) {
+                guard let recipientID = loadedID else {
+                    Utility.presentErrorAlert(message: "\(invitedUser.contains("@") ? "Email" : "Username") \"\(invitedUser)\" does not exist.", from: self);
+                    return;
+                }
+                
+                let invite = Invite(senderID: senderID, recipientID: recipientID, listID: self.listID)
+                
+                self.listRef.child("inviteIDs").observeSingleEvent(of: .value) { snapshot in
+                    // If list's inviteIDs already contains email
+                    if(snapshot.hasChild(recipientID)) {
+                        Utility.presentErrorAlert(message: "\(invitedUser.contains("@") ? "Email" : "Username") \"\(invitedUser)\" has already been invited.", from: self)
+                    } else { // Invite user
+                        // Add to INVITES
+                        let inviteRef = self.invitesRef.childByAutoId();
+                        inviteRef.setValue(invite.toAnyObject());
+                        
+                        // Add to LISTS
+                        self.listRef.child("inviteIDs").child(inviteRef.key).setValue(ServerValue.timestamp());
+                        
+                        // Add to USERS
+                        let recipientUserRef = self.usersRef.child(recipientID);
+                        recipientUserRef.child("inviteIDs").child(inviteRef.key).setValue(ServerValue.timestamp());
+                        
+                        self.reloadData();
+                    }
+                }
+            }
         }
         saveAction.isEnabled = false;
         
@@ -96,7 +102,7 @@ class MembersTableViewController: UITableViewController {
         alert.addTextField { emailTextField in
             emailTextField.autocapitalizationType = .words;
             emailTextField.keyboardType = .emailAddress;
-            emailTextField.placeholder = "Recipient Email";
+            emailTextField.placeholder = "Recipient username";
         }
         
         alert.setupTextFields();
@@ -110,7 +116,12 @@ class MembersTableViewController: UITableViewController {
     // MARK: - Overridden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        
+        self.usersRef.child(Auth.auth().currentUser!.uid).observe(.value) { snapshot in
+            let snapshotValue = snapshot.value as! [String: Any];
+            self.currentUsername = snapshotValue["username"] as! String;
+        }
+        
         self.listRef = Database.database().reference(withPath: "lists").child(listID);
         listRef.observeSingleEvent(of: .value) { snapshot in
             if let snapshotValue = snapshot.value as? [String: Any] {
@@ -127,7 +138,7 @@ class MembersTableViewController: UITableViewController {
         // Load joined users
         listRef.child("memberIDs").observe(.value) { snapshot in
             var loadingMembers = false;
-
+            
             self.joinedUsers.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
                 (($0 as! DataSnapshot).value as! Int) < (($1 as! DataSnapshot).value as! Int)
@@ -151,13 +162,13 @@ class MembersTableViewController: UITableViewController {
         // Load inviteIDs
         listRef.child("inviteIDs").observe(.value) { snapshot in
             var loadingInvites = false;
-
+            
             self.invites.removeAll();
             for case let snapshot as DataSnapshot in snapshot.children.sorted(by: {
                 (($0 as! DataSnapshot).value as! Int) < (($1 as! DataSnapshot).value as! Int)
             }) {                loadingInvites = true;
                 let inviteID = snapshot.key;
-
+                
                 self.invitesRef.child(inviteID).observeSingleEvent(of: .value) { snapshot in
                     if(!(snapshot.value is NSNull)) { // If snapshot has data load Invite
                         let invite = Invite(snapshot: snapshot, completionHandler: self.reloadData);
@@ -171,12 +182,12 @@ class MembersTableViewController: UITableViewController {
             if(!loadingInvites) { self.reloadData(); }
         }
     }
-
+    
     func reloadData() {
         self.tableView.reloadData();
         Utility.hideActivityIndicator();
     }
-
+    
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1;
@@ -194,7 +205,7 @@ class MembersTableViewController: UITableViewController {
             cell.detailTextLabel!.text = "Owner";
         } else if(indexPath.row <= joinedUsers.count) {
             let index = indexPath.row-1; // Offset due to owner
-        
+            
             cell.textLabel!.text = joinedUsers[index].name;
             cell.detailTextLabel!.text = "Joined";
         } else {
@@ -203,16 +214,16 @@ class MembersTableViewController: UITableViewController {
             cell.textLabel!.text = invites[index].recipientName;
             cell.detailTextLabel!.text = "Invited";
         }
-
+        
         return cell;
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return indexPath.row != 0;
     }
-
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-
+        
         switch(editingStyle) {
         case .delete:
             if(indexPath.row <= joinedUsers.count) {
