@@ -59,7 +59,7 @@ class SettingsTableViewController: UITableViewController {
         self.nameCell.detailTextLabel?.text = firebaseUser.displayName;
         self.emailCell.detailTextLabel?.text = firebaseUser.email;
         
-        userRef.child("username").observeSingleEvent(of: .value) { snapshot in
+        userRef.child("username").observe(.value) { snapshot in
             self.originalUsername = snapshot.value as! String;
             self.usernameCell.detailTextLabel?.text = "@" + self.originalUsername;
         }
@@ -147,7 +147,11 @@ class SettingsTableViewController: UITableViewController {
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { action in
             let newUsername = editUsernameAlert.textFields![0].text!;
 
-            // Validate newUsername
+            // Username should be alphanumeric
+            if(!newUsername.isAlphanumeric) {
+                Utility.presentErrorAlert(message: "The username \"\(newUsername)\" is invalid; usernames can only contain letters and numbers.", from: self);
+                return;
+            }
             
             // Update in USERS
             self.userRef.child("username").setValue(newUsername);
@@ -155,9 +159,6 @@ class SettingsTableViewController: UITableViewController {
             // Update in USERNAMES
             self.usernamesRef.child(self.originalUsername).removeValue(); // Remove old value
             self.usernamesRef.child(newUsername).setValue(self.firebaseUser.uid); // Insert new value
-            
-            // Update usernameCell
-            self.usernameCell.detailTextLabel?.text = "@" + newUsername;
         });
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
