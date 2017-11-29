@@ -25,6 +25,8 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
     
     var handle: AuthStateDidChangeListenerHandle?
     
+    var keyboardIsShowing = false;
+    
     // MARK: - IBActions
     @IBAction func manageList(_ sender: UIBarButtonItem) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil);
@@ -44,24 +46,31 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         
         present(itemsPopoverMenuVC, animated: true, completion: nil);
     }
-    
+    var dismissKeyboardGesture: UITapGestureRecognizer!
     // MARK: Overridden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
         listNameTextField.delegate = self;
-        let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));
+        
+        // Setup keyboard dismissal
+        dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard));
+        dismissKeyboardGesture.delegate = self;
         self.view.addGestureRecognizer(dismissKeyboardGesture);
+        // Subscribe to keyboard notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil);
+        
         
         self.user = User(authData: Auth.auth().currentUser!);
         self.listRef = Database.database().reference(withPath: "lists").child(listID);
         self.itemsRef = Database.database().reference(withPath: "items").child(listID);
         
-        // Observe title for changes
+        /*// Observe title for changes
         self.listRef.observe(.value) { snapshot in
             let snapshotValue = snapshot.value as! [String: Any];
             self.listNameTextField.text = snapshotValue["name"] as? String;
-        }
+        }*/
         
         self.itemsRef.observe(.value) { snapshot in
             Utility.showActivityIndicator(in: self.navigationController?.view);
@@ -79,6 +88,10 @@ class ItemsTableViewController: UITableViewController, ItemsMenuDelegate {
         }
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self);
+    }
+
     func reloadData() {
         self.tableView.reloadData();
         Utility.hideActivityIndicator();
@@ -216,15 +229,22 @@ extension ItemsTableViewController: UIPopoverPresentationControllerDelegate {
     }
 }
 
+extension ItemsTableViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if(gestureRecognizer == dismissKeyboardGesture) {
+            print("dismissKeyboardGesture");
+        }
+        return keyboardIsShowing;
+    }
+    @objc func keyboardWillShow() { self.keyboardIsShowing = true; }
+    @objc func keyboardWillHide() { self.keyboardIsShowing = false; }
+    @objc func dismissKeyboard() { self.navigationController!.view.endEditing(true); }
+}
+
 extension ItemsTableViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         let newListName = textField.text;
         listRef.child("name").setValue(newListName);
-        print("textFieldDidEndEditing: setting 'name'");
-    }
-    
-    @objc func dismissKeyboard() {
-        view.endEditing(true);
     }
 }
 
