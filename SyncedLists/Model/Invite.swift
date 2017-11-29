@@ -14,8 +14,9 @@ class Invite {
     let usersRef = Database.database().reference(withPath: "users");
     let listsRef = Database.database().reference(withPath: "lists");
 
-    var senderID: String?;
+    var senderID: String?
     var senderName: String?
+    var senderUsername: String?
     var recipientID: String;
     var recipientName: String?
     var listID: String;
@@ -29,6 +30,7 @@ class Invite {
         let snapshotValue = snapshot.value as! [String: AnyObject];
         self.senderID = snapshotValue["senderID"] as? String;
         self.senderName = nil;
+        self.senderUsername = nil;
         self.recipientID = snapshotValue["recipientID"] as! String;
         self.recipientName = nil;
         self.listID = snapshotValue["listID"] as! String;
@@ -41,7 +43,7 @@ class Invite {
             if(!(snapshot.value is NSNull)) { // Load listName if listID exists in LISTS
                 let snapshotValue = snapshot.value as! [String: Any];
                 self.listName = snapshotValue["name"] as? String;
-                self.loadSenderName(completionHandler: completionHandler);
+                self.loadSenderNames(completionHandler: completionHandler);
                 self.loadRecipientName(completionHandler: completionHandler);
             } else { // Delete invite if listID does not exist in LISTS
                 self.delete();
@@ -64,18 +66,20 @@ class Invite {
         }
     }
     
-    func loadSenderName(completionHandler: (() -> Void)?) {
+    func loadSenderNames(completionHandler: (() -> Void)?) {
         // Observe USERS for senderName
         if let senderID = self.senderID { // Load senderName if senderID exists in USERS
             self.usersRef.child(senderID).observeSingleEvent(of: .value) { snapshot in
                 if(!(snapshot.value is NSNull)) {
                     let snapshotValue = snapshot.value as! [String: Any];
                     self.senderName = snapshotValue["name"] as? String;
+                    self.senderUsername = snapshotValue["username"] as? String;
                     if let completionHandler = completionHandler {
                         completionHandler();
                     }
                 } else {
                     self.senderName = "[Deleted User]";
+                    self.senderUsername = "[Deleted User]";
                     self.ref!.child("senderID").removeValue();
                     if let completionHandler = completionHandler {
                         completionHandler();
