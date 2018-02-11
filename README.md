@@ -15,7 +15,8 @@ You can download SyncedLists in the [App Store](https://itunes.apple.com/us/app/
 
 ## Prerequisites / Installing / Deployment
 
-This app was made as a personal project for the purpose of serving as a coding sample to potential employers and is not intended to be installed/deployed by other users.
+This app was made as a personal project for the purpose of serving as a coding sample to potential employers and is not intended to be installed/deployed by other users. This
+ repository is missing essential files and will not build if you attempt to do so.
 
 ## Built With
 
