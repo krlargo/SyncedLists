@@ -7,7 +7,7 @@ SyncedLists is an iOS application that allows users to create and share synchron
 SyncedLists makes it easy to setup checklists for group events such as preparing for a party or gathering supplies for a camping trip. Users can add items to the checklist and can also complete (check) other users' added items. Lists are updated in realtime so that users are always in sync with one another.
 
 ### Screenshots
-<img src="https://krlargo.github.io/SyncedLists/Lists%20Screenshot.png" width="32%" style="float:left"><div width="1%" style="float:left"/><img src="https://krlargo.github.io/SyncedLists/Items%20Screenshot.png" width="32%" style="float:left"><div width="1%"/><img src="https://krlargo.github.io/SyncedLists/Invites%20Screenshot.png" width="32%">
+<img src="https://krlargo.github.io/SyncedLists/Lists%20Screenshot.png" width="32%" style="display:inline"><div width="1%" style="display:inline"/><img src="https://krlargo.github.io/SyncedLists/Items%20Screenshot.png" width="32%" style="display:inline"><div width="1%"/><img src="https://krlargo.github.io/SyncedLists/Invites%20Screenshot.png" width="32%">
 
 ### App Store Link
 
